@@ -4,6 +4,8 @@ import { ResearchPhaseBadge } from "@/components/research-phase-badge";
 import { CategoryBadge } from "@/components/category-badge";
 import { NewsletterForm } from "@/components/newsletter-form";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   const peptides = await prisma.peptide.findMany({
     where: { published: true },
