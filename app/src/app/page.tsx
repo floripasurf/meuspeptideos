@@ -7,9 +7,16 @@ import { NewsletterForm } from "@/components/newsletter-form";
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const peptides = await prisma.peptide.findMany({
+  const phaseOrder: Record<string, number> = {
+    approved: 0,
+    phase3: 1,
+    phase2: 2,
+    phase1: 3,
+    preclinical: 4,
+  };
+
+  const raw = await prisma.peptide.findMany({
     where: { published: true },
-    orderBy: { name: "asc" },
     select: {
       name: true,
       slug: true,
@@ -20,6 +27,11 @@ export default async function Home() {
       _count: { select: { studies: true } },
     },
   });
+
+  const peptides = raw.sort(
+    (a, b) =>
+      (phaseOrder[a.researchPhase] ?? 99) - (phaseOrder[b.researchPhase] ?? 99)
+  );
 
   return (
     <div>
