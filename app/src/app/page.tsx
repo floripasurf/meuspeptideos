@@ -36,7 +36,12 @@ export default async function Home() {
   return (
     <div>
       {/* Hero */}
-      <section className="hero-gradient hero-pattern relative">
+      <section
+        className="relative overflow-hidden"
+        style={{
+          background: "linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)",
+        }}
+      >
         <div className="relative mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
           <div className="mx-auto max-w-3xl text-center">
             <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 ring-1 ring-white/20">
@@ -89,7 +94,7 @@ export default async function Home() {
               <Link
                 key={p.slug}
                 href={`/peptideo/${p.slug}`}
-                className="card-hover group rounded-2xl border border-navy-200/60 bg-white p-5 sm:p-6"
+                className="group rounded-2xl border border-navy-200/60 bg-white p-5 sm:p-6 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
               >
                 <div className="flex items-start justify-between gap-3">
                   <h3 className="text-lg font-semibold text-navy-900 transition-colors group-hover:text-brand-600">
@@ -131,7 +136,12 @@ export default async function Home() {
 
       {/* Newsletter CTA */}
       <section className="mx-auto max-w-6xl px-4 pb-16 sm:px-6">
-        <div className="newsletter-gradient rounded-2xl p-8 sm:p-12">
+        <div
+          className="rounded-2xl p-8 sm:p-12"
+          style={{
+            background: "linear-gradient(135deg, #f0fdfa 0%, #f0f9ff 50%, #f5f3ff 100%)",
+          }}
+        >
           <div className="mx-auto max-w-xl text-center">
             <h2 className="text-2xl font-bold tracking-tight text-navy-900 sm:text-3xl">
               Fique atualizado
