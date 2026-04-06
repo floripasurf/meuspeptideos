@@ -1,0 +1,194 @@
+generator client {
+  provider        = "prisma-client"
+  output          = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================
+// PUBLIC: Peptide Knowledge Base
+// ============================================
+
+model Peptide {
+  id            String          @id @default(cuid())
+  name          String
+  slug          String          @unique
+  aliases       String[] // ex: ["Ozempic", "Wegovy"] para semaglutida
+  category      PeptideCategory
+  description   String // o que é, resumo
+  mechanism     String // mecanismo de ação detalhado
+  researchPhase ResearchPhase
+  anvisaStatus  RegulatoryStatus @default(not_regulated)
+  fdaStatus     RegulatoryStatus @default(not_regulated)
+  emaStatus     RegulatoryStatus @default(not_regulated)
+  benefits      Json // [{name, evidence: "proven"|"research"|"unproven", description, studyUrl}]
+  risks         Json // [{name, severity: "low"|"medium"|"high", frequency, description, studyUrl}]
+  internetVsScience Json // [{claim, whatTheySay, actualEvidence, verdict: "true"|"partial"|"false"|"unknown"}]
+  published     Boolean  @default(false)
+  publishedAt   DateTime?
+  updatedAt     DateTime @updatedAt
+  createdAt     DateTime @default(now())
+  studies       Study[]
+  faqs          PeptideFaq[]
+}
+
+model Study {
+  id          String    @id @default(cuid())
+  peptideId   String
+  peptide     Peptide   @relation(fields: [peptideId], references: [id], onDelete: Cascade)
+  title       String
+  authors     String
+  journal     String
+  year        Int
+  pubmedId    String? // PubMed ID para link direto
+  doi         String?
+  abstract    String?
+  keyFindings String // resumo em português dos achados principais
+  studyType   StudyType
+  sampleSize  Int?
+  url         String
+  createdAt   DateTime  @default(now())
+}
+
+model PeptideFaq {
+  id        String  @id @default(cuid())
+  peptideId String
+  peptide   Peptide @relation(fields: [peptideId], references: [id], onDelete: Cascade)
+  question  String
+  answer    String
+  order     Int     @default(0)
+}
+
+model BlogPost {
+  id           String    @id @default(cuid())
+  title        String
+  slug         String    @unique
+  content      String
+  excerpt      String
+  author       String
+  reviewerName String? // "Dr. Fulano"
+  reviewerCrm  String? // "CRM 12345"
+  published    Boolean   @default(false)
+  publishedAt  DateTime?
+  updatedAt    DateTime  @updatedAt
+  createdAt    DateTime  @default(now())
+  tags         String[]
+}
+
+// ============================================
+// LEAD CAPTURE + MARKET INTELLIGENCE
+// ============================================
+
+model Subscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  whatsapp  String?
+  city      String?
+  state     String?
+  lat       Float?
+  lng       Float?
+  interests String[] // slugs dos peptídeos de interesse
+  source    String // blog, peptide_page, newsletter, quiz
+  confirmed Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Lead {
+  id              String     @id @default(cuid())
+  name            String?
+  email           String?
+  whatsapp        String?
+  city            String?
+  state           String?
+  lat             Float?
+  lng             Float?
+  peptideInterest String[] // slugs dos peptídeos
+  sourcePage      String // URL da página que gerou o lead
+  contactMethod   String // whatsapp, form, quiz
+  status          LeadStatus @default(new)
+  clinicId        String? // clínica atribuída (match geográfico)
+  clinic          Clinic?    @relation(fields: [clinicId], references: [id])
+  notes           String?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+}
+
+// ============================================
+// INTERNAL ONLY: Secret Clinic Catalog
+// Never exposed publicly. These are our future clients.
+// ============================================
+
+model Clinic {
+  id            String   @id @default(cuid())
+  name          String
+  slug          String   @unique
+  googlePlaceId String?  @unique
+  address       String
+  city          String
+  state         String
+  neighborhood  String?
+  lat           Float?
+  lng           Float?
+  phone         String?
+  whatsapp      String?
+  website       String?
+  googleMapsUrl String?
+  googleRating  Float?
+  googleReviews Int?
+  specialties   String[] // ex: ["semaglutida", "medicina funcional"]
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  leads         Lead[]
+}
+
+// ============================================
+// ENUMS
+// ============================================
+
+enum PeptideCategory {
+  glp1
+  growth_hormone
+  healing
+  neuroprotective
+  cosmetic
+  immune
+  performance
+}
+
+enum ResearchPhase {
+  preclinical // só estudos in vitro / animal
+  phase1      // segurança em humanos
+  phase2      // eficácia inicial
+  phase3      // eficácia confirmada
+  approved    // aprovado por agência reguladora
+}
+
+enum RegulatoryStatus {
+  approved
+  pending
+  not_regulated
+  banned
+  compounding_only // permitido via farmácia de manipulação
+}
+
+enum StudyType {
+  meta_analysis
+  systematic_review
+  rct // randomized controlled trial
+  cohort
+  case_study
+  review
+  animal
+  in_vitro
+}
+
+enum LeadStatus {
+  new
+  contacted
+  matched    // conectado a uma clínica
+  converted  // virou paciente
+  lost
+}
