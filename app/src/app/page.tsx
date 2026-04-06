@@ -39,12 +39,12 @@ export default async function Home() {
                 o que a ciência diz
               </span>
             </h1>
-            <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-navy-300 sm:text-lg">
+            <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-white/80 sm:text-lg">
               Base de conhecimento sobre peptídeos com informações baseadas em
               pesquisas científicas. Benefícios comprovados, riscos documentados
               e o que ainda está em estudo.
             </p>
-            <p className="mt-3 text-sm text-navy-400">
+            <p className="mt-3 text-sm text-white/50">
               Conteúdo informativo — consulte sempre um médico.
             </p>
           </div>
