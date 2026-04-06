@@ -39,24 +39,24 @@ export default async function Home() {
       <section className="hero-gradient hero-pattern relative">
         <div className="relative mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
           <div className="mx-auto max-w-3xl text-center">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-white/5 px-4 py-1.5 ring-1 ring-white/10">
-              <span className="h-1.5 w-1.5 rounded-full bg-brand-400" />
-              <span className="text-xs font-medium text-brand-300">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 ring-1 ring-white/20">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+              <span className="text-xs font-medium text-white/90">
                 Base de conhecimento atualizada
               </span>
             </div>
             <h1 className="text-3xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
               Peptídeos:{" "}
-              <span className="bg-gradient-to-r from-brand-400 to-brand-300 bg-clip-text text-transparent">
+              <span className="text-emerald-300">
                 o que a ciência diz
               </span>
             </h1>
-            <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-white/80 sm:text-lg">
+            <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-white sm:text-lg">
               Base de conhecimento sobre peptídeos com informações baseadas em
               pesquisas científicas. Benefícios comprovados, riscos documentados
               e o que ainda está em estudo.
             </p>
-            <p className="mt-3 text-sm text-white/50">
+            <p className="mt-3 text-sm text-white/70">
               Conteúdo informativo — consulte sempre um médico.
             </p>
           </div>
