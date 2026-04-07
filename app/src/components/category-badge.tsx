@@ -39,6 +39,11 @@ const categoryConfig: Record<
     color: "bg-cyan-50 text-cyan-700 ring-1 ring-cyan-200/80",
     icon: ">",
   },
+  longevity: {
+    label: "Longevidade",
+    color: "bg-teal-50 text-teal-700 ring-1 ring-teal-200/80",
+    icon: "∞",
+  },
 };
 
 export function CategoryBadge({ category }: { category: PeptideCategory }) {

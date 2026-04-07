@@ -66,8 +66,67 @@ export default async function PeptidePage({ params }: Props) {
   const risks = peptide.risks as Risk[];
   const claims = peptide.internetVsScience as InternetClaim[];
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "MedicalWebPage",
+    name: `${peptide.name} — Benefícios, Riscos e Pesquisa`,
+    description: peptide.description,
+    url: `https://meuspeptideos.com.br/peptideo/${peptide.slug}`,
+    inLanguage: "pt-BR",
+    isPartOf: {
+      "@type": "WebSite",
+      name: "Meus Peptídeos",
+      url: "https://meuspeptideos.com.br",
+    },
+    about: {
+      "@type": "MedicalEntity",
+      name: peptide.name,
+      alternateName: peptide.aliases,
+      description: peptide.description,
+    },
+    medicalAudience: {
+      "@type": "MedicalAudience",
+      audienceType: "Patient",
+    },
+    lastReviewed: peptide.updatedAt.toISOString(),
+    citation: peptide.studies.map((s) => ({
+      "@type": "ScholarlyArticle",
+      name: s.title,
+      author: s.authors,
+      datePublished: s.year.toString(),
+      isPartOf: { "@type": "Periodical", name: s.journal },
+      url: s.url,
+    })),
+  };
+
+  const faqJsonLd =
+    peptide.faqs.length > 0
+      ? {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: peptide.faqs.map((f) => ({
+            "@type": "Question",
+            name: f.question,
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: f.answer,
+            },
+          })),
+        }
+      : null;
+
   return (
     <article className="pb-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      {faqJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        />
+      )}
       {/* Page header with gradient strip */}
       <div className="border-b border-navy-100 bg-gradient-to-b from-navy-50 to-surface">
         <header className="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-12">

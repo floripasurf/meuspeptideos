@@ -27,8 +27,33 @@ export default async function BlogPostPage({ params }: Props) {
 
   if (!post) notFound();
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: post.title,
+    description: post.excerpt,
+    author: {
+      "@type": "Organization",
+      name: post.author,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "Meus Peptídeos",
+      url: "https://meuspeptideos.com.br",
+    },
+    datePublished: post.publishedAt?.toISOString(),
+    dateModified: post.updatedAt.toISOString(),
+    inLanguage: "pt-BR",
+    url: `https://meuspeptideos.com.br/blog/${post.slug}`,
+    keywords: post.tags.join(", "),
+  };
+
   return (
     <article className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <header className="mb-8">
         <div className="flex flex-wrap items-center gap-2 mb-3">
           {post.tags.map((tag) => (

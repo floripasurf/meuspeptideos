@@ -156,6 +156,7 @@ enum PeptideCategory {
   cosmetic
   immune
   performance
+  longevity
 }
 
 enum ResearchPhase {
