@@ -10,6 +10,7 @@ const footerLinks = {
   institucional: [
     { href: "/sobre", label: "Sobre" },
     { href: "/metodologia", label: "Metodologia" },
+    { href: "/para-medicos", label: "Para Médicos" },
     { href: "/privacidade", label: "Privacidade" },
     { href: "/termos", label: "Termos de Uso" },
   ],

@@ -2,6 +2,7 @@ import { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
 import { useCases } from "@/lib/use-cases";
 import { comparisons } from "@/lib/comparisons";
+import { cities } from "@/lib/cities";
 import { PeptideCategory } from "@/generated/prisma/enums";
 
 const allCategories: PeptideCategory[] = [
@@ -93,6 +94,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
+  // Local SEO: peptide × city combinations
+  const localRoutes: MetadataRoute.Sitemap = peptides.flatMap((p) =>
+    cities.map((city) => ({
+      url: `${baseUrl}/${p.slug}/${city.slug}`,
+      lastModified: p.updatedAt,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    }))
+  );
+
   return [
     ...staticRoutes,
     ...peptideRoutes,
@@ -100,5 +111,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...categoryRoutes,
     ...useCaseRoutes,
     ...comparisonRoutes,
+    ...localRoutes,
   ];
 }

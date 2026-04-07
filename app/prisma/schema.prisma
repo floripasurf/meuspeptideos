@@ -144,6 +144,27 @@ model Clinic {
   leads         Lead[]
 }
 
+// Doctors who self-register to receive leads
+// Private — discreet, never exposed publicly
+model Doctor {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  whatsapp     String?
+  crm          String? // CRM number
+  crmState     String? // CRM state
+  specialty    String? // endocrinologia, medicina funcional, etc.
+  city         String?
+  state        String?
+  peptidesPrescribed String[] // slugs dos peptídeos que prescreve
+  yearsExperience Int?
+  notes        String? // notas internas
+  verified     Boolean  @default(false)
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
 // ============================================
 // ENUMS
 // ============================================
