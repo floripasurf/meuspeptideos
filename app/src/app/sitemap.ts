@@ -1,5 +1,19 @@
 import { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
+import { useCases } from "@/lib/use-cases";
+import { comparisons } from "@/lib/comparisons";
+import { PeptideCategory } from "@/generated/prisma/enums";
+
+const allCategories: PeptideCategory[] = [
+  "glp1",
+  "growth_hormone",
+  "healing",
+  "neuroprotective",
+  "cosmetic",
+  "immune",
+  "performance",
+  "longevity",
+];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://meuspeptideos.com.br";
@@ -15,18 +29,32 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }),
   ]);
 
+  const now = new Date();
+
   const staticRoutes: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
-      lastModified: new Date(),
+      lastModified: now,
       changeFrequency: "daily",
       priority: 1.0,
     },
     {
       url: `${baseUrl}/blog`,
-      lastModified: new Date(),
+      lastModified: now,
       changeFrequency: "weekly",
       priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/sobre`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.6,
+    },
+    {
+      url: `${baseUrl}/metodologia`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.6,
     },
   ];
 
@@ -44,5 +72,33 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  return [...staticRoutes, ...peptideRoutes, ...blogRoutes];
+  const categoryRoutes: MetadataRoute.Sitemap = allCategories.map((cat) => ({
+    url: `${baseUrl}/categoria/${cat}`,
+    lastModified: now,
+    changeFrequency: "weekly",
+    priority: 0.7,
+  }));
+
+  const useCaseRoutes: MetadataRoute.Sitemap = useCases.map((u) => ({
+    url: `${baseUrl}/uso/${u.slug}`,
+    lastModified: now,
+    changeFrequency: "weekly",
+    priority: 0.8,
+  }));
+
+  const comparisonRoutes: MetadataRoute.Sitemap = comparisons.map((c) => ({
+    url: `${baseUrl}/comparar/${c.slug}`,
+    lastModified: now,
+    changeFrequency: "monthly",
+    priority: 0.8,
+  }));
+
+  return [
+    ...staticRoutes,
+    ...peptideRoutes,
+    ...blogRoutes,
+    ...categoryRoutes,
+    ...useCaseRoutes,
+    ...comparisonRoutes,
+  ];
 }
