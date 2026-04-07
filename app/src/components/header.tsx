@@ -8,6 +8,7 @@ const navLinks = [
   { href: "/uso/emagrecimento", label: "Por Uso" },
   { href: "/comparar/semaglutida-vs-tirzepatida", label: "Comparações" },
   { href: "/blog", label: "Blog" },
+  { href: "/regulamentacao", label: "Regulamentação" },
   { href: "/sobre", label: "Sobre" },
 ];
 
