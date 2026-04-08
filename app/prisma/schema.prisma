@@ -162,10 +162,28 @@ model Doctor {
   yearsExperience Int?
   acceptsPartnership Boolean @default(true) // aceita parceria de leads
   notes        String? // notas internas
-  verified     Boolean  @default(false)
+  emailVerified    Boolean   @default(false) // verificou email?
+  verificationToken String?  @unique // token único para verificação
+  verifiedAt       DateTime? // quando confirmou
+  consentLgpd      Boolean   @default(false) // consentiu com política LGPD
+  consentLgpdAt    DateTime? // quando consentiu
+  submittedFromIp  String?   // IP de cadastro (rate limiting + audit)
+  verified     Boolean  @default(false) // verificação manual pela admin
   active       Boolean  @default(true)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  @@index([submittedFromIp, createdAt])
+}
+
+// Rate limit tracking for public endpoints
+model RateLimitEntry {
+  id        String   @id @default(cuid())
+  ip        String
+  endpoint  String // ex: "doctor_signup", "lead_capture"
+  createdAt DateTime @default(now())
+
+  @@index([ip, endpoint, createdAt])
 }
 
 // ============================================

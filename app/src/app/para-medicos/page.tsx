@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { DoctorSignupForm } from "@/components/doctor-signup-form";
 
 export const metadata = {
@@ -10,9 +11,44 @@ export const metadata = {
   },
 };
 
-export default function ParaMedicosPage() {
+type Props = {
+  searchParams: Promise<{ verify?: string }>;
+};
+
+export default async function ParaMedicosPage({ searchParams }: Props) {
+  const { verify } = await searchParams;
+
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
+      {verify === "success" && (
+        <div className="mb-6 rounded-xl border border-emerald-200 bg-emerald-50 p-5 flex items-start gap-3">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-emerald-600 mt-0.5 shrink-0">
+            <path d="M20 6L9 17l-5-5" />
+          </svg>
+          <div>
+            <p className="font-semibold text-emerald-900">Email confirmado com sucesso!</p>
+            <p className="mt-1 text-sm text-emerald-800">
+              Seu cadastro foi ativado. Em até 48h entraremos em contato para validar
+              os dados profissionais e iniciar o envio de leads.
+            </p>
+          </div>
+        </div>
+      )}
+      {verify === "already" && (
+        <div className="mb-6 rounded-xl border border-blue-200 bg-blue-50 p-5">
+          <p className="text-sm text-blue-800">
+            Este email já foi confirmado anteriormente. Não é necessário confirmar novamente.
+          </p>
+        </div>
+      )}
+      {verify === "invalid" && (
+        <div className="mb-6 rounded-xl border border-red-200 bg-red-50 p-5">
+          <p className="text-sm text-red-800">
+            Link de confirmação inválido ou expirado. Por favor, faça um novo cadastro.
+          </p>
+        </div>
+      )}
+
       <header className="mb-10 text-center">
         <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700 ring-1 ring-emerald-200">
           <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
@@ -159,13 +195,36 @@ export default function ParaMedicosPage() {
         <DoctorSignupForm />
       </section>
 
-      {/* Trust */}
-      <section className="mt-10 text-center text-sm text-zinc-500">
-        <p>
-          Suas informações são confidenciais e armazenadas com segurança.
-          <br />
-          Seguimos a LGPD (Lei Geral de Proteção de Dados).
-        </p>
+      {/* Trust + Security */}
+      <section className="mt-10 rounded-xl border border-zinc-200 bg-zinc-50 p-6">
+        <div className="flex items-start gap-3">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-zinc-500 mt-0.5 shrink-0">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          </svg>
+          <div className="flex-1">
+            <h3 className="font-semibold text-zinc-900 text-sm">
+              Como protegemos seus dados
+            </h3>
+            <ul className="mt-2 space-y-1 text-xs text-zinc-600">
+              <li>• Servidores no Brasil (sa-east-1, São Paulo) — em conformidade com a LGPD</li>
+              <li>• Conexão criptografada (TLS 1.3) entre seu navegador e nossos servidores</li>
+              <li>• Dados em repouso criptografados (AES-256)</li>
+              <li>• Cadastro nunca exposto publicamente — apenas você e nossa equipe têm acesso</li>
+              <li>• Confirmação por email obrigatória para evitar fraudes</li>
+              <li>• Direito ao esquecimento garantido — você pode solicitar exclusão a qualquer momento</li>
+            </ul>
+            <p className="mt-3 text-xs text-zinc-500">
+              Detalhes completos na{" "}
+              <Link
+                href="/privacidade-medicos"
+                className="font-medium text-emerald-600 underline"
+              >
+                Política de Privacidade para Médicos
+              </Link>
+              .
+            </p>
+          </div>
+        </div>
       </section>
     </div>
   );

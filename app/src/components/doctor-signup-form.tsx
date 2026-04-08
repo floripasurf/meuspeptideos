@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 
 const specialties = [
@@ -47,7 +48,10 @@ export function DoctorSignupForm() {
   const [state, setState] = useState("");
   const [yearsExperience, setYearsExperience] = useState("");
   const [peptides, setPeptides] = useState<string[]>([]);
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [consentLgpd, setConsentLgpd] = useState(false);
+  const [website, setWebsite] = useState(""); // honeypot
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error" | "rate_limited">("idle");
+  const [errorMessage, setErrorMessage] = useState("");
 
   function togglePeptide(slug: string) {
     setPeptides((prev) =>
@@ -57,7 +61,13 @@ export function DoctorSignupForm() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!consentLgpd) {
+      setErrorMessage("Você precisa concordar com a política de privacidade.");
+      setStatus("error");
+      return;
+    }
     setStatus("loading");
+    setErrorMessage("");
     try {
       const res = await fetch("/api/doctor", {
         method: "POST",
@@ -75,15 +85,23 @@ export function DoctorSignupForm() {
           state,
           yearsExperience,
           peptidesPrescribed: peptides,
+          consentLgpd,
+          website, // honeypot
         }),
       });
+      const data = await res.json();
       if (res.ok) {
         setStatus("success");
+      } else if (res.status === 429) {
+        setStatus("rate_limited");
+        setErrorMessage(data.error || "Muitas tentativas.");
       } else {
         setStatus("error");
+        setErrorMessage(data.error || "Erro ao cadastrar.");
       }
     } catch {
       setStatus("error");
+      setErrorMessage("Erro de conexão. Tente novamente.");
     }
   }
 
@@ -99,8 +117,13 @@ export function DoctorSignupForm() {
           Cadastro recebido!
         </h3>
         <p className="mt-2 text-sm text-zinc-600">
-          Entraremos em contato em até 48h para validar seu cadastro e iniciar
-          o envio de leads na sua região.
+          Enviamos um email de confirmação para <strong>{email}</strong>.
+          Verifique sua caixa de entrada (e spam) e clique no link para ativar
+          seu cadastro.
+        </p>
+        <p className="mt-3 text-xs text-zinc-500">
+          Após confirmação, entraremos em contato em até 48h para validar e
+          iniciar o envio de leads na sua região.
         </p>
       </div>
     );
@@ -108,6 +131,28 @@ export function DoctorSignupForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      {/* Honeypot — hidden field for bots */}
+      <div
+        style={{
+          position: "absolute",
+          left: "-9999px",
+          top: "-9999px",
+          opacity: 0,
+        }}
+        aria-hidden="true"
+      >
+        <label htmlFor="website">Website (deixe em branco)</label>
+        <input
+          type="text"
+          id="website"
+          name="website"
+          tabIndex={-1}
+          autoComplete="off"
+          value={website}
+          onChange={(e) => setWebsite(e.target.value)}
+        />
+      </div>
+
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
           <label className="mb-1 block text-xs font-medium text-zinc-700">
@@ -276,6 +321,34 @@ export function DoctorSignupForm() {
         </div>
       </div>
 
+      {/* LGPD Consent */}
+      <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-4">
+        <label className="flex items-start gap-3 cursor-pointer">
+          <input
+            type="checkbox"
+            required
+            checked={consentLgpd}
+            onChange={(e) => setConsentLgpd(e.target.checked)}
+            className="mt-1 h-4 w-4 rounded border-zinc-300 text-emerald-600 focus:ring-emerald-500"
+          />
+          <span className="text-xs leading-relaxed text-zinc-700">
+            Concordo com a{" "}
+            <Link
+              href="/privacidade-medicos"
+              target="_blank"
+              className="font-medium text-emerald-600 underline hover:text-emerald-700"
+            >
+              Política de Privacidade para Médicos (LGPD)
+            </Link>
+            . Meus dados serão armazenados com segurança em servidores
+            brasileiros, jamais expostos publicamente, e usados exclusivamente
+            para conectar pacientes interessados em peptídeos a profissionais
+            qualificados na sua região. Posso solicitar exclusão a qualquer
+            momento.
+          </span>
+        </label>
+      </div>
+
       <button
         type="submit"
         disabled={status === "loading"}
@@ -283,8 +356,10 @@ export function DoctorSignupForm() {
       >
         {status === "loading" ? "Enviando..." : "Cadastrar e receber leads"}
       </button>
-      {status === "error" && (
-        <p className="text-xs text-red-500">Erro ao cadastrar. Tente novamente.</p>
+      {(status === "error" || status === "rate_limited") && errorMessage && (
+        <div className="rounded-lg bg-red-50 border border-red-200 p-3">
+          <p className="text-xs text-red-700">{errorMessage}</p>
+        </div>
       )}
     </form>
   );
