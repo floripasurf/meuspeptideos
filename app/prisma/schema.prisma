@@ -150,14 +150,17 @@ model Doctor {
   id           String   @id @default(cuid())
   name         String
   email        String   @unique
+  phone        String? // telefone fixo / consultório
   whatsapp     String?
   crm          String? // CRM number
   crmState     String? // CRM state
   specialty    String? // endocrinologia, medicina funcional, etc.
+  address      String? // endereço completo do consultório
   city         String?
   state        String?
   peptidesPrescribed String[] // slugs dos peptídeos que prescreve
   yearsExperience Int?
+  acceptsPartnership Boolean @default(true) // aceita parceria de leads
   notes        String? // notas internas
   verified     Boolean  @default(false)
   active       Boolean  @default(true)

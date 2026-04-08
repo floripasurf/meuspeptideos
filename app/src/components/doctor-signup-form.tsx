@@ -37,10 +37,12 @@ const peptideOptions = [
 export function DoctorSignupForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [crm, setCrm] = useState("");
   const [crmState, setCrmState] = useState("");
   const [specialty, setSpecialty] = useState("");
+  const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [yearsExperience, setYearsExperience] = useState("");
@@ -63,10 +65,12 @@ export function DoctorSignupForm() {
         body: JSON.stringify({
           name,
           email,
+          phone,
           whatsapp,
           crm,
           crmState,
           specialty,
+          address,
           city,
           state,
           yearsExperience,
@@ -131,10 +135,23 @@ export function DoctorSignupForm() {
         </div>
         <div>
           <label className="mb-1 block text-xs font-medium text-zinc-700">
-            WhatsApp
+            Telefone (consultório)
           </label>
           <input
             type="tel"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            placeholder="(11) 3333-3333"
+            className="w-full rounded-lg border border-zinc-200 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+          />
+        </div>
+        <div>
+          <label className="mb-1 block text-xs font-medium text-zinc-700">
+            WhatsApp *
+          </label>
+          <input
+            type="tel"
+            required
             value={whatsapp}
             onChange={(e) => setWhatsapp(e.target.value)}
             placeholder="(11) 99999-9999"
@@ -184,12 +201,25 @@ export function DoctorSignupForm() {
             className="w-full rounded-lg border border-zinc-200 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
           />
         </div>
-        <div>
+        <div className="sm:col-span-2">
           <label className="mb-1 block text-xs font-medium text-zinc-700">
-            Cidade
+            Endereço do consultório
           </label>
           <input
             type="text"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            placeholder="Rua, número, complemento, bairro"
+            className="w-full rounded-lg border border-zinc-200 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+          />
+        </div>
+        <div>
+          <label className="mb-1 block text-xs font-medium text-zinc-700">
+            Cidade *
+          </label>
+          <input
+            type="text"
+            required
             value={city}
             onChange={(e) => setCity(e.target.value)}
             placeholder="São Paulo"
