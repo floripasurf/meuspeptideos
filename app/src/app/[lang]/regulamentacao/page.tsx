@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { notFound } from "next/navigation";
+import { getDictionary, hasLocale } from "@/lib/i18n";
 
 export const metadata = {
   title: "Regulamentação de Peptídeos no Brasil — ANVISA, FDA e EMA",
@@ -6,7 +8,12 @@ export const metadata = {
     "Status regulatório dos peptídeos no Brasil e no mundo. Como ANVISA, FDA e EMA classificam semaglutida, tirzepatida, BPC-157 e outros compostos. Atualizado em 2026.",
 };
 
-export default function RegulamentacaoPage() {
+type Props = { params: Promise<{ lang: string }> };
+
+export default async function RegulamentacaoPage({ params }: Props) {
+  const { lang } = await params;
+  if (!hasLocale(lang)) notFound();
+  const dict = await getDictionary(lang);
   return (
     <article className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
       <header className="mb-10">
@@ -208,7 +215,7 @@ export default function RegulamentacaoPage() {
           mas farmácias magistrais licenciadas podem preparar muitos desses
           compostos sob prescrição. Mantenha-se atualizado com a literatura
           científica e a ANVISA. Nossa{" "}
-          <Link href="/para-medicos">página para médicos</Link> tem informações
+          <Link href={`/${lang}/para-medicos`}>página para médicos</Link> tem informações
           adicionais.
         </p>
 

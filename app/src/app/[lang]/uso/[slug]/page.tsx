@@ -6,13 +6,14 @@ import { ResearchPhaseBadge } from "@/components/research-phase-badge";
 import { CategoryBadge } from "@/components/category-badge";
 import { NewsletterForm } from "@/components/newsletter-form";
 import { useCases } from "@/lib/use-cases";
+import { getDictionary, hasLocale } from "@/lib/i18n";
 
 export const dynamic = "force-dynamic";
 
-type Props = { params: Promise<{ slug: string }> };
+type Props = { params: Promise<{ lang: string; slug: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
+  const { lang, slug } = await params;
   const useCase = useCases.find((u) => u.slug === slug);
   if (!useCase) return {};
   return {
@@ -22,7 +23,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function UsoPage({ params }: Props) {
-  const { slug } = await params;
+  const { lang, slug } = await params;
+  if (!hasLocale(lang)) notFound();
+  const dict = await getDictionary(lang);
   const useCase = useCases.find((u) => u.slug === slug);
   if (!useCase) notFound();
 
@@ -56,7 +59,7 @@ export default async function UsoPage({ params }: Props) {
     <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
       <div className="mb-2">
         <Link
-          href="/uso"
+          href={`/${lang}/uso`}
           className="text-sm text-emerald-600 hover:text-emerald-500"
         >
           ← Todas as categorias por uso
@@ -87,7 +90,7 @@ export default async function UsoPage({ params }: Props) {
           return (
             <Link
               key={p.slug}
-              href={`/peptideo/${p.slug}`}
+              href={`/${lang}/peptideo/${p.slug}`}
               className="group block rounded-2xl border border-zinc-200/60 bg-white p-5 sm:p-6 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
             >
               <div className="flex gap-4 sm:gap-5">

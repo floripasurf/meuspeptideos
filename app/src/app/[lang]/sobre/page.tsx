@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { notFound } from "next/navigation";
+import { getDictionary, hasLocale } from "@/lib/i18n";
 
 export const metadata = {
   title: "Sobre — Meus Peptídeos",
@@ -6,7 +8,12 @@ export const metadata = {
     "Quem somos, nossa missão e nosso compromisso com informação científica rigorosa sobre peptídeos no Brasil.",
 };
 
-export default function SobrePage() {
+type Props = { params: Promise<{ lang: string }> };
+
+export default async function SobrePage({ params }: Props) {
+  const { lang } = await params;
+  if (!hasLocale(lang)) notFound();
+  const dict = await getDictionary(lang);
   return (
     <article className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
       <header className="mb-10">
@@ -99,7 +106,7 @@ export default function SobrePage() {
         <p>
           Tem uma sugestão de peptídeo para incluir? Encontrou um erro? Quer
           colaborar como revisor médico?{" "}
-          <Link href="/">Entre em contato pelo formulário na home</Link>.
+          <Link href={`/${lang}`}>Entre em contato pelo formulário na home</Link>.
         </p>
       </div>
     </article>

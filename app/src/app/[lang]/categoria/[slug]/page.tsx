@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { ResearchPhaseBadge } from "@/components/research-phase-badge";
 import { CategoryBadge } from "@/components/category-badge";
 import { PeptideCategory } from "@/generated/prisma/enums";
+import { getDictionary, hasLocale } from "@/lib/i18n";
 
 export const dynamic = "force-dynamic";
 
@@ -72,10 +73,10 @@ const categoryMeta: Record<
 
 const validCategories = Object.keys(categoryMeta) as PeptideCategory[];
 
-type Props = { params: Promise<{ slug: string }> };
+type Props = { params: Promise<{ lang: string; slug: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
+  const { lang, slug } = await params;
   if (!validCategories.includes(slug as PeptideCategory)) return {};
   const meta = categoryMeta[slug as PeptideCategory];
   return {
@@ -85,7 +86,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function CategoryPage({ params }: Props) {
-  const { slug } = await params;
+  const { lang, slug } = await params;
+  if (!hasLocale(lang)) notFound();
+  const dict = await getDictionary(lang);
   if (!validCategories.includes(slug as PeptideCategory)) notFound();
 
   const category = slug as PeptideCategory;
@@ -127,7 +130,7 @@ export default async function CategoryPage({ params }: Props) {
         {peptides.map((p) => (
           <Link
             key={p.slug}
-            href={`/peptideo/${p.slug}`}
+            href={`/${lang}/peptideo/${p.slug}`}
             className="group rounded-2xl border border-zinc-200/60 bg-white p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
           >
             <div className="flex items-start justify-between gap-3">
@@ -155,7 +158,7 @@ export default async function CategoryPage({ params }: Props) {
 
       <div className="mt-12">
         <Link
-          href="/"
+          href={`/${lang}`}
           className="text-sm font-medium text-emerald-600 hover:text-emerald-500"
         >
           ← Ver todos os peptídeos

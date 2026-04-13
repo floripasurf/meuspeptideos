@@ -23,8 +23,8 @@
   },
   "grid": {
     "title": "Compounds",
-    "countSingular": "{count} compound cataloged",
-    "countPlural": "{count} compounds cataloged",
+    "countSingular": "compound cataloged",
+    "countPlural": "compounds cataloged",
     "empty": "Content in preparation. Sign up to be notified.",
     "studies": "study",
     "studyPlural": "studies"

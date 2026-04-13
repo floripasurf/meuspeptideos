@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { notFound } from "next/navigation";
+import { getDictionary, hasLocale } from "@/lib/i18n";
 
 export const metadata = {
   title: "Política de Privacidade para Médicos — LGPD",
@@ -6,7 +8,12 @@ export const metadata = {
     "Como tratamos os dados pessoais dos médicos cadastrados no Meus Peptídeos, conforme a Lei Geral de Proteção de Dados (LGPD).",
 };
 
-export default function PrivacidadeMedicosPage() {
+type Props = { params: Promise<{ lang: string }> };
+
+export default async function PrivacidadeMedicosPage({ params }: Props) {
+  const { lang } = await params;
+  if (!hasLocale(lang)) notFound();
+  const dict = await getDictionary(lang);
   return (
     <article className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
       <header className="mb-10">
@@ -170,13 +177,13 @@ export default function PrivacidadeMedicosPage() {
 
       <div className="mt-10 flex gap-3">
         <Link
-          href="/para-medicos"
+          href={`/${lang}/para-medicos`}
           className="rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700"
         >
           Voltar ao cadastro
         </Link>
         <Link
-          href="/"
+          href={`/${lang}`}
           className="rounded-lg border border-zinc-300 bg-white px-5 py-2.5 text-sm font-semibold text-zinc-700 hover:bg-zinc-50"
         >
           Página inicial

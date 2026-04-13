@@ -7,6 +7,7 @@ import { NewsletterForm } from "@/components/newsletter-form";
 import { RegulatoryStatus } from "@/generated/prisma/enums";
 import { protocols, type Protocol } from "@/lib/protocols";
 import { getDictionary, hasLocale, type Dictionary } from "@/lib/i18n";
+import { getCompoundTranslation } from "@/lib/compound-translations";
 
 type Benefit = {
   name: string;
@@ -67,9 +68,33 @@ export default async function PeptidePage({ params }: Props) {
 
   if (!peptide) notFound();
 
-  const benefits = peptide.benefits as Benefit[];
-  const risks = peptide.risks as Risk[];
-  const claims = peptide.internetVsScience as InternetClaim[];
+  const t = await getCompoundTranslation(peptide.slug, lang);
+
+  const rawBenefits = peptide.benefits as Benefit[];
+  const rawRisks = peptide.risks as Risk[];
+  const rawClaims = peptide.internetVsScience as InternetClaim[];
+
+  // Merge translations if available
+  const description = t?.description ?? peptide.description;
+  const mechanism = t?.mechanism ?? peptide.mechanism;
+  const benefits = rawBenefits.map((b, i) => ({
+    ...b,
+    name: t?.benefits[i]?.name ?? b.name,
+    description: t?.benefits[i]?.description ?? b.description,
+  }));
+  const risks = rawRisks.map((r, i) => ({
+    ...r,
+    name: t?.risks[i]?.name ?? r.name,
+    frequency: t?.risks[i]?.frequency ?? r.frequency,
+    description: t?.risks[i]?.description ?? r.description,
+  }));
+  const claims = rawClaims.map((c, i) => ({
+    ...c,
+    claim: t?.internetVsScience[i]?.claim ?? c.claim,
+    whatTheySay: t?.internetVsScience[i]?.whatTheySay ?? c.whatTheySay,
+    actualEvidence: t?.internetVsScience[i]?.actualEvidence ?? c.actualEvidence,
+  }));
+  const translatedFaqs = t?.faqs ?? null;
   const peptideProtocols = protocols[peptide.slug] ?? [];
 
   const jsonLd = {
@@ -148,7 +173,7 @@ export default async function PeptidePage({ params }: Props) {
             {peptide.name}
           </h1>
           <p className="mt-4 text-base leading-relaxed text-navy-600 sm:text-lg">
-            {peptide.description}
+            {description}
           </p>
           <p className="mt-2 text-xs text-navy-400">
             {dict.peptide.lastUpdated}:{" "}
@@ -190,7 +215,7 @@ export default async function PeptidePage({ params }: Props) {
           <SectionCard>
             <SectionTitle icon="dna">{dict.peptide.mechanism}</SectionTitle>
             <p className="mt-3 text-navy-600 leading-relaxed">
-              {peptide.mechanism}
+              {mechanism}
             </p>
           </SectionCard>
         </section>
@@ -531,16 +556,16 @@ export default async function PeptidePage({ params }: Props) {
           <section className="mb-10">
             <SectionTitle icon="question">{dict.peptide.faq}</SectionTitle>
             <div className="mt-4 space-y-1">
-              {peptide.faqs.map((faq) => (
+              {peptide.faqs.map((faq, i) => (
                 <div
                   key={faq.id}
                   className="rounded-xl border border-navy-200/60 bg-white p-4 sm:p-5"
                 >
                   <h3 className="font-semibold text-navy-900">
-                    {faq.question}
+                    {translatedFaqs?.[i]?.question ?? faq.question}
                   </h3>
                   <p className="mt-2 text-sm leading-relaxed text-navy-600">
-                    {faq.answer}
+                    {translatedFaqs?.[i]?.answer ?? faq.answer}
                   </p>
                 </div>
               ))}

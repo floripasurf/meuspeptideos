@@ -3,11 +3,12 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { NewsletterForm } from "@/components/newsletter-form";
+import { getDictionary, hasLocale } from "@/lib/i18n";
 
-type Props = { params: Promise<{ slug: string }> };
+type Props = { params: Promise<{ lang: string; slug: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
+  const { lang, slug } = await params;
   const post = await prisma.blogPost.findUnique({
     where: { slug },
     select: { title: true, excerpt: true },
@@ -20,7 +21,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function BlogPostPage({ params }: Props) {
-  const { slug } = await params;
+  const { lang, slug } = await params;
+  if (!hasLocale(lang)) notFound();
+  const dict = await getDictionary(lang);
   const post = await prisma.blogPost.findUnique({
     where: { slug, published: true },
   });
@@ -119,7 +122,7 @@ export default async function BlogPostPage({ params }: Props) {
 
       <div className="mt-8">
         <Link
-          href="/blog"
+          href={`/${lang}/blog`}
           className="text-sm font-medium text-emerald-600 hover:text-emerald-500"
         >
           ← Voltar ao blog

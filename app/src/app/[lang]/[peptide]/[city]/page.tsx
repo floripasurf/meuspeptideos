@@ -6,13 +6,14 @@ import { ResearchPhaseBadge } from "@/components/research-phase-badge";
 import { CategoryBadge } from "@/components/category-badge";
 import { LocalLeadForm } from "@/components/local-lead-form";
 import { getCityBySlug } from "@/lib/cities";
+import { getDictionary, hasLocale } from "@/lib/i18n";
 
 export const dynamic = "force-dynamic";
 
-type Props = { params: Promise<{ peptide: string; city: string }> };
+type Props = { params: Promise<{ lang: string; peptide: string; city: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { peptide: peptideSlug, city: citySlug } = await params;
+  const { lang, peptide: peptideSlug, city: citySlug } = await params;
   const city = getCityBySlug(citySlug);
   if (!city) return {};
 
@@ -32,7 +33,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function PeptideCityPage({ params }: Props) {
-  const { peptide: peptideSlug, city: citySlug } = await params;
+  const { lang, peptide: peptideSlug, city: citySlug } = await params;
+  if (!hasLocale(lang)) notFound();
+  const dict = await getDictionary(lang);
   const city = getCityBySlug(citySlug);
   if (!city) notFound();
 
@@ -90,7 +93,7 @@ export default async function PeptideCityPage({ params }: Props) {
         <header className="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-12">
           <div className="mb-3 flex flex-wrap items-center gap-2 text-xs">
             <Link
-              href={`/peptideo/${peptide.slug}`}
+              href={`/${lang}/peptideo/${peptide.slug}`}
               className="text-emerald-600 hover:underline"
             >
               {peptide.name}
@@ -153,7 +156,7 @@ export default async function PeptideCityPage({ params }: Props) {
                 {peptide.description}
               </p>
               <Link
-                href={`/peptideo/${peptide.slug}`}
+                href={`/${lang}/peptideo/${peptide.slug}`}
                 className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-emerald-600 hover:text-emerald-500"
               >
                 Ver ficha técnica completa →

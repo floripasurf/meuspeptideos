@@ -1,6 +1,8 @@
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { NewsletterForm } from "@/components/newsletter-form";
+import { getDictionary, hasLocale } from "@/lib/i18n";
 
 export const dynamic = "force-dynamic";
 
@@ -10,7 +12,12 @@ export const metadata = {
     "Artigos sobre peptídeos: inovações, regulamentação, pesquisas promissoras e o futuro da medicina peptídica no Brasil.",
 };
 
-export default async function BlogPage() {
+type Props = { params: Promise<{ lang: string }> };
+
+export default async function BlogPage({ params }: Props) {
+  const { lang } = await params;
+  if (!hasLocale(lang)) notFound();
+  const dict = await getDictionary(lang);
   const posts = await prisma.blogPost.findMany({
     where: { published: true },
     orderBy: { publishedAt: "desc" },
@@ -63,7 +70,7 @@ export default async function BlogPage() {
                   </span>
                 )}
               </div>
-              <Link href={`/blog/${post.slug}`}>
+              <Link href={`/${lang}/blog/${post.slug}`}>
                 <h2 className="text-xl font-semibold text-zinc-900 transition-colors group-hover:text-emerald-600">
                   {post.title}
                 </h2>
@@ -72,7 +79,7 @@ export default async function BlogPage() {
                 {post.excerpt}
               </p>
               <Link
-                href={`/blog/${post.slug}`}
+                href={`/${lang}/blog/${post.slug}`}
                 className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-emerald-600 hover:text-emerald-500"
               >
                 Ler artigo

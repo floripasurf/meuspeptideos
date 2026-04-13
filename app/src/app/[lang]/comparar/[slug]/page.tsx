@@ -6,13 +6,14 @@ import { ResearchPhaseBadge } from "@/components/research-phase-badge";
 import { CategoryBadge } from "@/components/category-badge";
 import { NewsletterForm } from "@/components/newsletter-form";
 import { comparisons } from "@/lib/comparisons";
+import { getDictionary, hasLocale } from "@/lib/i18n";
 
 export const dynamic = "force-dynamic";
 
-type Props = { params: Promise<{ slug: string }> };
+type Props = { params: Promise<{ lang: string; slug: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
+  const { lang, slug } = await params;
   const comp = comparisons.find((c) => c.slug === slug);
   if (!comp) return {};
   return {
@@ -22,7 +23,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function CompararPage({ params }: Props) {
-  const { slug } = await params;
+  const { lang, slug } = await params;
+  if (!hasLocale(lang)) notFound();
+  const dict = await getDictionary(lang);
   const comp = comparisons.find((c) => c.slug === slug);
   if (!comp) notFound();
 
@@ -84,7 +87,7 @@ export default async function CompararPage({ params }: Props) {
           {[peptideA, peptideB].map((p) => (
             <Link
               key={p.slug}
-              href={`/peptideo/${p.slug}`}
+              href={`/${lang}/peptideo/${p.slug}`}
               className="group rounded-2xl border border-zinc-200/60 bg-white p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
             >
               <div className="flex items-start justify-between gap-3 mb-2">

@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { useCases } from "@/lib/use-cases";
+import { getDictionary, hasLocale } from "@/lib/i18n";
 
 export const metadata = {
   title: "Peptídeos por Uso — Ranking por Categoria",
@@ -7,7 +9,12 @@ export const metadata = {
     "Encontre o melhor peptídeo para cada objetivo: emagrecimento, longevidade, recuperação, anti-aging, cognição, libido e mais. Ranking baseado em evidência científica.",
 };
 
-export default function UsoIndexPage() {
+type Props = { params: Promise<{ lang: string }> };
+
+export default async function UsoIndexPage({ params }: Props) {
+  const { lang } = await params;
+  if (!hasLocale(lang)) notFound();
+  const dict = await getDictionary(lang);
   return (
     <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
       <header className="mb-10 text-center">
@@ -24,7 +31,7 @@ export default function UsoIndexPage() {
         {useCases.map((u) => (
           <Link
             key={u.slug}
-            href={`/uso/${u.slug}`}
+            href={`/${lang}/uso/${u.slug}`}
             className="group block rounded-2xl border border-zinc-200/60 bg-white p-6 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
           >
             <div className="text-3xl mb-3">{u.emoji}</div>

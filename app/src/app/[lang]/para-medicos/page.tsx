@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { DoctorSignupForm } from "@/components/doctor-signup-form";
+import { getDictionary, hasLocale } from "@/lib/i18n";
 
 export const metadata = {
   title: "Para Médicos — Receba Pacientes Qualificados",
@@ -12,10 +14,14 @@ export const metadata = {
 };
 
 type Props = {
+  params: Promise<{ lang: string }>;
   searchParams: Promise<{ verify?: string }>;
 };
 
-export default async function ParaMedicosPage({ searchParams }: Props) {
+export default async function ParaMedicosPage({ params, searchParams }: Props) {
+  const { lang } = await params;
+  if (!hasLocale(lang)) notFound();
+  const dict = await getDictionary(lang);
   const { verify } = await searchParams;
 
   return (
@@ -216,7 +222,7 @@ export default async function ParaMedicosPage({ searchParams }: Props) {
             <p className="mt-3 text-xs text-zinc-500">
               Detalhes completos na{" "}
               <Link
-                href="/privacidade-medicos"
+                href={`/${lang}/privacidade-medicos`}
                 className="font-medium text-emerald-600 underline"
               >
                 Política de Privacidade para Médicos

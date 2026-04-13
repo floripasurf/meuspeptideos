@@ -1,10 +1,18 @@
+import { notFound } from "next/navigation";
+import { getDictionary, hasLocale } from "@/lib/i18n";
+
 export const metadata = {
   title: "Metodologia — Como Classificamos Evidências",
   description:
     "Nossa metodologia para classificar evidências científicas sobre peptídeos: como diferenciamos comprovado, em pesquisa e não comprovado.",
 };
 
-export default function MetodologiaPage() {
+type Props = { params: Promise<{ lang: string }> };
+
+export default async function MetodologiaPage({ params }: Props) {
+  const { lang } = await params;
+  if (!hasLocale(lang)) notFound();
+  const dict = await getDictionary(lang);
   return (
     <article className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
       <header className="mb-10">

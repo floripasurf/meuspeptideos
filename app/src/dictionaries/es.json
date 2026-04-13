@@ -23,8 +23,8 @@
   },
   "grid": {
     "title": "Compuestos",
-    "countSingular": "{count} compuesto catalogado",
-    "countPlural": "{count} compuestos catalogados",
+    "countSingular": "compuesto catalogado",
+    "countPlural": "compuestos catalogados",
     "empty": "Contenido en preparación. Regístrese para ser notificado.",
     "studies": "estudio",
     "studyPlural": "estudios"
