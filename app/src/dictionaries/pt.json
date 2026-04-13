@@ -1,0 +1,136 @@
+{
+  "meta": {
+    "title": "Meus Peptídeos — A ciência por trás dos compostos da nova medicina",
+    "description": "Peptídeos, nootrópicos, senolíticos e compostos de longevidade com benefícios comprovados, riscos documentados e protocolos de uso baseados em evidência científica.",
+    "tagline": "A ciência por trás dos compostos da nova medicina"
+  },
+  "nav": {
+    "compounds": "Compostos",
+    "byUse": "Por Uso",
+    "comparisons": "Comparações",
+    "blog": "Blog",
+    "regulation": "Regulamentação",
+    "about": "Sobre",
+    "forDoctors": "Sou Médico",
+    "doctorSignup": "Sou Médico — Cadastre-se"
+  },
+  "hero": {
+    "badge": "Base de conhecimento atualizada",
+    "title1": "A ciência por trás dos compostos da",
+    "titleHighlight": "nova medicina",
+    "subtitle": "Peptídeos, nootrópicos, senolíticos e compostos de longevidade — com benefícios comprovados, riscos documentados, protocolos de uso e o que ainda está em estudo.",
+    "disclaimer": "Conteúdo informativo — consulte sempre um médico."
+  },
+  "grid": {
+    "title": "Compostos",
+    "countSingular": "{count} composto catalogado",
+    "countPlural": "{count} compostos catalogados",
+    "empty": "Conteúdo em preparação. Cadastre-se para ser notificado.",
+    "studies": "estudo",
+    "studyPlural": "estudos"
+  },
+  "newsletter": {
+    "title": "Fique atualizado",
+    "subtitle": "Receba atualizações sobre novos compostos, mudanças na regulamentação e novas pesquisas publicadas.",
+    "noSpam": "Sem spam. Cancelamento a qualquer momento.",
+    "emailPlaceholder": "seu@email.com",
+    "subscribe": "Cadastrar",
+    "subscribing": "Enviando...",
+    "success": "Cadastrado com sucesso! Você receberá nossas atualizações.",
+    "error": "Erro ao cadastrar. Tente novamente.",
+    "updateAbout": "Receba atualizações sobre {name}",
+    "newResearch": "Novas pesquisas, mudanças na regulamentação e mais."
+  },
+  "peptide": {
+    "lastUpdated": "Última atualização:",
+    "researchStatus": "Status da Pesquisa",
+    "mechanism": "Mecanismo de Ação",
+    "benefits": "Benefícios",
+    "risksTitle": "Riscos e Efeitos Colaterais",
+    "internetVsScience": "Internet vs. Ciência",
+    "internetSubtitle": "O que dizem na internet comparado com a evidência científica real.",
+    "whatTheySay": "O que dizem",
+    "actualEvidence": "Evidência real",
+    "claim": "Alegação",
+    "verdict": "Veredicto",
+    "studies": "Estudos e Referências",
+    "faq": "Perguntas Frequentes",
+    "disclaimer": "Conteúdo informativo — consulte sempre um médico.",
+    "disclaimerTitle": "Aviso importante",
+    "disclaimerText": "Este conteúdo tem caráter exclusivamente informativo e educacional, baseado em pesquisas científicas publicadas. Não constitui recomendação médica, prescrição ou incentivo ao uso de qualquer substância. Consulte sempre um médico qualificado antes de iniciar qualquer tratamento.",
+    "viewStudy": "Ver estudo",
+    "protocol": "Protocolo de Uso nos Estudos",
+    "protocolTitle": "Protocolo de Uso nos Estudos",
+    "protocolSubtitle": "Dosagens e esquemas utilizados em estudos clínicos publicados. Não constitui prescrição médica."
+  },
+  "evidence": {
+    "proven": "Comprovado",
+    "research": "Em pesquisa",
+    "unproven": "Não comprovado"
+  },
+  "severity": {
+    "low": "Baixo",
+    "medium": "Moderado",
+    "high": "Alto"
+  },
+  "verdict": {
+    "true": "Verdadeiro",
+    "partial": "Parcialmente verdadeiro",
+    "false": "Falso",
+    "unknown": "Inconclusivo"
+  },
+  "studyType": {
+    "meta_analysis": "Meta-análise",
+    "systematic_review": "Revisão Sistemática",
+    "rct": "Ensaio Clínico Randomizado",
+    "cohort": "Estudo de Coorte",
+    "case_study": "Relato de Caso",
+    "review": "Revisão Narrativa",
+    "animal": "Estudo Animal",
+    "in_vitro": "Estudo In Vitro"
+  },
+  "regulatory": {
+    "approved": "Aprovado",
+    "pending": "Em análise",
+    "not_regulated": "Não regulamentado",
+    "banned": "Proibido",
+    "compounding_only": "Manipulação apenas",
+    "anvisa": "ANVISA (Brasil)",
+    "fda": "FDA (EUA)",
+    "ema": "EMA (Europa)"
+  },
+  "phase": {
+    "preclinical": "Pré-clínico",
+    "phase1": "Fase 1",
+    "phase2": "Fase 2",
+    "phase3": "Fase 3",
+    "approved": "Aprovado"
+  },
+  "category": {
+    "glp1": "GLP-1",
+    "growth_hormone": "Hormônio de Crescimento",
+    "healing": "Cicatrização",
+    "neuroprotective": "Neuroprotetor",
+    "cosmetic": "Cosmético",
+    "immune": "Imunomodulador",
+    "performance": "Performance",
+    "longevity": "Longevidade"
+  },
+  "footer": {
+    "content": "Conteúdo",
+    "institutional": "Institucional",
+    "about": "Sobre",
+    "methodology": "Metodologia",
+    "forDoctors": "Para Médicos",
+    "privacy": "Privacidade",
+    "terms": "Termos de Uso",
+    "footerDisclaimer": "Este conteúdo tem caráter exclusivamente informativo e educacional sobre peptídeos e compostos da nova medicina. Não substitui orientação médica profissional. Consulte sempre um médico antes de iniciar qualquer tratamento.",
+    "copyright": "Meus Peptídeos. Todos os direitos reservados.",
+    "tagline": "A ciência por trás dos compostos da nova medicina. Pesquisa revisada, dados atualizados e transparência sobre o nível de evidência."
+  },
+  "lang": {
+    "pt": "Português",
+    "en": "English",
+    "es": "Español"
+  }
+}

@@ -1,12 +1,21 @@
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { ResearchPhaseBadge } from "@/components/research-phase-badge";
 import { CategoryBadge } from "@/components/category-badge";
 import { NewsletterForm } from "@/components/newsletter-form";
+import { getDictionary, hasLocale } from "@/lib/i18n";
 
 export const dynamic = "force-dynamic";
 
-export default async function Home() {
+type Props = { params: Promise<{ lang: string }> };
+
+export default async function Home({ params }: Props) {
+  const { lang } = await params;
+  if (!hasLocale(lang)) notFound();
+  const dict = await getDictionary(lang);
+  const prefix = `/${lang}`;
+
   const phaseOrder: Record<string, number> = {
     approved: 0,
     phase3: 1,
@@ -47,53 +56,49 @@ export default async function Home() {
             <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 ring-1 ring-white/20">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
               <span className="text-xs font-medium text-white/90">
-                Base de conhecimento atualizada
+                {dict.hero.badge}
               </span>
             </div>
             <h1 className="text-3xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
-              A ciência por trás dos compostos da{" "}
+              {dict.hero.title1}{" "}
               <span className="text-emerald-300">
-                nova medicina
+                {dict.hero.titleHighlight}
               </span>
             </h1>
             <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-white sm:text-lg">
-              Peptídeos, nootrópicos, senolíticos e compostos de longevidade —
-              com benefícios comprovados, riscos documentados, protocolos de uso
-              e o que ainda está em estudo.
+              {dict.hero.subtitle}
             </p>
             <p className="mt-3 text-sm text-white/70">
-              Conteúdo informativo — consulte sempre um médico.
+              {dict.hero.disclaimer}
             </p>
           </div>
         </div>
       </section>
 
-      {/* Peptide Grid */}
+      {/* Compound Grid */}
       <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
         <div className="mb-8 flex items-end justify-between">
           <div>
             <h2 className="text-2xl font-bold tracking-tight text-navy-900 sm:text-3xl">
-              Compostos
+              {dict.grid.title}
             </h2>
             <p className="mt-1 text-sm text-navy-500">
-              {peptides.length} composto{peptides.length !== 1 ? "s" : ""}{" "}
-              catalogado{peptides.length !== 1 ? "s" : ""}
+              {peptides.length}{" "}
+              {peptides.length !== 1 ? dict.grid.countPlural : dict.grid.countSingular}
             </p>
           </div>
         </div>
 
         {peptides.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-navy-200 bg-white p-12 text-center">
-            <p className="text-navy-500">
-              Conteúdo em preparação. Cadastre-se para ser notificado.
-            </p>
+            <p className="text-navy-500">{dict.grid.empty}</p>
           </div>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {peptides.map((p) => (
               <Link
                 key={p.slug}
-                href={`/peptideo/${p.slug}`}
+                href={`${prefix}/peptideo/${p.slug}`}
                 className="group rounded-2xl border border-navy-200/60 bg-white p-5 sm:p-6 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
               >
                 <div className="flex items-start justify-between gap-3">
@@ -124,8 +129,8 @@ export default async function Home() {
                       <path d="M4 19.5A2.5 2.5 0 016.5 17H20" />
                       <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" />
                     </svg>
-                    {p._count.studies} estudo
-                    {p._count.studies !== 1 ? "s" : ""}
+                    {p._count.studies}{" "}
+                    {p._count.studies !== 1 ? dict.grid.studyPlural : dict.grid.studies}
                   </span>
                 </div>
               </Link>
@@ -144,15 +149,14 @@ export default async function Home() {
         >
           <div className="mx-auto max-w-xl text-center">
             <h2 className="text-2xl font-bold tracking-tight text-navy-900 sm:text-3xl">
-              Fique atualizado
+              {dict.newsletter.title}
             </h2>
             <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-navy-600">
-              Receba atualizações sobre novos compostos, mudanças na
-              regulamentação e novas pesquisas publicadas.
+              {dict.newsletter.subtitle}
             </p>
             <NewsletterForm source="home" />
             <p className="mt-4 text-xs text-navy-400">
-              Sem spam. Cancelamento a qualquer momento.
+              {dict.newsletter.noSpam}
             </p>
           </div>
         </div>

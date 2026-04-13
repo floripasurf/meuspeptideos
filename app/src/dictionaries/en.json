@@ -1,0 +1,136 @@
+{
+  "meta": {
+    "title": "Meus Peptídeos — The science behind next-generation medicine compounds",
+    "description": "Peptides, nootropics, senolytics, and longevity compounds with proven benefits, documented risks, and evidence-based protocols.",
+    "tagline": "The science behind next-generation medicine compounds"
+  },
+  "nav": {
+    "compounds": "Compounds",
+    "byUse": "By Use",
+    "comparisons": "Comparisons",
+    "blog": "Blog",
+    "regulation": "Regulation",
+    "about": "About",
+    "forDoctors": "For Physicians",
+    "doctorSignup": "Physician — Sign Up"
+  },
+  "hero": {
+    "badge": "Up-to-date knowledge base",
+    "title1": "The science behind the compounds of",
+    "titleHighlight": "next-generation medicine",
+    "subtitle": "Peptides, nootropics, senolytics, and longevity compounds — with proven benefits, documented risks, usage protocols, and what is still under investigation.",
+    "disclaimer": "For informational purposes only — always consult a physician."
+  },
+  "grid": {
+    "title": "Compounds",
+    "countSingular": "{count} compound cataloged",
+    "countPlural": "{count} compounds cataloged",
+    "empty": "Content in preparation. Sign up to be notified.",
+    "studies": "study",
+    "studyPlural": "studies"
+  },
+  "newsletter": {
+    "title": "Stay updated",
+    "subtitle": "Receive updates on new compounds, regulatory changes, and newly published research.",
+    "noSpam": "No spam. Unsubscribe at any time.",
+    "emailPlaceholder": "you@email.com",
+    "subscribe": "Subscribe",
+    "subscribing": "Submitting...",
+    "success": "Successfully subscribed! You will receive our updates.",
+    "error": "Subscription failed. Please try again.",
+    "updateAbout": "Receive updates about {name}",
+    "newResearch": "New research, regulatory changes, and more."
+  },
+  "peptide": {
+    "lastUpdated": "Last updated:",
+    "researchStatus": "Research Status",
+    "mechanism": "Mechanism of Action",
+    "benefits": "Benefits",
+    "risksTitle": "Risks and Side Effects",
+    "internetVsScience": "Internet vs. Science",
+    "internetSubtitle": "What people say online compared to the actual scientific evidence.",
+    "whatTheySay": "What they claim",
+    "actualEvidence": "Actual evidence",
+    "claim": "Claim",
+    "verdict": "Verdict",
+    "studies": "Studies and References",
+    "faq": "Frequently Asked Questions",
+    "disclaimer": "For informational purposes only — always consult a physician.",
+    "disclaimerTitle": "Important notice",
+    "disclaimerText": "This content is strictly informational and educational, based on published scientific research. It does not constitute medical advice, prescription, or encouragement to use any substance. Always consult a qualified physician before starting any treatment.",
+    "viewStudy": "View study",
+    "protocol": "Study Protocols",
+    "protocolTitle": "Study Protocols",
+    "protocolSubtitle": "Dosages and regimens used in published clinical studies. This does not constitute a medical prescription."
+  },
+  "evidence": {
+    "proven": "Proven",
+    "research": "Under research",
+    "unproven": "Unproven"
+  },
+  "severity": {
+    "low": "Low",
+    "medium": "Moderate",
+    "high": "High"
+  },
+  "verdict": {
+    "true": "True",
+    "partial": "Partially true",
+    "false": "False",
+    "unknown": "Inconclusive"
+  },
+  "studyType": {
+    "meta_analysis": "Meta-analysis",
+    "systematic_review": "Systematic Review",
+    "rct": "Randomized Clinical Trial",
+    "cohort": "Cohort Study",
+    "case_study": "Case Report",
+    "review": "Narrative Review",
+    "animal": "Animal Study",
+    "in_vitro": "In Vitro Study"
+  },
+  "regulatory": {
+    "approved": "Approved",
+    "pending": "Under review",
+    "not_regulated": "Not regulated",
+    "banned": "Banned",
+    "compounding_only": "Compounding only",
+    "anvisa": "ANVISA (Brazil)",
+    "fda": "FDA (USA)",
+    "ema": "EMA (Europe)"
+  },
+  "phase": {
+    "preclinical": "Preclinical",
+    "phase1": "Phase 1",
+    "phase2": "Phase 2",
+    "phase3": "Phase 3",
+    "approved": "Approved"
+  },
+  "category": {
+    "glp1": "GLP-1",
+    "growth_hormone": "Growth Hormone",
+    "healing": "Healing",
+    "neuroprotective": "Neuroprotective",
+    "cosmetic": "Cosmetic",
+    "immune": "Immunomodulatory",
+    "performance": "Performance",
+    "longevity": "Longevity"
+  },
+  "footer": {
+    "content": "Content",
+    "institutional": "Institutional",
+    "about": "About",
+    "methodology": "Methodology",
+    "forDoctors": "For Physicians",
+    "privacy": "Privacy",
+    "terms": "Terms of Use",
+    "footerDisclaimer": "This content is strictly informational and educational about peptides and next-generation medicine compounds. It does not replace professional medical advice. Always consult a physician before starting any treatment.",
+    "copyright": "Meus Peptídeos. All rights reserved.",
+    "tagline": "The science behind next-generation medicine compounds. Peer-reviewed research, up-to-date data, and transparency about the level of evidence."
+  },
+  "lang": {
+    "pt": "Português",
+    "en": "English",
+    "es": "Español"
+  }
+}

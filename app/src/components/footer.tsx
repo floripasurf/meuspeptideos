@@ -1,24 +1,27 @@
 import Link from "next/link";
 import { LogoIcon } from "./logo";
+import type { Locale, Dictionary } from "@/lib/i18n";
 
-const footerLinks = {
-  conteudo: [
-    { href: "/", label: "Compostos" },
-    { href: "/uso", label: "Por Uso" },
-    { href: "/comparar/semaglutida-vs-tirzepatida", label: "Comparações" },
-    { href: "/blog", label: "Blog" },
-    { href: "/regulamentacao", label: "Regulamentação" },
-  ],
-  institucional: [
-    { href: "/sobre", label: "Sobre" },
-    { href: "/metodologia", label: "Metodologia" },
-    { href: "/para-medicos", label: "Para Médicos" },
-    { href: "/privacidade", label: "Privacidade" },
-    { href: "/termos", label: "Termos de Uso" },
-  ],
-};
+export function Footer({ lang, dict }: { lang: Locale; dict: Dictionary }) {
+  const prefix = `/${lang}`;
 
-export function Footer() {
+  const footerLinks = {
+    conteudo: [
+      { href: prefix, label: dict.nav.compounds },
+      { href: `${prefix}/uso`, label: dict.nav.byUse },
+      { href: `${prefix}/comparar/semaglutida-vs-tirzepatida`, label: dict.nav.comparisons },
+      { href: `${prefix}/blog`, label: dict.nav.blog },
+      { href: `${prefix}/regulamentacao`, label: dict.nav.regulation },
+    ],
+    institucional: [
+      { href: `${prefix}/sobre`, label: dict.footer.about },
+      { href: `${prefix}/metodologia`, label: dict.footer.methodology },
+      { href: `${prefix}/para-medicos`, label: dict.footer.forDoctors },
+      { href: `${prefix}/privacidade-medicos`, label: dict.footer.privacy },
+      { href: `${prefix}/termos`, label: dict.footer.terms },
+    ],
+  };
+
   return (
     <footer className="border-t border-navy-200/60 bg-white">
       <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
@@ -32,15 +35,14 @@ export function Footer() {
               </span>
             </div>
             <p className="mt-3 max-w-sm text-sm leading-relaxed text-navy-500">
-              A ciência por trás dos compostos da nova medicina. Pesquisa
-              revisada, dados atualizados e transparência sobre o nível de evidência.
+              {dict.footer.tagline}
             </p>
           </div>
 
           {/* Content links */}
           <div>
             <p className="text-xs font-semibold uppercase tracking-wider text-navy-400">
-              Conteúdo
+              {dict.footer.content}
             </p>
             <nav className="mt-3 flex flex-col gap-2">
               {footerLinks.conteudo.map((link) => (
@@ -58,7 +60,7 @@ export function Footer() {
           {/* Institutional links */}
           <div>
             <p className="text-xs font-semibold uppercase tracking-wider text-navy-400">
-              Institucional
+              {dict.footer.institutional}
             </p>
             <nav className="mt-3 flex flex-col gap-2">
               {footerLinks.institucional.map((link) => (
@@ -90,15 +92,11 @@ export function Footer() {
               <path d="M12 16v-4M12 8h.01" />
             </svg>
             <p className="text-xs leading-relaxed text-navy-500">
-              Este conteúdo tem caráter exclusivamente informativo e educacional
-              sobre peptídeos e compostos da nova medicina. Não substitui
-              orientação médica profissional. Consulte sempre um médico antes
-              de iniciar qualquer tratamento.
+              {dict.footer.footerDisclaimer}
             </p>
           </div>
           <p className="mt-4 text-xs text-navy-400">
-            &copy; {new Date().getFullYear()} Meus Peptídeos. Todos os direitos
-            reservados.
+            &copy; {new Date().getFullYear()} {dict.footer.copyright}
           </p>
         </div>
       </div>
