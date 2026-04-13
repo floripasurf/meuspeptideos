@@ -21,6 +21,67 @@ export type Protocol = {
 };
 
 export const protocols: Record<string, Protocol[]> = {
+  orforglipron: [
+    {
+      indication: "Obesidade / controle de peso",
+      route: "Oral (comprimido)",
+      steps: [
+        { phase: "Semanas 1–2", dosage: "3 mg", frequency: "1x/dia", duration: "2 semanas", notes: "Dose de titulação inicial" },
+        { phase: "Semanas 3–4", dosage: "6 mg", frequency: "1x/dia", duration: "2 semanas" },
+        { phase: "Semanas 5–6", dosage: "12 mg", frequency: "1x/dia", duration: "2 semanas" },
+        { phase: "Semanas 7–8", dosage: "24 mg", frequency: "1x/dia", duration: "2 semanas" },
+        { phase: "Semana 9+", dosage: "36 mg ou 45 mg", frequency: "1x/dia", duration: "Manutenção", notes: "Dose-alvo. Sem restrição de alimentação ou água." },
+      ],
+      studyReference: "Wharton S et al., NEJM 2023 (Phase 2 Obesity)",
+      studyUrl: "https://pubmed.ncbi.nlm.nih.gov/37351564/",
+      notes: "Primeiro GLP-1 oral de molécula pequena (não é peptídeo). Aprovado FDA maio 2026 (Foundayo). Sem necessidade de jejum antes de tomar. Perda de peso de ~14-15% em 36 semanas.",
+    },
+  ],
+
+  cagrisema: [
+    {
+      indication: "Obesidade / controle de peso",
+      route: "Subcutânea (SC)",
+      steps: [
+        { phase: "Semanas 1–4", dosage: "0,16 mg cagrili + 0,25 mg sema", frequency: "1x/semana", duration: "4 semanas", notes: "Titulação gradual de ambos os componentes" },
+        { phase: "Semanas 5–8", dosage: "0,3 mg cagrili + 0,5 mg sema", frequency: "1x/semana", duration: "4 semanas" },
+        { phase: "Semanas 9–12", dosage: "0,6 mg cagrili + 1,0 mg sema", frequency: "1x/semana", duration: "4 semanas" },
+        { phase: "Semanas 13–16", dosage: "1,2 mg cagrili + 1,7 mg sema", frequency: "1x/semana", duration: "4 semanas" },
+        { phase: "Semana 17+", dosage: "2,4 mg cagrili + 2,4 mg sema", frequency: "1x/semana", duration: "Manutenção", notes: "Dose-alvo do estudo REDEFINE-1" },
+      ],
+      studyReference: "Frias JP et al., NEJM 2024 (REDEFINE-1)",
+      studyUrl: "https://pubmed.ncbi.nlm.nih.gov/38587241/",
+      notes: "Combinação cagrilintida (análogo de amilina) + semaglutida (GLP-1) em injeção única semanal. Perda de peso ~20% em 68 semanas. Novo Nordisk. FDA pending 2026.",
+    },
+  ],
+
+  "foxo4-dri": [
+    {
+      indication: "Clearance de células senescentes (senolítico)",
+      route: "Intraperitoneal (IP) — dados apenas em animais",
+      steps: [
+        { phase: "Protocolo em camundongos", dosage: "5 mg/kg", frequency: "3x/semana", duration: "3 semanas", notes: "Apenas dados pré-clínicos. Sem estudos humanos." },
+      ],
+      studyReference: "Baar MP, Brandt RMC, Putavet DA et al., Cell 2017",
+      studyUrl: "https://pubmed.ncbi.nlm.nih.gov/28340339/",
+      notes: "Peptídeo D-retro-inverso que bloqueia interação FOXO4-p53, induzindo apoptose seletiva de células senescentes. Em camundongos envelhecidos: restauração de pelagem, fitness renal e performance física. NÃO existem protocolos humanos validados — qualquer dose humana circulando online é extrapolação sem base clínica.",
+    },
+  ],
+
+  semax: [
+    {
+      indication: "Cognição / neuroproteção",
+      route: "Intranasal",
+      steps: [
+        { phase: "Protocolo padrão", dosage: "200–600 mcg", frequency: "2–3x/dia", duration: "2–4 semanas", notes: "Spray nasal, solução 1%. Ciclos de 10–14 dias com pausa." },
+        { phase: "Pós-AVC (protocolo russo)", dosage: "6.000 mcg/dia", frequency: "Dividido em 3 doses intranasais", duration: "5–10 dias", notes: "Protocolo hospitalar aprovado na Rússia" },
+      ],
+      studyReference: "Eremin KO et al., Neuroscience Letters 2004",
+      studyUrl: "https://pubmed.ncbi.nlm.nih.gov/15265610/",
+      notes: "Análogo sintético do ACTH(4-10). Aprovado na Rússia como nootrópico e neuroprotetor. Aumenta BDNF, modula dopamina e serotonina. Não aprovado no Ocidente. Par do Selank (ansiolítico) — frequentemente usados em combinação.",
+    },
+  ],
+
   retatrutida: [
     {
       indication: "Obesidade / controle de peso",
