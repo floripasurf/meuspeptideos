@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { LogoIcon } from "./logo";
 
 const navLinks = [
   { href: "/", label: "Peptídeos" },
@@ -20,9 +21,7 @@ export function Header() {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-navy-900 text-sm font-bold text-brand-400">
-            MP
-          </span>
+          <LogoIcon size={32} />
           <span className="text-lg font-semibold tracking-tight text-navy-900">
             Meus Peptídeos
           </span>

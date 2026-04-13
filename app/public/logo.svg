@@ -1,0 +1,25 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" rx="112" fill="#0f172a"/>
+  <!-- Peptide chain backbone -->
+  <path d="M148 310 L216 200 L296 310 L364 200" stroke="#2dd4bf" stroke-width="28" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- Molecular nodes -->
+  <circle cx="148" cy="310" r="32" fill="#0d9488"/>
+  <circle cx="216" cy="200" r="32" fill="#14b8a6"/>
+  <circle cx="296" cy="310" r="32" fill="#14b8a6"/>
+  <circle cx="364" cy="200" r="32" fill="#0d9488"/>
+  <!-- Inner highlights -->
+  <circle cx="148" cy="310" r="14" fill="#2dd4bf" opacity="0.6"/>
+  <circle cx="216" cy="200" r="14" fill="#2dd4bf" opacity="0.6"/>
+  <circle cx="296" cy="310" r="14" fill="#2dd4bf" opacity="0.6"/>
+  <circle cx="364" cy="200" r="14" fill="#2dd4bf" opacity="0.6"/>
+  <!-- Side chains -->
+  <line x1="148" y1="310" x2="108" y2="370" stroke="#2dd4bf" stroke-width="16" stroke-linecap="round" opacity="0.5"/>
+  <line x1="216" y1="200" x2="216" y2="136" stroke="#2dd4bf" stroke-width="16" stroke-linecap="round" opacity="0.5"/>
+  <line x1="296" y1="310" x2="296" y2="376" stroke="#2dd4bf" stroke-width="16" stroke-linecap="round" opacity="0.5"/>
+  <line x1="364" y1="200" x2="404" y2="140" stroke="#2dd4bf" stroke-width="16" stroke-linecap="round" opacity="0.5"/>
+  <!-- Small terminal nodes -->
+  <circle cx="108" cy="370" r="10" fill="#2dd4bf" opacity="0.4"/>
+  <circle cx="216" cy="136" r="10" fill="#2dd4bf" opacity="0.4"/>
+  <circle cx="296" cy="376" r="10" fill="#2dd4bf" opacity="0.4"/>
+  <circle cx="404" cy="140" r="10" fill="#2dd4bf" opacity="0.4"/>
+</svg>

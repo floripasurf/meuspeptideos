@@ -5,6 +5,7 @@ import { ResearchPhaseBar } from "@/components/research-phase-badge";
 import { CategoryBadge } from "@/components/category-badge";
 import { NewsletterForm } from "@/components/newsletter-form";
 import { RegulatoryStatus } from "@/generated/prisma/enums";
+import { protocols, type Protocol } from "@/lib/protocols";
 
 type Benefit = {
   name: string;
@@ -65,6 +66,7 @@ export default async function PeptidePage({ params }: Props) {
   const benefits = peptide.benefits as Benefit[];
   const risks = peptide.risks as Risk[];
   const claims = peptide.internetVsScience as InternetClaim[];
+  const peptideProtocols = protocols[peptide.slug] ?? [];
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -185,6 +187,104 @@ export default async function PeptidePage({ params }: Props) {
             </p>
           </SectionCard>
         </section>
+
+        {/* Protocols */}
+        {peptideProtocols.length > 0 && (
+          <section className="mb-10">
+            <SectionTitle icon="protocol">Protocolo de Uso nos Estudos</SectionTitle>
+            <p className="mt-1 mb-5 text-sm text-navy-500">
+              Dosagens e esquemas utilizados em estudos clínicos publicados. Não constitui prescrição médica.
+            </p>
+            <div className="space-y-4">
+              {peptideProtocols.map((protocol, pi) => (
+                <div
+                  key={pi}
+                  className="rounded-2xl border border-brand-200/60 bg-white overflow-hidden"
+                >
+                  {/* Protocol header */}
+                  <div className="bg-gradient-to-r from-brand-50 to-white px-5 py-4 border-b border-brand-100/60">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h3 className="font-semibold text-navy-900">
+                        {protocol.indication}
+                      </h3>
+                      <span className="rounded-md bg-brand-100 px-2 py-0.5 text-xs font-medium text-brand-700">
+                        {protocol.route}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Dosage steps */}
+                  <div className="px-5 py-4">
+                    <div className="space-y-2">
+                      {protocol.steps.map((step, si) => (
+                        <div
+                          key={si}
+                          className="flex items-start gap-3 rounded-lg bg-navy-50/50 p-3"
+                        >
+                          <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-100 text-xs font-bold text-brand-700">
+                            {si + 1}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                              <span className="text-sm font-semibold text-navy-900">
+                                {step.phase}
+                              </span>
+                              <span className="rounded bg-navy-100 px-1.5 py-0.5 text-xs font-medium text-navy-700">
+                                {step.dosage}
+                              </span>
+                              <span className="text-xs text-navy-500">
+                                {step.frequency} &middot; {step.duration}
+                              </span>
+                            </div>
+                            {step.notes && (
+                              <p className="mt-1 text-xs text-navy-500">
+                                {step.notes}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Protocol notes */}
+                    {protocol.notes && (
+                      <p className="mt-3 text-sm leading-relaxed text-navy-600">
+                        {protocol.notes}
+                      </p>
+                    )}
+
+                    {/* Study reference */}
+                    <div className="mt-3 flex items-center gap-1.5 text-xs text-navy-400">
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <path d="M4 19.5A2.5 2.5 0 016.5 17H20" />
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" />
+                      </svg>
+                      {protocol.studyUrl ? (
+                        <a
+                          href={protocol.studyUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-brand-600 hover:text-brand-500 transition-colors"
+                        >
+                          {protocol.studyReference}
+                        </a>
+                      ) : (
+                        <span>{protocol.studyReference}</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* Benefits */}
         {benefits.length > 0 && (
@@ -600,6 +700,21 @@ function SectionTitle({
       >
         <circle cx="12" cy="12" r="10" />
         <path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01" />
+      </svg>
+    ),
+    protocol: (
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        className="text-brand-600"
+      >
+        <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" />
+        <rect x="9" y="3" width="6" height="4" rx="1" />
+        <path d="M9 12h6M9 16h6" />
       </svg>
     ),
   };

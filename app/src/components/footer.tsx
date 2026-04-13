@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LogoIcon } from "./logo";
 
 const footerLinks = {
   conteudo: [
@@ -25,9 +26,7 @@ export function Footer() {
           {/* Brand */}
           <div className="lg:col-span-2">
             <div className="flex items-center gap-2.5">
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-navy-900 text-sm font-bold text-brand-400">
-                MP
-              </span>
+              <LogoIcon size={32} />
               <span className="text-lg font-semibold tracking-tight text-navy-900">
                 Meus Peptídeos
               </span>
