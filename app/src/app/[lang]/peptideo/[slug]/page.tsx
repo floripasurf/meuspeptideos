@@ -6,6 +6,7 @@ import { CategoryBadge } from "@/components/category-badge";
 import { NewsletterForm } from "@/components/newsletter-form";
 import { RegulatoryStatus } from "@/generated/prisma/enums";
 import { protocols, type Protocol } from "@/lib/protocols";
+import { getDictionary, hasLocale, type Dictionary } from "@/lib/i18n";
 
 type Benefit = {
   name: string;
@@ -29,7 +30,7 @@ type InternetClaim = {
   verdict: "true" | "partial" | "false" | "unknown";
 };
 
-type Props = { params: Promise<{ slug: string }> };
+type Props = { params: Promise<{ lang: string; slug: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
@@ -52,7 +53,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function PeptidePage({ params }: Props) {
-  const { slug } = await params;
+  const { lang, slug } = await params;
+  if (!hasLocale(lang)) notFound();
+  const dict = await getDictionary(lang);
+
   const peptide = await prisma.peptide.findUnique({
     where: { slug, published: true },
     include: {
@@ -147,7 +151,7 @@ export default async function PeptidePage({ params }: Props) {
             {peptide.description}
           </p>
           <p className="mt-2 text-xs text-navy-400">
-            Última atualização:{" "}
+            {dict.peptide.lastUpdated}:{" "}
             {peptide.updatedAt.toLocaleDateString("pt-BR")}
           </p>
         </header>
@@ -157,22 +161,25 @@ export default async function PeptidePage({ params }: Props) {
         {/* Research Phase */}
         <section className="mb-10">
           <SectionCard>
-            <SectionTitle icon="beaker">Status da Pesquisa</SectionTitle>
+            <SectionTitle icon="beaker">{dict.peptide.researchStatus}</SectionTitle>
             <div className="mt-5">
               <ResearchPhaseBar phase={peptide.researchPhase} />
             </div>
             <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
               <RegulatoryStatusCard
-                label="ANVISA (Brasil)"
+                label={dict.regulatory.anvisa}
                 status={peptide.anvisaStatus}
+                dict={dict}
               />
               <RegulatoryStatusCard
-                label="FDA (EUA)"
+                label={dict.regulatory.fda}
                 status={peptide.fdaStatus}
+                dict={dict}
               />
               <RegulatoryStatusCard
-                label="EMA (Europa)"
+                label={dict.regulatory.ema}
                 status={peptide.emaStatus}
+                dict={dict}
               />
             </div>
           </SectionCard>
@@ -181,7 +188,7 @@ export default async function PeptidePage({ params }: Props) {
         {/* Mechanism */}
         <section className="mb-10">
           <SectionCard>
-            <SectionTitle icon="dna">Mecanismo de Ação</SectionTitle>
+            <SectionTitle icon="dna">{dict.peptide.mechanism}</SectionTitle>
             <p className="mt-3 text-navy-600 leading-relaxed">
               {peptide.mechanism}
             </p>
@@ -191,9 +198,9 @@ export default async function PeptidePage({ params }: Props) {
         {/* Protocols */}
         {peptideProtocols.length > 0 && (
           <section className="mb-10">
-            <SectionTitle icon="protocol">Protocolo de Uso nos Estudos</SectionTitle>
+            <SectionTitle icon="protocol">{dict.peptide.protocolTitle}</SectionTitle>
             <p className="mt-1 mb-5 text-sm text-navy-500">
-              Dosagens e esquemas utilizados em estudos clínicos publicados. Não constitui prescrição médica.
+              {dict.peptide.protocolSubtitle}
             </p>
             <div className="space-y-4">
               {peptideProtocols.map((protocol, pi) => (
@@ -289,7 +296,7 @@ export default async function PeptidePage({ params }: Props) {
         {/* Benefits */}
         {benefits.length > 0 && (
           <section className="mb-10">
-            <SectionTitle icon="check">Benefícios</SectionTitle>
+            <SectionTitle icon="check">{dict.peptide.benefits}</SectionTitle>
             <div className="mt-4 space-y-3">
               {benefits.map((b, i) => (
                 <div
@@ -301,7 +308,7 @@ export default async function PeptidePage({ params }: Props) {
                     <div className="flex-1 min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
                         <p className="font-semibold text-navy-900">{b.name}</p>
-                        <EvidenceLabel evidence={b.evidence} />
+                        <EvidenceLabel evidence={b.evidence} dict={dict} />
                       </div>
                       <p className="mt-1.5 text-sm leading-relaxed text-navy-600">
                         {b.description}
@@ -313,7 +320,7 @@ export default async function PeptidePage({ params }: Props) {
                           rel="noopener noreferrer"
                           className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-brand-600 hover:text-brand-500 transition-colors"
                         >
-                          Ver estudo
+                          {dict.peptide.viewStudy}
                           <svg
                             width="12"
                             height="12"
@@ -338,7 +345,7 @@ export default async function PeptidePage({ params }: Props) {
         {risks.length > 0 && (
           <section className="mb-10">
             <SectionTitle icon="warning">
-              Riscos e Efeitos Colaterais
+              {dict.peptide.risksTitle}
             </SectionTitle>
             <div className="mt-4 space-y-3">
               {risks.map((r, i) => (
@@ -364,7 +371,7 @@ export default async function PeptidePage({ params }: Props) {
                     <div className="flex-1 min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
                         <p className="font-semibold text-navy-900">{r.name}</p>
-                        <SeverityBadge severity={r.severity} />
+                        <SeverityBadge severity={r.severity} dict={dict} />
                         <span className="text-xs text-navy-400">
                           ({r.frequency})
                         </span>
@@ -383,9 +390,9 @@ export default async function PeptidePage({ params }: Props) {
         {/* Internet vs Science */}
         {claims.length > 0 && (
           <section className="mb-10">
-            <SectionTitle icon="scale">Internet vs. Ciência</SectionTitle>
+            <SectionTitle icon="scale">{dict.peptide.internetVsScience}</SectionTitle>
             <p className="mt-1 mb-5 text-sm text-navy-500">
-              O que dizem na internet comparado com a evidência científica real.
+              {dict.peptide.internetSubtitle}
             </p>
 
             {/* Mobile: cards layout */}
@@ -397,18 +404,18 @@ export default async function PeptidePage({ params }: Props) {
                 >
                   <div className="flex items-center justify-between gap-2 mb-3">
                     <p className="font-semibold text-navy-900">{c.claim}</p>
-                    <VerdictBadge verdict={c.verdict} />
+                    <VerdictBadge verdict={c.verdict} dict={dict} />
                   </div>
                   <div className="space-y-2 text-sm">
                     <div>
                       <p className="text-xs font-medium uppercase tracking-wider text-navy-400">
-                        O que dizem
+                        {dict.peptide.whatTheySay}
                       </p>
                       <p className="mt-0.5 text-navy-600">{c.whatTheySay}</p>
                     </div>
                     <div>
                       <p className="text-xs font-medium uppercase tracking-wider text-navy-400">
-                        Evidência real
+                        {dict.peptide.actualEvidence}
                       </p>
                       <p className="mt-0.5 text-navy-600">
                         {c.actualEvidence}
@@ -425,7 +432,7 @@ export default async function PeptidePage({ params }: Props) {
                 <thead>
                   <tr className="bg-navy-50/80">
                     <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-navy-500">
-                      Alegação
+                      {dict.peptide.claim}
                     </th>
                     <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-navy-500">
                       O que dizem
@@ -434,7 +441,7 @@ export default async function PeptidePage({ params }: Props) {
                       Evidência real
                     </th>
                     <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-navy-500">
-                      Veredicto
+                      {dict.peptide.verdict}
                     </th>
                   </tr>
                 </thead>
@@ -451,7 +458,7 @@ export default async function PeptidePage({ params }: Props) {
                         {c.actualEvidence}
                       </td>
                       <td className="px-5 py-4">
-                        <VerdictBadge verdict={c.verdict} />
+                        <VerdictBadge verdict={c.verdict} dict={dict} />
                       </td>
                     </tr>
                   ))}
@@ -465,7 +472,7 @@ export default async function PeptidePage({ params }: Props) {
         {peptide.studies.length > 0 && (
           <section className="mb-10">
             <SectionTitle icon="book">
-              Estudos e Referências ({peptide.studies.length})
+              {dict.peptide.studies} ({peptide.studies.length})
             </SectionTitle>
             <div className="mt-4 space-y-3">
               {peptide.studies.map((s) => (
@@ -488,7 +495,7 @@ export default async function PeptidePage({ params }: Props) {
                         {s.sampleSize && ` &mdash; n=${s.sampleSize}`}
                       </p>
                     </div>
-                    <StudyTypeBadge type={s.studyType} />
+                    <StudyTypeBadge type={s.studyType} dict={dict} />
                   </div>
                   <p className="mt-3 text-sm leading-relaxed text-navy-600">
                     {s.keyFindings}
@@ -522,7 +529,7 @@ export default async function PeptidePage({ params }: Props) {
         {/* FAQs */}
         {peptide.faqs.length > 0 && (
           <section className="mb-10">
-            <SectionTitle icon="question">Perguntas Frequentes</SectionTitle>
+            <SectionTitle icon="question">{dict.peptide.faq}</SectionTitle>
             <div className="mt-4 space-y-1">
               {peptide.faqs.map((faq) => (
                 <div
@@ -559,13 +566,9 @@ export default async function PeptidePage({ params }: Props) {
               </svg>
             </div>
             <div>
-              <p className="font-semibold text-amber-900">Aviso importante</p>
+              <p className="font-semibold text-amber-900">{dict.peptide.disclaimerTitle}</p>
               <p className="mt-1 text-sm leading-relaxed text-amber-800">
-                Este conteúdo tem caráter exclusivamente informativo e
-                educacional, baseado em pesquisas científicas publicadas. Não
-                constitui recomendação médica, prescrição ou incentivo ao uso de
-                qualquer substância. Consulte sempre um médico qualificado antes
-                de iniciar qualquer tratamento.
+                {dict.peptide.disclaimerText}
               </p>
             </div>
           </div>
@@ -575,10 +578,10 @@ export default async function PeptidePage({ params }: Props) {
         <section className="newsletter-gradient rounded-2xl p-8 sm:p-10">
           <div className="mx-auto max-w-xl text-center">
             <h2 className="text-xl font-bold tracking-tight text-navy-900 sm:text-2xl">
-              Receba atualizações sobre {peptide.name}
+              {dict.newsletter.updateAbout} {peptide.name}
             </h2>
             <p className="mt-2 text-sm text-navy-600">
-              Novas pesquisas, mudanças na regulamentação e mais.
+              {dict.newsletter.newResearch}
             </p>
             <NewsletterForm source={`peptide_${peptide.slug}`} />
           </div>
@@ -782,18 +785,18 @@ function EvidenceIcon({ evidence }: { evidence: string }) {
   }
 }
 
-function EvidenceLabel({ evidence }: { evidence: string }) {
+function EvidenceLabel({ evidence, dict }: { evidence: string; dict: Dictionary }) {
   const config: Record<string, { label: string; color: string }> = {
     proven: {
-      label: "Comprovado",
+      label: dict.evidence.proven,
       color: "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200",
     },
     research: {
-      label: "Em pesquisa",
+      label: dict.evidence.research,
       color: "bg-yellow-50 text-yellow-700 ring-1 ring-yellow-200",
     },
     unproven: {
-      label: "Não comprovado",
+      label: dict.evidence.unproven,
       color: "bg-navy-50 text-navy-500 ring-1 ring-navy-200",
     },
   };
@@ -807,18 +810,18 @@ function EvidenceLabel({ evidence }: { evidence: string }) {
   );
 }
 
-function SeverityBadge({ severity }: { severity: string }) {
+function SeverityBadge({ severity, dict }: { severity: string; dict: Dictionary }) {
   const config: Record<string, { label: string; color: string }> = {
     low: {
-      label: "Risco baixo",
+      label: dict.severity.low,
       color: "bg-yellow-50 text-yellow-700 ring-1 ring-yellow-200",
     },
     medium: {
-      label: "Risco médio",
+      label: dict.severity.medium,
       color: "bg-orange-50 text-orange-700 ring-1 ring-orange-200",
     },
     high: {
-      label: "Risco alto",
+      label: dict.severity.high,
       color: "bg-red-50 text-red-700 ring-1 ring-red-200",
     },
   };
@@ -832,13 +835,13 @@ function SeverityBadge({ severity }: { severity: string }) {
   );
 }
 
-function VerdictBadge({ verdict }: { verdict: string }) {
+function VerdictBadge({ verdict, dict }: { verdict: string; dict: Dictionary }) {
   const config: Record<
     string,
     { label: string; color: string; icon: React.ReactNode }
   > = {
     true: {
-      label: "Verdadeiro",
+      label: dict.verdict.true,
       color: "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200",
       icon: (
         <svg
@@ -854,7 +857,7 @@ function VerdictBadge({ verdict }: { verdict: string }) {
       ),
     },
     partial: {
-      label: "Parcial",
+      label: dict.verdict.partial,
       color: "bg-yellow-50 text-yellow-700 ring-1 ring-yellow-200",
       icon: (
         <svg
@@ -870,7 +873,7 @@ function VerdictBadge({ verdict }: { verdict: string }) {
       ),
     },
     false: {
-      label: "Falso",
+      label: dict.verdict.false,
       color: "bg-red-50 text-red-700 ring-1 ring-red-200",
       icon: (
         <svg
@@ -886,7 +889,7 @@ function VerdictBadge({ verdict }: { verdict: string }) {
       ),
     },
     unknown: {
-      label: "Incerto",
+      label: dict.verdict.unknown,
       color: "bg-navy-50 text-navy-500 ring-1 ring-navy-200",
       icon: (
         <svg
@@ -913,16 +916,16 @@ function VerdictBadge({ verdict }: { verdict: string }) {
   );
 }
 
-function StudyTypeBadge({ type }: { type: string }) {
+function StudyTypeBadge({ type, dict }: { type: string; dict: Dictionary }) {
   const labels: Record<string, string> = {
-    meta_analysis: "Meta-análise",
-    systematic_review: "Revisão Sistemática",
-    rct: "Ensaio Clínico",
-    cohort: "Coorte",
-    case_study: "Estudo de Caso",
-    review: "Revisão",
-    animal: "Estudo Animal",
-    in_vitro: "In Vitro",
+    meta_analysis: dict.studyType.meta_analysis,
+    systematic_review: dict.studyType.systematic_review,
+    rct: dict.studyType.rct,
+    cohort: dict.studyType.cohort,
+    case_study: dict.studyType.case_study,
+    review: dict.studyType.review,
+    animal: dict.studyType.animal,
+    in_vitro: dict.studyType.in_vitro,
   };
 
   const hierarchy: Record<string, string> = {
@@ -950,36 +953,38 @@ function StudyTypeBadge({ type }: { type: string }) {
 function RegulatoryStatusCard({
   label,
   status,
+  dict,
 }: {
   label: string;
   status: RegulatoryStatus;
+  dict: Dictionary;
 }) {
   const config: Record<
     RegulatoryStatus,
     { label: string; color: string; bgColor: string }
   > = {
     approved: {
-      label: "Aprovado",
+      label: dict.regulatory.approved,
       color: "text-emerald-700",
       bgColor: "bg-emerald-50 ring-1 ring-emerald-200/60",
     },
     pending: {
-      label: "Pendente",
+      label: dict.regulatory.pending,
       color: "text-yellow-700",
       bgColor: "bg-yellow-50 ring-1 ring-yellow-200/60",
     },
     not_regulated: {
-      label: "Não regulado",
+      label: dict.regulatory.not_regulated,
       color: "text-navy-500",
       bgColor: "bg-navy-50 ring-1 ring-navy-200/60",
     },
     banned: {
-      label: "Proibido",
+      label: dict.regulatory.banned,
       color: "text-red-700",
       bgColor: "bg-red-50 ring-1 ring-red-200/60",
     },
     compounding_only: {
-      label: "Manipulação",
+      label: dict.regulatory.compounding_only,
       color: "text-blue-700",
       bgColor: "bg-blue-50 ring-1 ring-blue-200/60",
     },
