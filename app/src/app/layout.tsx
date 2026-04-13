@@ -15,11 +15,11 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: "Meus Peptídeos — Base de Conhecimento sobre Peptídeos no Brasil",
+    default: "Meus Peptídeos — A ciência por trás dos compostos da nova medicina",
     template: "%s | Meus Peptídeos",
   },
   description:
-    "Informações baseadas em ciência sobre peptídeos: benefícios comprovados, riscos, fase da pesquisa e regulamentação no Brasil. Conteúdo informativo — consulte sempre um médico.",
+    "A ciência por trás dos compostos da nova medicina: peptídeos, nootrópicos, senolíticos e compostos de longevidade. Benefícios comprovados, riscos, protocolos de uso e regulamentação no Brasil.",
   metadataBase: new URL("https://meuspeptideos.com.br"),
   openGraph: {
     type: "website",

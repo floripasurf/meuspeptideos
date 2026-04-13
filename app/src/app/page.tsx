@@ -51,14 +51,14 @@ export default async function Home() {
               </span>
             </div>
             <h1 className="text-3xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
-              Peptídeos:{" "}
+              A ciência por trás dos compostos da{" "}
               <span className="text-emerald-300">
-                o que a ciência diz
+                nova medicina
               </span>
             </h1>
             <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-white sm:text-lg">
-              Base de conhecimento sobre peptídeos com informações baseadas em
-              pesquisas científicas. Benefícios comprovados, riscos documentados
+              Peptídeos, nootrópicos, senolíticos e compostos de longevidade —
+              com benefícios comprovados, riscos documentados, protocolos de uso
               e o que ainda está em estudo.
             </p>
             <p className="mt-3 text-sm text-white/70">
@@ -73,10 +73,10 @@ export default async function Home() {
         <div className="mb-8 flex items-end justify-between">
           <div>
             <h2 className="text-2xl font-bold tracking-tight text-navy-900 sm:text-3xl">
-              Peptídeos
+              Compostos
             </h2>
             <p className="mt-1 text-sm text-navy-500">
-              {peptides.length} peptídeo{peptides.length !== 1 ? "s" : ""}{" "}
+              {peptides.length} composto{peptides.length !== 1 ? "s" : ""}{" "}
               catalogado{peptides.length !== 1 ? "s" : ""}
             </p>
           </div>
@@ -147,7 +147,7 @@ export default async function Home() {
               Fique atualizado
             </h2>
             <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-navy-600">
-              Receba atualizações sobre novos peptídeos, mudanças na
+              Receba atualizações sobre novos compostos, mudanças na
               regulamentação e novas pesquisas publicadas.
             </p>
             <NewsletterForm source="home" />

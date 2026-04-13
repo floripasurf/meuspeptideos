@@ -5,7 +5,7 @@ import { useState } from "react";
 import { LogoIcon } from "./logo";
 
 const navLinks = [
-  { href: "/", label: "Peptídeos" },
+  { href: "/", label: "Compostos" },
   { href: "/uso", label: "Por Uso" },
   { href: "/comparar/semaglutida-vs-tirzepatida", label: "Comparações" },
   { href: "/blog", label: "Blog" },

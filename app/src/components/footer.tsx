@@ -3,7 +3,7 @@ import { LogoIcon } from "./logo";
 
 const footerLinks = {
   conteudo: [
-    { href: "/", label: "Peptídeos" },
+    { href: "/", label: "Compostos" },
     { href: "/uso", label: "Por Uso" },
     { href: "/comparar/semaglutida-vs-tirzepatida", label: "Comparações" },
     { href: "/blog", label: "Blog" },
@@ -32,8 +32,8 @@ export function Footer() {
               </span>
             </div>
             <p className="mt-3 max-w-sm text-sm leading-relaxed text-navy-500">
-              Informações baseadas em ciência sobre peptídeos. Pesquisa revisada,
-              dados atualizados e transparência sobre o nível de evidência.
+              A ciência por trás dos compostos da nova medicina. Pesquisa
+              revisada, dados atualizados e transparência sobre o nível de evidência.
             </p>
           </div>
 
@@ -90,9 +90,10 @@ export function Footer() {
               <path d="M12 16v-4M12 8h.01" />
             </svg>
             <p className="text-xs leading-relaxed text-navy-500">
-              Este conteúdo tem caráter exclusivamente informativo e educacional.
-              Não substitui orientação médica profissional. Consulte sempre um
-              médico antes de iniciar qualquer tratamento.
+              Este conteúdo tem caráter exclusivamente informativo e educacional
+              sobre peptídeos e compostos da nova medicina. Não substitui
+              orientação médica profissional. Consulte sempre um médico antes
+              de iniciar qualquer tratamento.
             </p>
           </div>
           <p className="mt-4 text-xs text-navy-400">
