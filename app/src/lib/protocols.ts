@@ -21,6 +21,23 @@ export type Protocol = {
 };
 
 export const protocols: Record<string, Protocol[]> = {
+  retatrutida: [
+    {
+      indication: "Obesidade / controle de peso",
+      route: "Subcutânea (SC)",
+      steps: [
+        { phase: "Semanas 1–4", dosage: "1 mg", frequency: "1x/semana", duration: "4 semanas", notes: "Dose de titulação inicial" },
+        { phase: "Semanas 5–8", dosage: "2 mg", frequency: "1x/semana", duration: "4 semanas" },
+        { phase: "Semanas 9–12", dosage: "4 mg", frequency: "1x/semana", duration: "4 semanas" },
+        { phase: "Semanas 13–16", dosage: "8 mg", frequency: "1x/semana", duration: "4 semanas" },
+        { phase: "Semana 17+", dosage: "12 mg", frequency: "1x/semana", duration: "Manutenção", notes: "Dose-alvo do estudo fase 2 (maior perda de peso: 24,2%)" },
+      ],
+      studyReference: "Jastreboff AM et al., The Lancet 2023",
+      studyUrl: "https://pubmed.ncbi.nlm.nih.gov/37385275/",
+      notes: "Agonista triplo GIP/GLP-1/glucagon. Titulação de 4 em 4 semanas para minimizar efeitos gastrointestinais. Perda de peso média de 24,2% em 48 semanas na dose de 12 mg — a maior já registrada em ensaios clínicos. Ainda em fase 3 (programa TRIUMPH).",
+    },
+  ],
+
   semaglutida: [
     {
       indication: "Obesidade / controle de peso",
