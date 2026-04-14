@@ -8,6 +8,7 @@ import { RegulatoryStatus } from "@/generated/prisma/enums";
 import { protocols, type Protocol } from "@/lib/protocols";
 import { getDictionary, hasLocale, type Dictionary } from "@/lib/i18n";
 import { getCompoundTranslation } from "@/lib/compound-translations";
+import { purchaseInfo } from "@/lib/purchase-info";
 
 type Benefit = {
   name: string;
@@ -599,6 +600,9 @@ export default async function PeptidePage({ params }: Props) {
           </div>
         </div>
 
+        {/* Purchase / CTA */}
+        <PurchaseSection slug={peptide.slug} name={peptide.name} dict={dict} lang={lang} />
+
         {/* Newsletter */}
         <section className="newsletter-gradient rounded-2xl p-8 sm:p-10">
           <div className="mx-auto max-w-xl text-center">
@@ -1020,5 +1024,137 @@ function RegulatoryStatusCard({
       <p className="text-xs font-medium text-navy-500">{label}</p>
       <p className={`mt-1 text-sm font-semibold ${c.color}`}>{c.label}</p>
     </div>
+  );
+}
+
+function PurchaseSection({
+  slug,
+  name,
+  dict,
+  lang,
+}: {
+  slug: string;
+  name: string;
+  dict: Dictionary;
+  lang: string;
+}) {
+  const info = purchaseInfo[slug];
+  if (!info) return null;
+
+  const p = dict.purchase;
+
+  if (info.type === "supplement") {
+    return (
+      <section className="mb-10 rounded-2xl border-2 border-emerald-200 bg-gradient-to-br from-emerald-50 to-white p-6 sm:p-8">
+        <div className="flex items-start gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-100">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-emerald-600">
+              <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0" />
+            </svg>
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-navy-900">{p.supplementTitle}</h2>
+            <p className="mt-1 text-sm text-navy-600">{p.supplementSubtitle}</p>
+          </div>
+        </div>
+        <div className="mt-5 flex flex-wrap gap-3">
+          {info.links?.map((link) => (
+            <a
+              key={link.url}
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-xl border border-emerald-200 bg-white px-5 py-3 text-sm font-semibold text-emerald-700 shadow-sm transition-all hover:border-emerald-300 hover:shadow-md hover:-translate-y-0.5"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-emerald-500">
+                <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3" />
+              </svg>
+              {p.buyAt} {link.label}
+            </a>
+          ))}
+        </div>
+        <p className="mt-4 text-xs text-navy-400">{p.disclaimer}</p>
+      </section>
+    );
+  }
+
+  if (info.type === "compounding") {
+    return (
+      <section className="mb-10 rounded-2xl border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-white p-6 sm:p-8">
+        <div className="flex items-start gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-100">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-blue-600">
+              <path d="M9 3h6M12 3v7l6.1 10.5a1 1 0 01-.87 1.5H6.77a1 1 0 01-.87-1.5L12 10V3" />
+            </svg>
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-navy-900">{p.compoundingTitle}</h2>
+            <p className="mt-1 text-sm text-navy-600">{p.compoundingSubtitle}</p>
+          </div>
+        </div>
+        <div className="mt-5">
+          <a
+            href={`/${lang}/para-medicos`}
+            className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-blue-700 hover:shadow-md"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+            </svg>
+            {p.compoundingCta}
+          </a>
+        </div>
+      </section>
+    );
+  }
+
+  if (info.type === "prescription") {
+    return (
+      <section className="mb-10 rounded-2xl border-2 border-brand-200 bg-gradient-to-br from-brand-50/50 to-white p-6 sm:p-8">
+        <div className="flex items-start gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-100">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-brand-600">
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+            </svg>
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-navy-900">{p.prescriptionTitle}</h2>
+            <p className="mt-1 text-sm text-navy-600">{p.prescriptionSubtitle}</p>
+          </div>
+        </div>
+        <div className="mt-5">
+          <a
+            href={`/${lang}/para-medicos`}
+            className="inline-flex items-center gap-2 rounded-xl bg-brand-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-brand-700 hover:shadow-md"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="11" cy="11" r="8" />
+              <path d="M21 21l-4.35-4.35" />
+            </svg>
+            {p.prescriptionCta}
+          </a>
+        </div>
+      </section>
+    );
+  }
+
+  // experimental
+  return (
+    <section className="mb-10 rounded-2xl border-2 border-navy-200 bg-gradient-to-br from-navy-50 to-white p-6 sm:p-8">
+      <div className="flex items-start gap-3">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-navy-100">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-navy-500">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M12 6v6l4 2" />
+          </svg>
+        </div>
+        <div>
+          <h2 className="text-xl font-bold text-navy-900">{p.experimentalTitle}</h2>
+          <p className="mt-1 text-sm text-navy-600">{p.experimentalSubtitle}</p>
+        </div>
+      </div>
+      <div className="mt-5">
+        <NewsletterForm source={`waitlist_${slug}`} />
+      </div>
+    </section>
   );
 }

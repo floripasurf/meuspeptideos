@@ -128,6 +128,21 @@
     "copyright": "Meus Peptídeos. Todos os direitos reservados.",
     "tagline": "A ciência por trás dos compostos da nova medicina. Pesquisa revisada, dados atualizados e transparência sobre o nível de evidência."
   },
+  "purchase": {
+    "supplementTitle": "Onde Comprar",
+    "supplementSubtitle": "Este composto está disponível como suplemento no Brasil. Compre em lojas confiáveis:",
+    "buyAt": "Comprar na",
+    "compoundingTitle": "Como Adquirir",
+    "compoundingSubtitle": "Este composto pode ser manipulado em farmácias de manipulação com receita médica. Consulte um médico e solicite a manipulação.",
+    "compoundingCta": "Solicitar Orçamento em Farmácia Parceira",
+    "prescriptionTitle": "Como Adquirir",
+    "prescriptionSubtitle": "Este é um medicamento aprovado no Brasil. É necessário receita médica para aquisição.",
+    "prescriptionCta": "Encontrar Médico Prescritor",
+    "experimentalTitle": "Ainda Não Disponível",
+    "experimentalSubtitle": "Este composto está em fase experimental e ainda não foi aprovado para uso. Cadastre-se para ser notificado quando estiver disponível.",
+    "experimentalCta": "Receber Notificação de Disponibilidade",
+    "disclaimer": "Links de afiliados — podemos receber uma comissão sem custo adicional para você."
+  },
   "lang": {
     "pt": "Português",
     "en": "English",

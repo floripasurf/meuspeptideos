@@ -128,6 +128,21 @@
     "copyright": "Meus Peptídeos. All rights reserved.",
     "tagline": "The science behind next-generation medicine compounds. Peer-reviewed research, up-to-date data, and transparency about the level of evidence."
   },
+  "purchase": {
+    "supplementTitle": "Where to Buy",
+    "supplementSubtitle": "This compound is available as a supplement. Purchase from trusted retailers:",
+    "buyAt": "Buy at",
+    "compoundingTitle": "How to Obtain",
+    "compoundingSubtitle": "This compound can be prepared by licensed compounding pharmacies with a valid prescription. Consult a physician first.",
+    "compoundingCta": "Request Quote from Partner Pharmacy",
+    "prescriptionTitle": "How to Obtain",
+    "prescriptionSubtitle": "This is an approved medication. A medical prescription is required for purchase.",
+    "prescriptionCta": "Find a Prescribing Physician",
+    "experimentalTitle": "Not Yet Available",
+    "experimentalSubtitle": "This compound is still experimental and has not been approved for use. Sign up to be notified when it becomes available.",
+    "experimentalCta": "Get Notified When Available",
+    "disclaimer": "Affiliate links — we may earn a commission at no extra cost to you."
+  },
   "lang": {
     "pt": "Português",
     "en": "English",
