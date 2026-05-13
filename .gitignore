@@ -1,0 +1,30 @@
+# Environment variables
+.env*
+
+# Dependencies
+node_modules/
+
+# Next.js
+.next/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Build output
+dist/
+build/
+
+# Vercel
+.vercel
+
+# Certificates
+*.pem
+
+# Logs
+*.log
+
+# OS
+.DS_Store
