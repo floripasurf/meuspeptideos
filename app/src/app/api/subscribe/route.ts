@@ -1,8 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 
 export async function POST(request: NextRequest) {
   try {
+    const ip = getClientIp(request.headers);
+    // Max 3 newsletter signups per IP per hour. Same conservative window as doctor signup.
+    const rateLimit = await checkRateLimit(ip, "newsletter_signup", 3, 60);
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        { error: "Muitas tentativas. Tente novamente em 1 hora." },
+        { status: 429 }
+      );
+    }
+
     const body = await request.json();
     const { email, source } = body;
 
