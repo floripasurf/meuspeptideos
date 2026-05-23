@@ -7,9 +7,15 @@ const SESSION_DURATION = 60 * 60 * 24 * 7; // 7 days
 /**
  * Creates a session token from the admin password.
  * Token = HMAC(password, secret). If password matches env, token is valid.
+ *
+ * ADMIN_SECRET is REQUIRED — there is no fallback. A hardcoded fallback was
+ * removed because any reader of the source could then forge admin tokens.
  */
 function generateToken(password: string): string {
-  const secret = process.env.ADMIN_SECRET || "mp-default-secret-change-me";
+  const secret = process.env.ADMIN_SECRET;
+  if (!secret) {
+    throw new Error("ADMIN_SECRET env var not set — admin auth disabled");
+  }
   return crypto.createHmac("sha256", secret).update(password).digest("hex");
 }
 

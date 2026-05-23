@@ -1,8 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 
 export async function POST(request: NextRequest) {
   try {
+    const ip = getClientIp(request.headers);
+    // Max 5 lead submissions per IP per hour. Matches the existing doctor signup pattern.
+    const rateLimit = await checkRateLimit(ip, "lead_capture", 5, 60);
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        { error: "Muitas tentativas. Tente novamente em 1 hora." },
+        { status: 429 }
+      );
+    }
+
     const body = await request.json();
     const {
       name,
