@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 async function guard() {
   return (await isAuthenticated())
     ? null
-    : NextResponse.json({ error: "Nao autorizado" }, { status: 401 });
+    : NextResponse.json({ error: "Não autorizado" }, { status: 401 });
 }
 
 function normalizeCompounds(value: unknown): string[] {
@@ -22,6 +22,16 @@ function normalizeCompounds(value: unknown): string[] {
 
 function nullableString(value: unknown) {
   return typeof value === "string" && value.trim() ? value.trim() : null;
+}
+
+function conflictResponse(error: unknown) {
+  if (typeof error === "object" && error !== null && "code" in error && error.code === "P2002") {
+    return NextResponse.json(
+      { error: "Já existe uma farmácia com esse slug ou identificador único" },
+      { status: 409 }
+    );
+  }
+  throw error;
 }
 
 export async function GET() {
@@ -48,24 +58,28 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const pharmacy = await prisma.pharmacy.create({
-    data: {
-      name: String(body.name).trim(),
-      slug: String(body.slug).trim().toLowerCase(),
-      email: String(body.email).trim().toLowerCase(),
-      whatsapp: nullableString(body.whatsapp),
-      city: nullableString(body.city),
-      state: nullableString(body.state)?.toUpperCase() ?? null,
-      shipsNationwide: body.shipsNationwide ?? true,
-      compounds: normalizeCompounds(body.compounds),
-      commissionPct: Number(body.commissionPct ?? 10),
-      leadPrice: body.leadPrice === "" || body.leadPrice == null ? null : Number(body.leadPrice),
-      isActive: body.isActive ?? true,
-      notes: nullableString(body.notes),
-    },
-  });
+  try {
+    const pharmacy = await prisma.pharmacy.create({
+      data: {
+        name: String(body.name).trim(),
+        slug: String(body.slug).trim().toLowerCase(),
+        email: String(body.email).trim().toLowerCase(),
+        whatsapp: nullableString(body.whatsapp),
+        city: nullableString(body.city),
+        state: nullableString(body.state)?.toUpperCase() ?? null,
+        shipsNationwide: body.shipsNationwide ?? true,
+        compounds: normalizeCompounds(body.compounds),
+        commissionPct: Number(body.commissionPct ?? 10),
+        leadPrice: body.leadPrice === "" || body.leadPrice == null ? null : Number(body.leadPrice),
+        isActive: body.isActive ?? true,
+        notes: nullableString(body.notes),
+      },
+    });
 
-  return NextResponse.json({ pharmacy });
+    return NextResponse.json({ pharmacy });
+  } catch (error) {
+    return conflictResponse(error);
+  }
 }
 
 export async function PATCH(request: NextRequest) {
@@ -74,7 +88,7 @@ export async function PATCH(request: NextRequest) {
 
   const body = await request.json();
   if (!body.id) {
-    return NextResponse.json({ error: "id obrigatorio" }, { status: 400 });
+    return NextResponse.json({ error: "id obrigatório" }, { status: 400 });
   }
 
   const data = {
@@ -94,10 +108,14 @@ export async function PATCH(request: NextRequest) {
     ...(body.notes !== undefined && { notes: nullableString(body.notes) }),
   };
 
-  const pharmacy = await prisma.pharmacy.update({
-    where: { id: String(body.id) },
-    data,
-  });
+  try {
+    const pharmacy = await prisma.pharmacy.update({
+      where: { id: String(body.id) },
+      data,
+    });
 
-  return NextResponse.json({ pharmacy });
+    return NextResponse.json({ pharmacy });
+  } catch (error) {
+    return conflictResponse(error);
+  }
 }

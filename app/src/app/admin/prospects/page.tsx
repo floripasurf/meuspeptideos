@@ -126,9 +126,9 @@ export default function AdminProspectsPage() {
     <div className="mx-auto max-w-7xl px-4 py-6">
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Prospects de farmacias</h1>
+          <h1 className="text-2xl font-bold text-white">Prospects de farmácias</h1>
           <p className="mt-1 text-sm text-navy-400">
-            Pipeline B2B para mapear, qualificar e converter farmacias de manipulacao.
+            Pipeline B2B para mapear, qualificar e converter farmácias de manipulação.
           </p>
         </div>
         <select

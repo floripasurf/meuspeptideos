@@ -345,6 +345,8 @@ model QuoteRequest {
   paidAt          DateTime? // comissão recebida
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
+
+  @@index([status])
 }
 
 enum QuoteStatus {

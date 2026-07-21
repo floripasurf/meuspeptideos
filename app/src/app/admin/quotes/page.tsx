@@ -33,7 +33,7 @@ function formatDate(iso: string) {
 
 function waLink(value: string) {
   const digits = value.replace(/\D/g, "");
-  return `https://wa.me/${digits.startsWith("55") ? digits : `55${digits}`}`;
+  return `https://wa.me/${digits.startsWith("55") && digits.length >= 12 ? digits : `55${digits}`}`;
 }
 
 export default function AdminQuotesPage() {
@@ -101,19 +101,19 @@ export default function AdminQuotesPage() {
     await load();
   }
 
-  if (loading) return <p className="p-6 text-navy-400">Carregando orcamentos...</p>;
+  if (loading) return <p className="p-6 text-navy-400">Carregando orçamentos...</p>;
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6">
       <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-white">Pipeline de orcamentos</h1>
+          <h1 className="text-2xl font-bold text-white">Pipeline de orçamentos</h1>
           <p className="mt-1 text-sm text-navy-400">
-            Acompanhe pedidos enviados a farmacias e comissoes registradas.
+            Acompanhe pedidos enviados a farmácias e comissões registradas.
           </p>
         </div>
         <div className="rounded-xl border border-navy-700 bg-navy-900 px-4 py-3 text-sm text-navy-200">
-          Comissao registrada:{" "}
+          Comissão registrada:{" "}
           <span className="font-semibold text-emerald-300">
             R$ {totalCommission.toFixed(2)}
           </span>
@@ -129,10 +129,10 @@ export default function AdminQuotesPage() {
               <th className="px-4 py-3 text-navy-400">Data</th>
               <th className="px-4 py-3 text-navy-400">Lead</th>
               <th className="px-4 py-3 text-navy-400">Composto</th>
-              <th className="px-4 py-3 text-navy-400">Farmacia</th>
+              <th className="px-4 py-3 text-navy-400">Farmácia</th>
               <th className="px-4 py-3 text-navy-400">Status</th>
               <th className="px-4 py-3 text-navy-400">Pedido</th>
-              <th className="px-4 py-3 text-navy-400">Comissao</th>
+              <th className="px-4 py-3 text-navy-400">Comissão</th>
               <th className="px-4 py-3 text-navy-400">Pago em</th>
               <th className="px-4 py-3 text-navy-400">Acao</th>
             </tr>

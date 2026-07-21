@@ -80,7 +80,7 @@ export function QuoteRequestForm({
   if (status === "success") {
     return (
       <div className="rounded-xl bg-blue-50 p-4 text-sm text-blue-800">
-        Pedido enviado. Uma farmacia de manipulacao parceira responde no seu WhatsApp.
+        Pedido enviado. Uma farmácia de manipulação parceira responde no seu WhatsApp.
       </div>
     );
   }
@@ -130,7 +130,7 @@ export function QuoteRequestForm({
           onChange={(e) => setHasPrescription(e.target.checked)}
           className="mt-0.5"
         />
-        Ja tenho prescricao medica para {compoundName}
+        Já tenho prescrição médica para {compoundName}
       </label>
       <label className="flex items-start gap-2 text-xs text-navy-600">
         <input
@@ -140,20 +140,20 @@ export function QuoteRequestForm({
           onChange={(e) => setConsent(e.target.checked)}
           className="mt-0.5"
         />
-        Autorizo o envio dos meus dados a uma farmacia de manipulacao parceira para receber um orcamento (LGPD).
+        Autorizo o envio dos meus dados a uma farmácia de manipulação parceira para receber um orçamento (LGPD).
       </label>
       <button
         type="submit"
         disabled={status === "loading"}
         className="w-full rounded-xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-blue-700 disabled:opacity-60 sm:w-auto"
       >
-        {status === "loading" ? "Enviando..." : "Solicitar orcamento sem custo pelo site"}
+        {status === "loading" ? "Enviando..." : "Solicitar orçamento sem custo pelo site"}
       </button>
       {status === "error" && (
         <p className="text-xs text-red-600">Erro ao enviar. Tente novamente.</p>
       )}
       <p className="text-[11px] leading-relaxed text-navy-400">
-        Manipulados exigem prescricao medica. Se voce ainda nao tem, procure avaliacao com um profissional habilitado antes de solicitar a manipulacao.
+        Manipulados exigem prescrição médica. Se você ainda não tem, procure avaliação com um profissional habilitado antes de solicitar a manipulação.
       </p>
     </form>
   );

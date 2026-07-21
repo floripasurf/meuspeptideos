@@ -74,11 +74,11 @@ export default function AdminPharmaciesPage() {
     });
     if (!res.ok) {
       const data = await res.json();
-      setMessage(data.error || "Erro ao salvar farmacia");
+      setMessage(data.error || "Erro ao salvar farmácia");
       return;
     }
     setForm(emptyForm);
-    setMessage("Farmacia criada");
+    setMessage("Farmácia criada");
     await load();
   }
 
@@ -92,15 +92,15 @@ export default function AdminPharmaciesPage() {
   }
 
   if (loading) {
-    return <p className="p-6 text-navy-400">Carregando farmacias...</p>;
+    return <p className="p-6 text-navy-400">Carregando farmácias...</p>;
   }
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-white">Farmacias parceiras</h1>
+        <h1 className="text-2xl font-bold text-white">Farmácias parceiras</h1>
         <p className="mt-1 text-sm text-navy-400">
-          Cadastro operacional para roteamento de pedidos de orcamento.
+          Cadastro operacional para roteamento de pedidos de orçamento.
         </p>
       </div>
 
@@ -159,7 +159,7 @@ export default function AdminPharmaciesPage() {
           type="number"
           min="0"
           step="0.1"
-          placeholder="Comissao %"
+          placeholder="Comissão %"
           value={form.commissionPct}
           onChange={(e) => setForm({ ...form, commissionPct: e.target.value })}
           className="rounded-lg border border-navy-600 bg-navy-800 px-3 py-2 text-sm text-white"
@@ -182,7 +182,7 @@ export default function AdminPharmaciesPage() {
           Envia nacionalmente
         </label>
         <button className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-500">
-          Criar farmacia
+          Criar farmácia
         </button>
         {message && <p className="text-xs text-navy-300 lg:col-span-4">{message}</p>}
       </form>
@@ -194,7 +194,7 @@ export default function AdminPharmaciesPage() {
               <th className="px-4 py-3 text-navy-400">Nome</th>
               <th className="px-4 py-3 text-navy-400">UF</th>
               <th className="px-4 py-3 text-navy-400">Compostos</th>
-              <th className="px-4 py-3 text-navy-400">Comissao</th>
+              <th className="px-4 py-3 text-navy-400">Comissão</th>
               <th className="px-4 py-3 text-navy-400">Orcamentos</th>
               <th className="px-4 py-3 text-navy-400">Status</th>
             </tr>

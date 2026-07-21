@@ -122,6 +122,14 @@ function escapeHtml(value: string | null | undefined): string {
     .replaceAll("'", "&#039;");
 }
 
+function emailSubjectPart(value: string | null | undefined, fallback = "n/i"): string {
+  const clean = String(value ?? fallback)
+    .replace(/[\r\n\t]+/g, " ")
+    .trim()
+    .slice(0, 120);
+  return clean || fallback;
+}
+
 export type QuoteEmailData = {
   id: string;
   name: string;
@@ -144,22 +152,22 @@ export async function sendQuoteToPharmacy(
   const { error } = await resend.emails.send({
     from: FROM,
     to: pharmacyEmail,
-    subject: `Novo pedido de orcamento - ${quote.compoundSlug} (${quote.city ?? "cidade n/i"})`,
+    subject: `Novo pedido de orçamento - ${emailSubjectPart(quote.compoundSlug)} (${emailSubjectPart(quote.city, "cidade n/i")})`,
     html: `
 <div style="font-family: -apple-system, BlinkMacSystemFont, Inter, sans-serif; max-width: 620px; margin: 0 auto; padding: 24px;">
-  <h2 style="color:#0f172a;">Novo pedido de orcamento via Meus Peptideos</h2>
-  <p>Ola, ${escapeHtml(pharmacyName)}. Um interessado pediu orcamento:</p>
+  <h2 style="color:#0f172a;">Novo pedido de orçamento via Meus Peptídeos</h2>
+  <p>Olá, ${escapeHtml(pharmacyName)}. Um interessado pediu orçamento:</p>
   <ul>
     <li><b>Composto:</b> ${escapeHtml(quote.compoundSlug)}</li>
     <li><b>Nome:</b> ${escapeHtml(quote.name)}</li>
     <li><b>WhatsApp:</b> ${escapeHtml(quote.whatsapp)}</li>
-    <li><b>E-mail:</b> ${escapeHtml(quote.email) || "nao informado"}</li>
+    <li><b>E-mail:</b> ${escapeHtml(quote.email) || "não informado"}</li>
     <li><b>Cidade/UF:</b> ${escapeHtml(quote.city) || "n/i"} / ${escapeHtml(quote.state) || "n/i"}</li>
-    <li><b>Tem prescricao:</b> ${quote.hasPrescription ? "Sim" : "Ainda nao"}</li>
+    <li><b>Tem prescrição:</b> ${quote.hasPrescription ? "Sim" : "Ainda não"}</li>
     ${quote.message ? `<li><b>Mensagem:</b> ${escapeHtml(quote.message)}</li>` : ""}
   </ul>
-  <p>Responda em ate 24h. Leads respondidos rapido tendem a converter melhor.</p>
-  <p style="color:#64748b;font-size:12px">Ref: ${escapeHtml(quote.id)} - Parceria Meus Peptideos (${SITE_URL})</p>
+  <p>Responda em até 24h. Leads respondidos rápido tendem a converter melhor.</p>
+  <p style="color:#64748b;font-size:12px">Ref: ${escapeHtml(quote.id)} - Parceria Meus Peptídeos (${SITE_URL})</p>
 </div>
     `,
   });
@@ -173,16 +181,16 @@ export async function sendQuoteAdminAlert(
 ) {
   if (!resend || !ADMIN_EMAIL) return { ok: false as const, reason: "no-admin-email" };
 
-  const routedText = routedTo.length ? routedTo.join(", ") : "SEM FARMACIA (fila manual)";
+  const routedText = routedTo.length ? routedTo.join(", ") : "SEM FARMÁCIA (fila manual)";
   const { error } = await resend.emails.send({
     from: FROM,
     to: ADMIN_EMAIL,
-    subject: `[MP] Orcamento: ${quote.compoundSlug} -> ${routedText}`,
+    subject: `[MP] Orçamento: ${emailSubjectPart(quote.compoundSlug)} -> ${emailSubjectPart(routedText, "fila manual")}`,
     html: `
 <div style="font-family: -apple-system, BlinkMacSystemFont, Inter, sans-serif; max-width: 620px; margin: 0 auto; padding: 24px;">
-  <p>${escapeHtml(quote.name)} (${escapeHtml(quote.whatsapp)}) pediu orcamento de <b>${escapeHtml(quote.compoundSlug)}</b> em ${escapeHtml(quote.city) || "?"}/${escapeHtml(quote.state) || "?"}.</p>
+  <p>${escapeHtml(quote.name)} (${escapeHtml(quote.whatsapp)}) pediu orçamento de <b>${escapeHtml(quote.compoundSlug)}</b> em ${escapeHtml(quote.city) || "?"}/${escapeHtml(quote.state) || "?"}.</p>
   <p>Roteado para: ${escapeHtml(routedText)}</p>
-  <p><a href="${SITE_URL}/admin/quotes">Abrir pipeline de orcamentos</a></p>
+  <p><a href="${SITE_URL}/admin/quotes">Abrir pipeline de orçamentos</a></p>
 </div>
     `,
   });
@@ -207,24 +215,24 @@ export async function sendLeadToDoctor(
 ) {
   if (!resend) return { ok: false as const, reason: "no-resend" };
 
-  const interest = lead.peptideInterest.join(", ") || "peptideos";
+  const interest = lead.peptideInterest.join(", ") || "peptídeos";
   const { error } = await resend.emails.send({
     from: FROM,
     to: doctorEmail,
-    subject: `Novo paciente interessado - ${interest} (${lead.city ?? "cidade n/i"})`,
+    subject: `Novo paciente interessado - ${emailSubjectPart(interest)} (${emailSubjectPart(lead.city, "cidade n/i")})`,
     html: `
 <div style="font-family: -apple-system, BlinkMacSystemFont, Inter, sans-serif; max-width: 620px; margin: 0 auto; padding: 24px;">
-  <h2 style="color:#0f172a;">Indicacao de paciente via Meus Peptideos</h2>
-  <p>Dr(a). ${escapeHtml(doctorName)}, um paciente da sua regiao demonstrou interesse:</p>
+  <h2 style="color:#0f172a;">Indicação de paciente via Meus Peptídeos</h2>
+  <p>Dr(a). ${escapeHtml(doctorName)}, um paciente da sua região demonstrou interesse:</p>
   <ul>
-    <li><b>Nome:</b> ${escapeHtml(lead.name) || "nao informado"}</li>
-    <li><b>WhatsApp:</b> ${escapeHtml(lead.whatsapp) || "nao informado"}</li>
-    <li><b>E-mail:</b> ${escapeHtml(lead.email) || "nao informado"}</li>
+    <li><b>Nome:</b> ${escapeHtml(lead.name) || "não informado"}</li>
+    <li><b>WhatsApp:</b> ${escapeHtml(lead.whatsapp) || "não informado"}</li>
+    <li><b>E-mail:</b> ${escapeHtml(lead.email) || "não informado"}</li>
     <li><b>Cidade/UF:</b> ${escapeHtml(lead.city) || "n/i"} / ${escapeHtml(lead.state) || "n/i"}</li>
     <li><b>Interesse:</b> ${escapeHtml(interest)}</li>
   </ul>
-  <p>Recomendamos contato em ate 24h. Este paciente consentiu (LGPD) em ser contatado por um medico parceiro.</p>
-  <p style="color:#64748b;font-size:12px">Parceria Meus Peptideos (${SITE_URL})</p>
+  <p>Recomendamos contato em até 24h. Este paciente consentiu (LGPD) em ser contatado por um médico parceiro.</p>
+  <p style="color:#64748b;font-size:12px">Parceria Meus Peptídeos (${SITE_URL})</p>
 </div>
     `,
   });

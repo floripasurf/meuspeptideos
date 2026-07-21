@@ -5,14 +5,6 @@ import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 export async function POST(request: NextRequest) {
   try {
     const ip = getClientIp(request.headers);
-    const rateLimit = await checkRateLimit(ip, "lead_capture", 5, 60);
-    if (!rateLimit.allowed) {
-      return NextResponse.json(
-        { error: "Muitas solicitacoes. Tente novamente em 1 hora." },
-        { status: 429 }
-      );
-    }
-
     const body = await request.json();
     const {
       name,
@@ -24,6 +16,7 @@ export async function POST(request: NextRequest) {
       sourcePage,
       contactMethod,
       consentDoctorShare,
+      consentCommercial,
     } = body;
 
     if (!name || (!email && !whatsapp)) {
@@ -36,10 +29,25 @@ export async function POST(request: NextRequest) {
     const method = contactMethod || "form";
     const isCommercialClinicLead = method === "clinic-directory";
 
+    if (isCommercialClinicLead && consentCommercial !== true) {
+      return NextResponse.json(
+        { error: "É necessário autorizar o contato comercial" },
+        { status: 400 }
+      );
+    }
+
     if (!isCommercialClinicLead && consentDoctorShare !== true) {
       return NextResponse.json(
-        { error: "E necessario autorizar o compartilhamento com um medico parceiro" },
+        { error: "É necessário autorizar o compartilhamento com um médico parceiro" },
         { status: 400 }
+      );
+    }
+
+    const rateLimit = await checkRateLimit(ip, "lead_capture", 5, 60);
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        { error: "Muitas solicitações. Tente novamente em 1 hora." },
+        { status: 429 }
       );
     }
 
@@ -56,6 +64,9 @@ export async function POST(request: NextRequest) {
         consentDoctorShare: !isCommercialClinicLead,
         consentDoctorShareAt: !isCommercialClinicLead ? new Date() : null,
         submittedFromIp: ip,
+        notes: isCommercialClinicLead
+          ? "Consentimento comercial para diretório pago: sim"
+          : null,
       },
     });
 

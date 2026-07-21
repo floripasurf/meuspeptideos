@@ -12,7 +12,7 @@ export type ClinicCardData = {
 
 function whatsappLink(value: string) {
   const digits = value.replace(/\D/g, "");
-  return `https://wa.me/${digits.startsWith("55") ? digits : `55${digits}`}`;
+  return `https://wa.me/${digits.startsWith("55") && digits.length >= 12 ? digits : `55${digits}`}`;
 }
 
 export function ClinicDirectory({
@@ -27,10 +27,10 @@ export function ClinicDirectory({
   return (
     <section className="rounded-xl border border-zinc-200 bg-white p-6">
       <h2 className="text-xl font-bold text-zinc-900">
-        Clinicas em destaque em {cityName}
+        Clínicas em destaque em {cityName}
       </h2>
       <p className="mt-1 text-sm text-zinc-500">
-        Clinicas cadastradas no diretorio pago do Meus Peptideos.
+        Clínicas cadastradas no diretório pago do Meus Peptídeos.
       </p>
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
         {clinics.map((clinic) => (
@@ -41,7 +41,7 @@ export function ClinicDirectory({
             )}
             {clinic.googleRating && (
               <p className="mt-1 text-xs text-amber-600">
-                {clinic.googleRating.toFixed(1)} ({clinic.googleReviews ?? 0} avaliacoes)
+                {clinic.googleRating.toFixed(1)} ({clinic.googleReviews ?? 0} avaliações)
               </p>
             )}
             <div className="mt-3 flex flex-wrap gap-2 text-sm">
@@ -70,8 +70,8 @@ export function ClinicDirectory({
         ))}
       </div>
       <p className="mt-3 text-[11px] text-zinc-400">
-        Listagem paga. A presenca aqui nao constitui recomendacao medica,
-        garantia de resultado ou validacao de conduta clinica.
+        Listagem paga. A presença aqui não constitui recomendação médica,
+        garantia de resultado ou validação de conduta clínica.
       </p>
     </section>
   );

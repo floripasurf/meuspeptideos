@@ -26,6 +26,7 @@ export function ClinicInterestForm({ sourcePage }: { sourcePage: string }) {
           peptideInterest: [],
           sourcePage,
           contactMethod: "clinic-directory",
+          consentCommercial: consent,
         }),
       });
       setStatus(res.ok ? "success" : "error");
@@ -56,7 +57,7 @@ export function ClinicInterestForm({ sourcePage }: { sourcePage: string }) {
         required
         value={clinicName}
         onChange={(e) => setClinicName(e.target.value)}
-        placeholder="Nome da clinica"
+        placeholder="Nome da clínica"
         className="w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-900"
       />
       <input
@@ -89,8 +90,8 @@ export function ClinicInterestForm({ sourcePage }: { sourcePage: string }) {
           onChange={(e) => setConsent(e.target.checked)}
           className="mt-0.5"
         />
-        Autorizo contato comercial do Meus Peptideos sobre o diretorio pago
-        para clinicas.
+        Autorizo contato comercial do Meus Peptídeos sobre o diretório pago
+        para clínicas.
       </label>
       <button
         disabled={status === "loading"}

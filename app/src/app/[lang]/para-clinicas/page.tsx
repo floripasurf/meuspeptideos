@@ -10,9 +10,9 @@ type Props = { params: Promise<{ lang: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
   return {
-    title: "Diretorio para clinicas - Meus Peptideos",
+    title: "Diretório para clínicas - Meus Peptídeos",
     description:
-      "Destaque sua clinica em paginas locais de alta intencao para pacientes que pesquisam peptideos e tratamentos relacionados.",
+      "Destaque sua clínica em páginas locais de alta intenção para pacientes que pesquisam peptídeos e tratamentos relacionados.",
     alternates: langAlternates(lang, "/para-clinicas"),
     robots: { index: true, follow: true },
   };
@@ -28,20 +28,20 @@ export default async function ParaClinicasPage({ params }: Props) {
         <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 sm:px-6 lg:grid-cols-[1.15fr_0.85fr] lg:py-16">
           <div>
             <p className="text-sm font-semibold uppercase tracking-wide text-emerald-600">
-              Diretorio premium
+              Diretório premium
             </p>
             <h1 className="mt-3 max-w-3xl text-3xl font-bold tracking-tight text-zinc-950 sm:text-5xl">
-              Apareca para pacientes que ja procuram sua especialidade
+              Apareça para pacientes que já procuram sua especialidade
             </h1>
             <p className="mt-5 max-w-2xl text-lg leading-relaxed text-zinc-600">
-              O Meus Peptideos organiza paginas por cidade e composto para
-              capturar demanda de alta intencao. Clinicas selecionadas podem
-              aparecer em destaque nessas paginas locais.
+              O Meus Peptídeos organiza páginas por cidade e composto para
+              capturar demanda de alta intenção. Clínicas selecionadas podem
+              aparecer em destaque nessas páginas locais.
             </p>
             <div className="mt-8 grid gap-3 sm:grid-cols-3">
               {[
-                "Buscas qualificadas no nicho de peptideos",
-                "Paginas locais por composto e cidade",
+                "Buscas qualificadas no nicho de peptídeos",
+                "Páginas locais por composto e cidade",
                 "Leads com interesse declarado",
               ].map((item) => (
                 <div key={item} className="rounded-lg border border-zinc-200 p-4">
@@ -56,8 +56,8 @@ export default async function ParaClinicasPage({ params }: Props) {
               Avaliar disponibilidade
             </h2>
             <p className="mt-2 text-sm leading-relaxed text-zinc-600">
-              Planos a partir de R$ 297/mes por cidade, sem fidelidade. A
-              ativacao depende de disponibilidade local e revisao do cadastro.
+              Planos a partir de R$ 297/mês por cidade, sem fidelidade. A
+              ativação depende de disponibilidade local e revisão do cadastro.
             </p>
             <div className="mt-5">
               <ClinicInterestForm sourcePage={`/${lang}/para-clinicas`} />
@@ -71,29 +71,29 @@ export default async function ParaClinicasPage({ params }: Props) {
           <div>
             <h2 className="text-lg font-semibold text-zinc-950">Como funciona</h2>
             <p className="mt-2 text-sm leading-relaxed text-zinc-600">
-              A clinica aparece em paginas locais relevantes quando houver
-              assinatura ativa e cadastro publico aprovado.
+              A clínica aparece em páginas locais relevantes quando houver
+              assinatura ativa e cadastro público aprovado.
             </p>
           </div>
           <div>
             <h2 className="text-lg font-semibold text-zinc-950">Modelo inicial</h2>
             <p className="mt-2 text-sm leading-relaxed text-zinc-600">
-              Cobranca manual por Pix no primeiro ciclo. Gateway recorrente fica
-              para depois que houver tracao suficiente.
+              Cobrança manual por Pix no primeiro ciclo. Gateway recorrente fica
+              para depois que houver tração suficiente.
             </p>
           </div>
           <div>
             <h2 className="text-lg font-semibold text-zinc-950">Compliance</h2>
             <p className="mt-2 text-sm leading-relaxed text-zinc-600">
-              A listagem e paga e nao constitui recomendacao medica. Conteudo
-              informativo continua separado de qualquer decisao clinica.
+              A listagem é paga e não constitui recomendação médica. Conteúdo
+              informativo continua separado de qualquer decisão clínica.
             </p>
           </div>
         </div>
         <p className="mt-8 text-sm text-zinc-500">
-          Quer entender antes de cadastrar? Veja tambem a pagina{" "}
+          Quer entender antes de cadastrar? Veja também a página{" "}
           <Link href={`/${lang}/sobre`} className="text-emerald-600 hover:underline">
-            sobre o Meus Peptideos
+            sobre o Meus Peptídeos
           </Link>
           .
         </p>

@@ -134,8 +134,8 @@ export function LocalLeadForm({
             onChange={(e) => setConsentDoctorShare(e.target.checked)}
             className="mt-0.5"
           />
-          Autorizo o compartilhamento dos meus dados com um medico parceiro para
-          contato sobre esta solicitacao.
+          Autorizo o compartilhamento dos meus dados com um médico parceiro para
+          contato sobre esta solicitação.
         </label>
         <button
           type="submit"
@@ -150,8 +150,8 @@ export function LocalLeadForm({
           </p>
         )}
         <p className="text-xs text-zinc-400">
-          Seus dados sao confidenciais e serao usados somente para esta
-          indicacao. A indicacao e informativa e nao substitui consulta medica.
+          Seus dados são confidenciais e serão usados somente para esta
+          indicação. A indicação é informativa e não substitui consulta médica.
         </p>
       </form>
     </div>

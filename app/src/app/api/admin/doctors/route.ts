@@ -11,6 +11,31 @@ export async function GET() {
 
   const doctors = await prisma.doctor.findMany({
     orderBy: { createdAt: "desc" },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      phone: true,
+      whatsapp: true,
+      crm: true,
+      crmState: true,
+      specialty: true,
+      address: true,
+      city: true,
+      state: true,
+      peptidesPrescribed: true,
+      yearsExperience: true,
+      acceptsPartnership: true,
+      emailVerified: true,
+      verifiedAt: true,
+      consentLgpd: true,
+      consentLgpdAt: true,
+      submittedFromIp: true,
+      verified: true,
+      active: true,
+      createdAt: true,
+      updatedAt: true,
+    },
   });
 
   return NextResponse.json(doctors);

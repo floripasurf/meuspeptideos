@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 async function guard() {
   return (await isAuthenticated())
     ? null
-    : NextResponse.json({ error: "Nao autorizado" }, { status: 401 });
+    : NextResponse.json({ error: "Não autorizado" }, { status: 401 });
 }
 
 export async function GET() {
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
       name: "Instagram topo de funil",
       channel: "instagram",
       landingPath: "/pt/instagram",
-      objective: "Gerar demanda educacional, pedidos de orcamento e parceiros B2B.",
+      objective: "Gerar demanda educacional, pedidos de orçamento e parceiros B2B.",
       status: "active",
     },
     update: {

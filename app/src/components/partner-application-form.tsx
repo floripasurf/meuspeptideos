@@ -63,8 +63,8 @@ export function PartnerApplicationForm({ sourcePage }: { sourcePage: string }) {
   if (status === "success") {
     return (
       <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-5 text-sm text-emerald-800">
-        Cadastro recebido. Vamos revisar o perfil, checar aderencia regulatoria e responder
-        com os proximos passos da parceria.
+        Cadastro recebido. Vamos revisar o perfil, checar aderência regulatória e responder
+        com os próximos passos da parceria.
       </div>
     );
   }
@@ -85,14 +85,14 @@ export function PartnerApplicationForm({ sourcePage }: { sourcePage: string }) {
       <div className="grid gap-3 sm:grid-cols-2">
         <input
           required
-          placeholder="Nome da farmacia"
+          placeholder="Nome da farmácia"
           value={form.pharmacyName}
           onChange={(e) => setForm({ ...form, pharmacyName: e.target.value })}
           className="rounded-lg border border-zinc-200 px-3 py-2 text-sm"
         />
         <input
           required
-          placeholder="Responsavel"
+          placeholder="Responsável"
           value={form.contactName}
           onChange={(e) => setForm({ ...form, contactName: e.target.value })}
           className="rounded-lg border border-zinc-200 px-3 py-2 text-sm"
@@ -158,14 +158,14 @@ export function PartnerApplicationForm({ sourcePage }: { sourcePage: string }) {
         className="w-full rounded-lg border border-zinc-200 px-3 py-2 text-sm"
       >
         <option value="">Volume mensal aproximado</option>
-        <option value="ate-10">Ate 10 pedidos/mes</option>
-        <option value="10-50">10 a 50 pedidos/mes</option>
-        <option value="50-150">50 a 150 pedidos/mes</option>
-        <option value="150+">150+ pedidos/mes</option>
+        <option value="ate-10">Até 10 pedidos/mês</option>
+        <option value="10-50">10 a 50 pedidos/mês</option>
+        <option value="50-150">50 a 150 pedidos/mês</option>
+        <option value="150+">150+ pedidos/mês</option>
       </select>
 
       <textarea
-        placeholder="Observacoes sobre envio, receita, area atendida ou operacao"
+        placeholder="Observações sobre envio, receita, área atendida ou operação"
         value={form.notes}
         onChange={(e) => setForm({ ...form, notes: e.target.value })}
         className="min-h-24 w-full rounded-lg border border-zinc-200 px-3 py-2 text-sm"
@@ -179,8 +179,8 @@ export function PartnerApplicationForm({ sourcePage }: { sourcePage: string }) {
           onChange={(e) => setForm({ ...form, consentCommercial: e.target.checked })}
           className="mt-0.5"
         />
-        Autorizo contato comercial do Meus Peptideos para avaliar parceria B2B e
-        entendo que qualquer atendimento deve respeitar prescricao, regras da Anvisa e LGPD.
+        Autorizo contato comercial do Meus Peptídeos para avaliar parceria B2B e
+        entendo que qualquer atendimento deve respeitar prescrição, regras da Anvisa e LGPD.
       </label>
 
       <button

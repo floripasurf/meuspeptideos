@@ -91,7 +91,7 @@ export default function AdminSocialPage() {
         <div>
           <h1 className="text-2xl font-bold text-white">Social e Instagram</h1>
           <p className="mt-1 text-sm text-navy-400">
-            Campanhas, ideias de conteudo e eventos UTM do topo de funil.
+            Campanhas, ideias de conteúdo e eventos UTM do topo de funil.
           </p>
         </div>
         <button

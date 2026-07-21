@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
     const rateLimit = await checkRateLimit(ip, "pharmacy_partner_apply", 5, 60);
     if (!rateLimit.allowed) {
       return NextResponse.json(
-        { error: "Muitas solicitacoes. Tente novamente em 1 hora." },
+        { error: "Muitas solicitações. Tente novamente em 1 hora." },
         { status: 429 }
       );
     }
@@ -44,14 +44,14 @@ export async function POST(request: NextRequest) {
 
     if (!pharmacyName || !contactName || !email || !email.includes("@")) {
       return NextResponse.json(
-        { error: "Farmacia, responsavel e email valido sao obrigatorios" },
+        { error: "Farmácia, responsável e email válido são obrigatórios" },
         { status: 400 }
       );
     }
 
     if (body.consentCommercial !== true) {
       return NextResponse.json(
-        { error: "E necessario autorizar contato comercial" },
+        { error: "É necessário autorizar contato comercial" },
         { status: 400 }
       );
     }
