@@ -172,6 +172,155 @@ model Pharmacy {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   quotes          QuoteRequest[]
+  prospects       PharmacyProspect[]
+}
+
+model PharmacyProspect {
+  id                  String         @id @default(cuid())
+  name                String
+  slug                String?
+  email               String?
+  whatsapp            String?
+  website             String?
+  googlePlaceId       String?        @unique
+  googleMapsUrl       String?
+  address             String?
+  city                String?
+  state               String?
+  googleRating        Float?
+  googleReviews       Int?
+  compounds           String[]
+  source              ProspectSource @default(manual)
+  status              ProspectStatus @default(discovered)
+  fitScore            Int            @default(0)
+  riskScore           Int            @default(0)
+  riskFlags           String[]
+  evidence            Json?
+  outreachNotes       String?
+  lastContactedAt     DateTime?
+  nextFollowUpAt      DateTime?
+  optedOut            Boolean        @default(false)
+  convertedPharmacyId String?
+  convertedPharmacy   Pharmacy?      @relation(fields: [convertedPharmacyId], references: [id])
+  applications        PartnerApplication[]
+  outreachEvents      OutreachEvent[]
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+
+  @@index([status, fitScore])
+  @@index([city, state])
+  @@index([source, createdAt])
+}
+
+model OutreachCampaign {
+  id          String          @id @default(cuid())
+  name        String
+  channel     OutreachChannel
+  description String?
+  status      String          @default("draft")
+  startedAt   DateTime?
+  endedAt     DateTime?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  events      OutreachEvent[]
+}
+
+model OutreachEvent {
+  id          String            @id @default(cuid())
+  prospectId  String
+  prospect    PharmacyProspect  @relation(fields: [prospectId], references: [id], onDelete: Cascade)
+  campaignId  String?
+  campaign    OutreachCampaign? @relation(fields: [campaignId], references: [id])
+  channel     OutreachChannel
+  subject     String?
+  message     String?
+  status      String            @default("planned")
+  scheduledAt DateTime?
+  sentAt      DateTime?
+  responseAt  DateTime?
+  createdAt   DateTime          @default(now())
+
+  @@index([prospectId, createdAt])
+  @@index([campaignId, status])
+}
+
+model PartnerApplication {
+  id             String            @id @default(cuid())
+  prospectId     String?
+  prospect       PharmacyProspect? @relation(fields: [prospectId], references: [id])
+  pharmacyName   String
+  contactName    String
+  email          String
+  whatsapp       String?
+  city           String?
+  state          String?
+  website        String?
+  compounds      String[]
+  monthlyDemand  String?
+  status         String            @default("new")
+  consentCommercial Boolean        @default(false)
+  sourcePage     String
+  submittedFromIp String?
+  notes          String?
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  @@index([status, createdAt])
+  @@index([submittedFromIp, createdAt])
+}
+
+model SocialFunnelCampaign {
+  id          String                   @id @default(cuid())
+  slug        String                   @unique
+  name        String
+  channel     String                   @default("instagram")
+  landingPath String
+  objective   String
+  status      String                   @default("draft")
+  startsAt    DateTime?
+  endsAt      DateTime?
+  ideas       SocialContentIdea[]
+  events      SocialAttributionEvent[]
+  createdAt   DateTime                 @default(now())
+  updatedAt   DateTime                 @updatedAt
+}
+
+model SocialContentIdea {
+  id          String                @id @default(cuid())
+  campaignId  String?
+  campaign    SocialFunnelCampaign? @relation(fields: [campaignId], references: [id])
+  externalId  String?               @unique
+  pillar      String
+  format      String
+  hook        String
+  angle       String
+  target      SocialAttributionTarget
+  cta         String
+  status      String                @default("backlog")
+  publishAfter DateTime?
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+
+  @@index([status, target])
+}
+
+model SocialAttributionEvent {
+  id          String                  @id @default(cuid())
+  campaignId  String?
+  campaign    SocialFunnelCampaign?   @relation(fields: [campaignId], references: [id])
+  source      String
+  medium      String?
+  content     String?
+  term        String?
+  landingPath String
+  target      SocialAttributionTarget
+  visitorId   String?
+  submittedFromIp String?
+  metadata    Json?
+  createdAt   DateTime                @default(now())
+
+  @@index([campaignId, createdAt])
+  @@index([source, target, createdAt])
 }
 
 model QuoteRequest {
@@ -313,4 +462,38 @@ enum LeadStatus {
   matched    // conectado a uma clínica
   converted  // virou paciente
   lost
+}
+
+enum ProspectSource {
+  manual
+  csv
+  google_maps
+  inbound
+  instagram
+  partnership
+}
+
+enum ProspectStatus {
+  discovered
+  qualified
+  contacted
+  negotiating
+  partner
+  rejected
+  opted_out
+}
+
+enum OutreachChannel {
+  email
+  whatsapp
+  phone
+  instagram
+}
+
+enum SocialAttributionTarget {
+  patient_quote
+  doctor_signup
+  pharmacy_partner
+  clinic_directory
+  education
 }

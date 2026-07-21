@@ -15,8 +15,14 @@ export default function AdminLayout({
           <Link className="rounded-lg px-3 py-1.5 text-navy-300 hover:bg-navy-800 hover:text-white" href="/admin/pharmacies">
             Farmacias
           </Link>
+          <Link className="rounded-lg px-3 py-1.5 text-navy-300 hover:bg-navy-800 hover:text-white" href="/admin/prospects">
+            Prospects
+          </Link>
           <Link className="rounded-lg px-3 py-1.5 text-navy-300 hover:bg-navy-800 hover:text-white" href="/admin/quotes">
             Orcamentos
+          </Link>
+          <Link className="rounded-lg px-3 py-1.5 text-navy-300 hover:bg-navy-800 hover:text-white" href="/admin/social">
+            Social
           </Link>
         </div>
       </nav>

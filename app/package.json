@@ -8,7 +8,8 @@
     "postinstall": "prisma generate",
     "start": "next start",
     "lint": "eslint",
-    "test": "vitest run"
+    "test": "vitest run",
+    "prospects:import": "node scripts/import-pharmacy-prospects.mjs"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.6.0",
