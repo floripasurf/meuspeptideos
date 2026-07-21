@@ -20,6 +20,7 @@ export function proxy(request: NextRequest) {
   if (
     pathname.startsWith("/_next") ||
     pathname.startsWith("/api") ||
+    pathname.startsWith("/admin") ||
     pathname.includes(".") // files like favicon.ico, logo.svg, etc.
   ) {
     return;
