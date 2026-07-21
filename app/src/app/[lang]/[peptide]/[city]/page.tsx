@@ -7,6 +7,7 @@ import { CategoryBadge } from "@/components/category-badge";
 import { LocalLeadForm } from "@/components/local-lead-form";
 import { getCityBySlug } from "@/lib/cities";
 import { getDictionary, hasLocale } from "@/lib/i18n";
+import { langAlternates } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -26,9 +27,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${peptide.name} em ${city.name}, ${city.stateAbbr} — Onde Encontrar`,
     description: `Informações sobre ${peptide.name} em ${city.name}: como encontrar profissionais qualificados, status regulatório no Brasil e indicação de médicos locais.`,
-    alternates: {
-      canonical: `https://meuspeptideos.com.br/${peptideSlug}/${citySlug}`,
-    },
+    alternates: langAlternates(lang, `/${peptideSlug}/${citySlug}`),
   };
 }
 

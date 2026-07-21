@@ -1,12 +1,17 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getDictionary, hasLocale } from "@/lib/i18n";
+import { langAlternates } from "@/lib/seo";
 
-export const metadata = {
-  title: "Política de Privacidade para Médicos — LGPD",
-  description:
-    "Como tratamos os dados pessoais dos médicos cadastrados no Meus Peptídeos, conforme a Lei Geral de Proteção de Dados (LGPD).",
-};
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params;
+  return {
+    title: "Política de Privacidade para Médicos — LGPD",
+    description:
+      "Como tratamos os dados pessoais dos médicos cadastrados no Meus Peptídeos, conforme a Lei Geral de Proteção de Dados (LGPD).",
+    alternates: langAlternates(lang, "/privacidade-medicos"),
+  };
+}
 
 type Props = { params: Promise<{ lang: string }> };
 

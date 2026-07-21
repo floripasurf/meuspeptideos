@@ -32,13 +32,6 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
     openGraph: {
       locale: localeMap[lang],
     },
-    alternates: {
-      languages: {
-        "pt-BR": "/pt",
-        "en-US": "/en",
-        "es-419": "/es",
-      },
-    },
   };
 }
 

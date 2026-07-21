@@ -1,12 +1,17 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getDictionary, hasLocale } from "@/lib/i18n";
+import { langAlternates } from "@/lib/seo";
 
-export const metadata = {
-  title: "Sobre — Meus Peptídeos",
-  description:
-    "Quem somos, nossa missão e nosso compromisso com informação científica rigorosa sobre peptídeos no Brasil.",
-};
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params;
+  return {
+    title: "Sobre — Meus Peptídeos",
+    description:
+      "Quem somos, nossa missão e nosso compromisso com informação científica rigorosa sobre peptídeos no Brasil.",
+    alternates: langAlternates(lang, "/sobre"),
+  };
+}
 
 type Props = { params: Promise<{ lang: string }> };
 

@@ -7,6 +7,7 @@ import { CategoryBadge } from "@/components/category-badge";
 import { NewsletterForm } from "@/components/newsletter-form";
 import { useCases } from "@/lib/use-cases";
 import { getDictionary, hasLocale } from "@/lib/i18n";
+import { langAlternates } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -19,6 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: useCase.label,
     description: useCase.shortDescription,
+    alternates: langAlternates(lang, `/uso/${slug}`),
   };
 }
 

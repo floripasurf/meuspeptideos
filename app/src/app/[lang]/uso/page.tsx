@@ -2,12 +2,17 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { useCases } from "@/lib/use-cases";
 import { getDictionary, hasLocale } from "@/lib/i18n";
+import { langAlternates } from "@/lib/seo";
 
-export const metadata = {
-  title: "Peptídeos por Uso — Ranking por Categoria",
-  description:
-    "Encontre o melhor peptídeo para cada objetivo: emagrecimento, longevidade, recuperação, anti-aging, cognição, libido e mais. Ranking baseado em evidência científica.",
-};
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params;
+  return {
+    title: "Peptídeos por Uso — Ranking por Categoria",
+    description:
+      "Encontre o melhor peptídeo para cada objetivo: emagrecimento, longevidade, recuperação, anti-aging, cognição, libido e mais. Ranking baseado em evidência científica.",
+    alternates: langAlternates(lang, "/uso"),
+  };
+}
 
 type Props = { params: Promise<{ lang: string }> };
 

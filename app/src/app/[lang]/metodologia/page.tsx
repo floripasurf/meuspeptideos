@@ -1,11 +1,16 @@
 import { notFound } from "next/navigation";
 import { getDictionary, hasLocale } from "@/lib/i18n";
+import { langAlternates } from "@/lib/seo";
 
-export const metadata = {
-  title: "Metodologia — Como Classificamos Evidências",
-  description:
-    "Nossa metodologia para classificar evidências científicas sobre peptídeos: como diferenciamos comprovado, em pesquisa e não comprovado.",
-};
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params;
+  return {
+    title: "Metodologia — Como Classificamos Evidências",
+    description:
+      "Nossa metodologia para classificar evidências científicas sobre peptídeos: como diferenciamos comprovado, em pesquisa e não comprovado.",
+    alternates: langAlternates(lang, "/metodologia"),
+  };
+}
 
 type Props = { params: Promise<{ lang: string }> };
 

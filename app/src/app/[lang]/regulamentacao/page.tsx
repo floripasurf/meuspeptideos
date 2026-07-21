@@ -1,12 +1,17 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getDictionary, hasLocale } from "@/lib/i18n";
+import { langAlternates } from "@/lib/seo";
 
-export const metadata = {
-  title: "Regulamentação de Peptídeos no Brasil — ANVISA, FDA e EMA",
-  description:
-    "Status regulatório dos peptídeos no Brasil e no mundo. Como ANVISA, FDA e EMA classificam semaglutida, tirzepatida, BPC-157 e outros compostos. Atualizado em 2026.",
-};
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params;
+  return {
+    title: "Regulamentação de Peptídeos no Brasil — ANVISA, FDA e EMA",
+    description:
+      "Status regulatório dos peptídeos no Brasil e no mundo. Como ANVISA, FDA e EMA classificam semaglutida, tirzepatida, BPC-157 e outros compostos. Atualizado em 2026.",
+    alternates: langAlternates(lang, "/regulamentacao"),
+  };
+}
 
 type Props = { params: Promise<{ lang: string }> };
 

@@ -9,6 +9,7 @@ import { protocols, type Protocol } from "@/lib/protocols";
 import { getDictionary, hasLocale, type Dictionary } from "@/lib/i18n";
 import { getCompoundTranslation } from "@/lib/compound-translations";
 import { purchaseInfo } from "@/lib/purchase-info";
+import { langAlternates } from "@/lib/seo";
 
 type Benefit = {
   name: string;
@@ -35,7 +36,7 @@ type InternetClaim = {
 type Props = { params: Promise<{ lang: string; slug: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
+  const { lang, slug } = await params;
   const peptide = await prisma.peptide.findUnique({
     where: { slug },
     select: { name: true, description: true, aliases: true },
@@ -51,6 +52,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${peptide.name}${aliasText} — Benefícios, Riscos e Pesquisa`,
     description: peptide.description.slice(0, 160),
+    alternates: langAlternates(lang, `/peptideo/${slug}`),
   };
 }
 

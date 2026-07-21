@@ -6,6 +6,7 @@ import { ResearchPhaseBadge } from "@/components/research-phase-badge";
 import { CategoryBadge } from "@/components/category-badge";
 import { PeptideCategory } from "@/generated/prisma/enums";
 import { getDictionary, hasLocale } from "@/lib/i18n";
+import { langAlternates } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -82,6 +83,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${meta.label} — Peptídeos`,
     description: meta.description,
+    alternates: langAlternates(lang, `/categoria/${slug}`),
   };
 }
 

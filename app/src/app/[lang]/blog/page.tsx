@@ -3,14 +3,19 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { NewsletterForm } from "@/components/newsletter-form";
 import { getDictionary, hasLocale } from "@/lib/i18n";
+import { langAlternates } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = {
-  title: "Blog — Artigos sobre Peptídeos",
-  description:
-    "Artigos sobre peptídeos: inovações, regulamentação, pesquisas promissoras e o futuro da medicina peptídica no Brasil.",
-};
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params;
+  return {
+    title: "Blog — Artigos sobre Peptídeos",
+    description:
+      "Artigos sobre peptídeos: inovações, regulamentação, pesquisas promissoras e o futuro da medicina peptídica no Brasil.",
+    alternates: langAlternates(lang, "/blog"),
+  };
+}
 
 type Props = { params: Promise<{ lang: string }> };
 
