@@ -1,12 +1,23 @@
 # Receita Imediata — Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Ativar as 3 fontes de receita imediata do Meus Peptídeos: (A) orçamentos comissionados com farmácias de manipulação, (B) venda de leads para médicos cadastrados, (C) diretório premium de clínicas nas páginas locais.
 
 **Architecture:** Tudo dentro do app Next.js existente (`app/`). Novos modelos Prisma (`Pharmacy`, `QuoteRequest`, `LeadDelivery` + campos públicos em `Clinic`), uma API de orçamento com roteamento por matching puro (testável), formulário client-side no CTA "compounding" já existente das páginas de peptídeo, e extensões do admin protegido por senha que já existe. E-mails via Resend seguindo o padrão de `src/lib/email.ts`.
 
-**Tech Stack:** Next.js 16 (App Router, Turbopack), Prisma 7 (`prisma-client` generator, output custom `src/generated/prisma`), Neon Postgres, Resend, Tailwind 4, Vitest (novo, só para lógica pura).
+**Tech Stack:** Next.js 16 (App Router, Turbopack), Prisma 7 (`prisma-client` generator, output custom `src/generated/prisma`), Neon Postgres, Resend, Tailwind 4, Vitest (já configurado, só para lógica pura).
+
+## Execution Status — 2026-07-21
+
+Implementado, commitado e pushado em `main`.
+
+- Commits principais: `3955a82`, `e73e6e6`, `cf51cfe`, `969d461`, `0e0f157`, `647b168`, `3411fd2`, `e7425f6`.
+- Migration aplicada em produção: `20260721123000_lead_doctor_share_consent`; `npx prisma migrate status` retornou `Database schema is up to date!`.
+- Env de produção adicionado: `ADMIN_EMAIL`.
+- Deploy de produção: `dpl_4mPUBZdvgLye9FkkC7PtnpBYkg4v`, URL Vercel `https://meuspeptideoscom-pimwnsjfr-floripasurfs-projects.vercel.app`, alias principal validado em `https://meuspeptideos.com.br`.
+- Smoke produção validado: `/pt/para-clinicas`, `/pt/peptideo/bpc-157`, `/pt/semaglutida/sao-paulo`, honeypot de `/api/orcamento`, validação de consentimento, POST válido de orçamento e POST válido de lead com limpeza dos registros de teste.
+- Observação operacional: `vercel inspect` também mostra o alias `https://pulse-rh.vercel.app` preso a este projeto/deployment. Não removido nesta execução para evitar impacto fora do escopo; vale revisar no Vercel.
 
 ## Global Constraints
 
@@ -19,7 +30,8 @@
 - **Deploy:** manual — `npx vercel --yes --prod`. ANTES de qualquer deploy/env: `cat .vercel/project.json` e confirmar `"projectName":"meuspeptideos.com.br"` (esta pasta já esteve linkada por engano ao projeto do Chamei).
 - **Git:** commit + push após cada task (regra global do Raphael).
 - **Strings:** componentes novos com copy hardcoded em PT-BR (padrão do `LocalLeadForm`); dicionários i18n ficam para depois (YAGNI).
-- **Env pendente:** `ADMIN_EMAIL` precisa existir em produção para os alertas (Task 8 cobre).
+- **Env pendente:** `ADMIN_EMAIL` precisa existir em produção para os alertas (Task 10 cobre).
+- **Estado atual do repo em 2026-07-21:** plano implementado. Leads antigos sem `consentDoctorShare=true` continuam inelegíveis para entrega a médicos.
 
 ## File Structure
 
@@ -57,7 +69,7 @@ Fases: Tasks 1–2 são fundação; Tasks 3–6 = Receita A (farmácias); Task 7
 
 ---
 
-### Task 1: Vitest para lógica pura
+### Task 1: Vitest para lógica pura — DONE
 
 **Files:**
 - Modify: `package.json` (script `test`)
@@ -66,7 +78,7 @@ Fases: Tasks 1–2 são fundação; Tasks 3–6 = Receita A (farmácias); Task 7
 **Interfaces:**
 - Produces: comando `npm test` (usado nas Tasks 3+).
 
-- [ ] **Step 1: Instalar e configurar**
+- [x] **Step 1: Instalar e configurar**
 
 ```bash
 cd /Users/raphaellages/projects/meuspeptideos/meuspeptideos/app
@@ -92,12 +104,12 @@ export default defineConfig({
 
 Em `package.json`, adicionar em `"scripts"`: `"test": "vitest run"`.
 
-- [ ] **Step 2: Smoke test roda (e falha por não haver testes — ok)**
+- [x] **Step 2: Smoke test roda (e falha por não haver testes — ok)**
 
 Run: `npm test`
 Expected: `No test files found` (exit não-zero é aceitável neste passo; Task 3 cria o primeiro teste).
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add package.json package-lock.json vitest.config.ts
@@ -106,7 +118,7 @@ git commit -m "chore: add vitest for pure-logic tests"
 
 ---
 
-### Task 2: Modelos de receita no schema + migration manual
+### Task 2: Modelos de receita no schema + migration manual — DONE
 
 **Files:**
 - Modify: `prisma/schema.prisma`
@@ -115,7 +127,7 @@ git commit -m "chore: add vitest for pure-logic tests"
 **Interfaces:**
 - Produces: modelos Prisma `Pharmacy`, `QuoteRequest` (enum `QuoteStatus`), `LeadDelivery`; campos novos em `Clinic`: `isPublic: boolean`, `premiumUntil: DateTime?`, `bookingUrl: string?`. Relações: `Lead.deliveries`, `Doctor.deliveries`.
 
-- [ ] **Step 1: Adicionar ao `prisma/schema.prisma`**
+- [x] **Step 1: Adicionar ao `prisma/schema.prisma`**
 
 Novos modelos (colocar após `model Clinic`):
 
@@ -199,7 +211,7 @@ Em `model Clinic`, adicionar:
   bookingUrl   String? // link de agendamento exibido no diretório
 ```
 
-- [ ] **Step 2: Criar a migration manual**
+- [x] **Step 2: Criar a migration manual**
 
 `prisma/migrations/20260721120000_revenue_models/migration.sql`:
 
@@ -281,7 +293,7 @@ ALTER TABLE "LeadDelivery" ADD CONSTRAINT "LeadDelivery_leadId_fkey" FOREIGN KEY
 ALTER TABLE "LeadDelivery" ADD CONSTRAINT "LeadDelivery_doctorId_fkey" FOREIGN KEY ("doctorId") REFERENCES "Doctor"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 ```
 
-- [ ] **Step 3: Aplicar e regenerar**
+- [x] **Step 3: Aplicar e regenerar**
 
 Run:
 ```bash
@@ -289,12 +301,12 @@ npx prisma migrate deploy && npx prisma generate && npx tsc --noEmit
 ```
 Expected: migration `20260721120000_revenue_models` aplicada; generate ok; tsc sem erros.
 
-- [ ] **Step 4: Verificar no banco**
+- [x] **Step 4: Verificar no banco**
 
 Run: `npx prisma db execute --stdin <<< "SELECT count(*) FROM \"Pharmacy\";"`
 Expected: retorna 0 sem erro (tabela existe).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add prisma/
@@ -315,7 +327,7 @@ git push
 
 Regras de negócio: só ativas; `compounds` vazio = manipula tudo; mesmo estado primeiro; depois quem envia nacionalmente; máx. `limit` (default **2** — lead exclusivo demais não cria competição, espalhado demais vira spam e desvaloriza).
 
-- [ ] **Step 1: Escrever os testes (falhando)**
+- [x] **Step 1: Escrever os testes (falhando)**
 
 `src/lib/quote-routing.test.ts`:
 
@@ -387,12 +399,12 @@ describe("matchPharmacies", () => {
 });
 ```
 
-- [ ] **Step 2: Rodar e ver falhar**
+- [x] **Step 2: Rodar e ver falhar**
 
 Run: `npm test`
 Expected: FAIL — `Cannot find module './quote-routing'`.
 
-- [ ] **Step 3: Implementar**
+- [x] **Step 3: Implementar**
 
 `src/lib/quote-routing.ts`:
 
@@ -428,12 +440,12 @@ export function matchPharmacies<T extends PharmacyMatchInput>(
 }
 ```
 
-- [ ] **Step 4: Rodar e ver passar**
+- [x] **Step 4: Rodar e ver passar**
 
 Run: `npm test`
 Expected: 6 passed.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/lib/quote-routing.ts src/lib/quote-routing.test.ts
@@ -451,7 +463,7 @@ git commit -m "feat: pharmacy matching logic for quote routing"
 - Consumes: `resend`, `FROM`, `ADMIN_EMAIL`, `SITE_URL` já definidos no topo de `email.ts`.
 - Produces: `sendQuoteToPharmacy(pharmacyEmail: string, pharmacyName: string, quote: QuoteEmailData)`, `sendQuoteAdminAlert(quote: QuoteEmailData, routedTo: string[])`, `sendLeadToDoctor(doctorEmail: string, doctorName: string, lead: LeadEmailData)`. Tipos exportados `QuoteEmailData`, `LeadEmailData`. Usados nas Tasks 5 e 7.
 
-- [ ] **Step 1: Implementar (append em `src/lib/email.ts`)**
+- [x] **Step 1: Implementar (append em `src/lib/email.ts`)**
 
 ```ts
 export type QuoteEmailData = {
@@ -544,12 +556,12 @@ export async function sendLeadToDoctor(
 }
 ```
 
-- [ ] **Step 2: Typecheck**
+- [x] **Step 2: Typecheck**
 
 Run: `npx tsc --noEmit`
 Expected: sem erros.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add src/lib/email.ts
@@ -564,23 +576,23 @@ git commit -m "feat: quote + lead-delivery email templates"
 - Create: `src/app/api/orcamento/route.ts`
 
 **Interfaces:**
-- Consumes: `matchPharmacies` (Task 3), `sendQuoteToPharmacy`/`sendQuoteAdminAlert` (Task 4), `checkRateLimit(ip, endpoint, max, windowMin)` e `recordRequest` conforme `src/lib/rate-limit.ts` (ver assinatura exata no arquivo — se só existir `checkRateLimit`, registrar via `prisma.rateLimitEntry.create`).
+- Consumes: `matchPharmacies` (Task 3), `sendQuoteToPharmacy`/`sendQuoteAdminAlert` (Task 4), `checkRateLimit(ip, endpoint, max, windowMin)` e `getClientIp(headers)` de `src/lib/rate-limit.ts`.
 - Produces: endpoint `POST /api/orcamento` com body `{ name, whatsapp, email?, city?, state?, compoundSlug, hasPrescription?, message?, sourcePage?, consentLgpd, website? }`. Usado pelo form da Task 6.
 
-- [ ] **Step 1: Implementar**
+- [x] **Step 1: Implementar**
 
 `src/app/api/orcamento/route.ts`:
 
 ```ts
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { checkRateLimit } from "@/lib/rate-limit";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 import { matchPharmacies } from "@/lib/quote-routing";
 import { sendQuoteToPharmacy, sendQuoteAdminAlert } from "@/lib/email";
 
 export async function POST(request: NextRequest) {
   try {
-    const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+    const ip = getClientIp(request.headers);
     const body = await request.json();
 
     // Honeypot: campo invisível preenchido = bot. Finge sucesso.
@@ -599,7 +611,6 @@ export async function POST(request: NextRequest) {
     if (!rl.allowed) {
       return NextResponse.json({ error: "Muitas solicitações. Tente novamente em 1 hora." }, { status: 429 });
     }
-    await prisma.rateLimitEntry.create({ data: { ip, endpoint: "orcamento" } });
 
     const quote = await prisma.quoteRequest.create({
       data: {
@@ -641,9 +652,9 @@ export async function POST(request: NextRequest) {
 }
 ```
 
-Nota: se `src/lib/rate-limit.ts` já tiver função própria de registro (ler o arquivo), usar a existente em vez do `rateLimitEntry.create` inline.
+Nota: no estado atual do repo, `checkRateLimit` já grava `RateLimitEntry` quando permite a requisição. Não adicionar `prisma.rateLimitEntry.create` nesta rota, senão cada orçamento conta duas vezes contra o limite.
 
-- [ ] **Step 2: Verificação manual local**
+- [x] **Step 2: Verificação manual local**
 
 ```bash
 npm run dev &
@@ -657,7 +668,7 @@ curl -s -X POST localhost:3000/api/orcamento -H 'Content-Type: application/json'
 ```
 Expected: `{"message":"ok"}`, depois erro 400 de consentimento, depois mensagem de sucesso. Conferir: `npx prisma db execute --stdin <<< "SELECT name, status FROM \"QuoteRequest\" ORDER BY \"createdAt\" DESC LIMIT 1;"` → `Teste | new` (sem farmácia cadastrada ainda → status `new`).
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add src/app/api/orcamento/route.ts
@@ -676,7 +687,7 @@ git commit -m "feat: public quote-request endpoint with pharmacy routing"
 - Consumes: `POST /api/orcamento` (Task 5).
 - Produces: `<QuoteRequestForm compoundSlug={slug} compoundName={name} sourcePage={string} />`.
 
-- [ ] **Step 1: Criar o componente**
+- [x] **Step 1: Criar o componente**
 
 `src/components/quote-request-form.tsx` (padrão do `local-lead-form.tsx`: client component, useState, fetch):
 
@@ -700,11 +711,13 @@ export function QuoteRequestForm({ compoundSlug, compoundName, sourcePage }: Pro
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setStatus("loading");
+    const formData = new FormData(e.currentTarget as HTMLFormElement);
+    const website = String(formData.get("website") || "");
     try {
       const res = await fetch("/api/orcamento", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, whatsapp, state: state || null, compoundSlug, hasPrescription, consentLgpd: consent, sourcePage }),
+        body: JSON.stringify({ name, whatsapp, state: state || null, compoundSlug, hasPrescription, consentLgpd: consent, sourcePage, website }),
       });
       setStatus(res.ok ? "success" : "error");
     } catch {
@@ -741,18 +754,18 @@ export function QuoteRequestForm({ compoundSlug, compoundName, sourcePage }: Pro
         Autorizo o envio dos meus dados a uma farmácia de manipulação parceira para receber um orçamento (LGPD).
       </label>
       <button type="submit" disabled={status === "loading"} className="w-full rounded-xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-blue-700 disabled:opacity-60 sm:w-auto">
-        {status === "loading" ? "Enviando..." : "Solicitar orçamento gratuito"}
+        {status === "loading" ? "Enviando..." : "Solicitar orçamento sem custo pelo site"}
       </button>
       {status === "error" && <p className="text-xs text-red-600">Erro ao enviar. Tente novamente.</p>}
       <p className="text-[11px] leading-relaxed text-navy-400">
-        Manipulados exigem prescrição médica. Se você ainda não tem, a farmácia pode orientar sobre como obter avaliação com um profissional habilitado.
+        Manipulados exigem prescrição médica. Se você ainda não tem, procure avaliação com um profissional habilitado antes de solicitar a manipulação.
       </p>
     </form>
   );
 }
 ```
 
-- [ ] **Step 2: Integrar na página de peptídeo**
+- [x] **Step 2: Integrar na página de peptídeo**
 
 Em `src/app/[lang]/peptideo/[slug]/page.tsx`:
 1. Adicionar import no topo: `import { QuoteRequestForm } from "@/components/quote-request-form";`
@@ -770,12 +783,12 @@ Em `src/app/[lang]/peptideo/[slug]/page.tsx`:
 
 (As variáveis `slug`, `name` e `lang` já são props do componente `PurchaseSection` — conferir os nomes exatos na assinatura, ~linha 1030.)
 
-- [ ] **Step 3: Verificar build + manual**
+- [x] **Step 3: Verificar build + manual**
 
 Run: `npm run build`
 Expected: sem erros. Depois `npm run dev`, abrir `localhost:3000/pt/peptideo/bpc-157`, preencher o form, verificar registro novo em `QuoteRequest`.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add src/components/quote-request-form.tsx "src/app/[lang]/peptideo/[slug]/page.tsx"
@@ -788,14 +801,52 @@ git push
 ### Task 7: Receita B — entrega de leads a médicos (admin)
 
 **Files:**
+- Modify: `prisma/schema.prisma` (`Lead` + consentimento de compartilhamento)
+- Create: `prisma/migrations/20260721123000_lead_doctor_share_consent/migration.sql`
+- Modify: `src/components/local-lead-form.tsx`
+- Modify: `src/app/api/lead/route.ts`
 - Create: `src/app/api/admin/leads/deliver/route.ts`
 - Modify: `src/app/admin/doctors/page.tsx` (seção de leads: adicionar coluna/ação "Enviar a médico")
 
 **Interfaces:**
 - Consumes: `isAuthenticated()` de `src/lib/admin-auth.ts`; `sendLeadToDoctor` (Task 4).
-- Produces: `POST /api/admin/leads/deliver` body `{ leadId: string, doctorId: string, price: number }` → cria `LeadDelivery`, envia e-mail, marca `Lead.status = "matched"`.
+- Produces: `POST /api/admin/leads/deliver` body `{ leadId: string, doctorId: string, price: number }` → só entrega leads com consentimento explícito, cria `LeadDelivery`, envia e-mail, marca `Lead.status = "matched"`.
 
-- [ ] **Step 1: API de entrega**
+- [x] **Step 0: Consentimento explícito para vender/entregar lead médico**
+
+Adicionar ao `model Lead`:
+
+```prisma
+  consentDoctorShare   Boolean   @default(false) // autorizou compartilhar dados com médico parceiro
+  consentDoctorShareAt DateTime?
+  submittedFromIp      String?
+
+  @@index([submittedFromIp, createdAt])
+```
+
+Criar migration manual:
+
+```sql
+ALTER TABLE "Lead" ADD COLUMN "consentDoctorShare" BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE "Lead" ADD COLUMN "consentDoctorShareAt" TIMESTAMP(3);
+ALTER TABLE "Lead" ADD COLUMN "submittedFromIp" TEXT;
+CREATE INDEX "Lead_submittedFromIp_createdAt_idx" ON "Lead"("submittedFromIp", "createdAt");
+```
+
+Atualizar `src/components/local-lead-form.tsx`:
+- adicionar checkbox obrigatório: "Autorizo o compartilhamento dos meus dados com um médico parceiro para contato sobre esta solicitação."
+- enviar `consentDoctorShare: true` no body do `POST /api/lead`;
+- ajustar o texto final para não dizer "Não compartilhamos com terceiros sem sua autorização" sem coletar autorização.
+
+Atualizar `src/app/api/lead/route.ts`:
+- usar `getClientIp(request.headers)`;
+- recusar `400` se `consentDoctorShare !== true`;
+- gravar `consentDoctorShare: true`, `consentDoctorShareAt: new Date()`, `submittedFromIp: ip`;
+- considerar `checkRateLimit(ip, "lead_capture", 5, 60)` para alinhar com os endpoints públicos existentes.
+
+**Importante:** leads antigos com `consentDoctorShare=false` não podem ser vendidos/entregues a médicos. Eles podem continuar existindo como demanda agregada, mas não como lead individual compartilhável.
+
+- [x] **Step 1: API de entrega**
 
 `src/app/api/admin/leads/deliver/route.ts`:
 
@@ -820,8 +871,11 @@ export async function POST(request: NextRequest) {
       prisma.doctor.findUnique({ where: { id: doctorId } }),
     ]);
     if (!lead || !doctor) return NextResponse.json({ error: "Lead ou médico não encontrado" }, { status: 404 });
-    if (!doctor.emailVerified || !doctor.active) {
-      return NextResponse.json({ error: "Médico não verificado/ativo" }, { status: 400 });
+    if (!lead.consentDoctorShare) {
+      return NextResponse.json({ error: "Lead sem consentimento explícito para compartilhamento" }, { status: 400 });
+    }
+    if (!doctor.emailVerified || !doctor.verified || !doctor.active || !doctor.acceptsPartnership) {
+      return NextResponse.json({ error: "Médico não verificado/ativo ou sem parceria ativa" }, { status: 400 });
     }
 
     const delivery = await prisma.leadDelivery.create({
@@ -847,20 +901,20 @@ export async function POST(request: NextRequest) {
 }
 ```
 
-- [ ] **Step 2: UI no admin**
+- [x] **Step 2: UI no admin**
 
-Em `src/app/admin/doctors/page.tsx` (é o painel existente com tabela de leads): na linha de cada lead, adicionar um pequeno form client-side (ou componente `DeliverLeadButton` novo em `src/components/deliver-lead-button.tsx` se a página for server component) com: `<select>` de médicos verificados (`doctor.emailVerified && doctor.active`), input numérico de preço (default 40), botão "Enviar". Submit → `fetch("/api/admin/leads/deliver", { method: "POST", body: JSON.stringify({ leadId, doctorId, price }) })` → em sucesso, mostrar "Entregue ✓". Seguir o estilo visual/tabela já usado na página (ler a página antes; ela tem 388 linhas e já lista leads e doctors — reutilizar os dados que ela já busca).
+Em `src/app/admin/doctors/page.tsx` (é o painel existente com tabela de leads e já é client component): atualizar os tipos locais `Doctor` e `Lead` para incluir `acceptsPartnership` e `consentDoctorShare`. Na linha de cada lead, adicionar um form compacto com: `<select>` de médicos elegíveis (`doctor.emailVerified && doctor.verified && doctor.active && doctor.acceptsPartnership`), input numérico de preço (default 40), botão "Enviar". Desabilitar/ocultar a ação quando `lead.consentDoctorShare !== true` e mostrar "sem consentimento". Submit → `fetch("/api/admin/leads/deliver", { method: "POST", body: JSON.stringify({ leadId, doctorId, price }) })` → em sucesso, mostrar "Entregue ✓". Seguir o estilo visual/tabela já usado na página (ler a página antes; ela já lista leads e doctors — reutilizar os dados que ela já busca).
 
-- [ ] **Step 3: Verificação manual**
+- [x] **Step 3: Verificação manual**
 
 `npm run dev` → login em `/admin/login` → entregar um lead de teste a um médico de teste (criar médico verificado via SQL se necessário:
-`npx prisma db execute --stdin <<< "UPDATE \"Doctor\" SET \"emailVerified\"=true, active=true WHERE email='SEU_TESTE';"`).
-Expected: registro em `LeadDelivery`, lead `status=matched`, e-mail disparado (ver log do Resend; sem `RESEND_API_KEY` local o retorno é `{ok:false,reason:"no-resend"}` — aceitável em dev).
+`npx prisma db execute --stdin <<< "UPDATE \"Doctor\" SET \"emailVerified\"=true, verified=true, active=true, \"acceptsPartnership\"=true WHERE email='SEU_TESTE';"`).
+Expected: registro em `LeadDelivery`, lead `status=matched`, e-mail disparado (ver log do Resend; sem `RESEND_API_KEY` local o retorno é `{ok:false,reason:"no-resend"}` — aceitável em dev). Também testar um lead antigo/sem consentimento e confirmar erro 400 sem envio.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
-git add src/app/api/admin/leads/deliver/ src/app/admin/doctors/ src/components/
+git add prisma/ src/app/api/lead/route.ts src/components/local-lead-form.tsx src/app/api/admin/leads/deliver/ src/app/admin/doctors/
 git commit -m "feat(admin): deliver lead to doctor with billing record"
 git push
 ```
@@ -879,7 +933,7 @@ git push
 - Consumes: `isAuthenticated()`.
 - Produces: CRUD mínimo. `PATCH /api/admin/quotes` body `{ id, status?, orderValue?, commissionValue?, paidAt? }`. `POST /api/admin/pharmacies` body = campos do model `Pharmacy` (name, slug, email, whatsapp?, city?, state?, shipsNationwide, compounds[], commissionPct, leadPrice?, notes?).
 
-- [ ] **Step 1: APIs**
+- [x] **Step 1: APIs**
 
 `src/app/api/admin/pharmacies/route.ts`:
 
@@ -957,7 +1011,7 @@ export async function PATCH(request: NextRequest) {
 }
 ```
 
-- [ ] **Step 2: Páginas admin**
+- [x] **Step 2: Páginas admin**
 
 Seguir o padrão visual de `src/app/admin/doctors/page.tsx` (mesma auth: a page redireciona se `!isAuthenticated()` — copiar o guard do topo daquela página).
 
@@ -967,11 +1021,11 @@ Seguir o padrão visual de `src/app/admin/doctors/page.tsx` (mesma auth: a page 
 
 Adicionar links "Farmácias" e "Orçamentos" na navegação de `src/app/admin/layout.tsx` (se houver nav; senão, links no topo da página doctors).
 
-- [ ] **Step 3: Verificação manual**
+- [x] **Step 3: Verificação manual**
 
 `npm run dev` → `/admin/pharmacies`: criar farmácia de teste (`{"name":"Farmácia Teste","slug":"farmacia-teste","email":"teste@example.com","state":"SC","compounds":[]}`). Repetir o curl válido da Task 5 → agora o quote deve nascer e ir a `sent` com `pharmacyId` preenchido. `/admin/quotes`: mudar status para `converted` com `orderValue=800`, `commissionValue=80` → salvar → recarregar e conferir persistência.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add src/app/api/admin/pharmacies/ src/app/api/admin/quotes/ src/app/admin/pharmacies/ src/app/admin/quotes/ src/app/admin/layout.tsx
@@ -985,6 +1039,7 @@ git push
 
 **Files:**
 - Create: `src/components/clinic-directory.tsx`
+- Modify: `prisma/schema.prisma` (comentário do bloco `Clinic`, sem migration)
 - Modify: `src/app/[lang]/[peptide]/[city]/page.tsx`
 - Create: `src/app/[lang]/para-clinicas/page.tsx`
 
@@ -992,7 +1047,26 @@ git push
 - Consumes: `Clinic` com `isPublic`, `premiumUntil`, `bookingUrl` (Task 2); `POST /api/lead` existente (para o form de interesse de clínicas, com `contactMethod: "clinic-directory"`).
 - Produces: `<ClinicDirectory clinics={ClinicCardData[]} cityName={string} />` com `ClinicCardData = { id, name, neighborhood, googleRating, googleReviews, phone, whatsapp, website, bookingUrl }`.
 
-- [ ] **Step 1: Componente do diretório**
+- [x] **Step 0: Corrigir comentário do `model Clinic`**
+
+Trocar o comentário antigo:
+
+```prisma
+// INTERNAL ONLY: Secret Clinic Catalog
+// Never exposed publicly. These are our future clients.
+```
+
+por:
+
+```prisma
+// Clinic catalog.
+// Default is private/internal; only rows with isPublic=true and active premiumUntil
+// may be rendered in the public paid directory.
+```
+
+Sem migration: é só documentação do schema para evitar regressão operacional.
+
+- [x] **Step 1: Componente do diretório**
 
 `src/components/clinic-directory.tsx` (server component, sem estado):
 
@@ -1013,8 +1087,8 @@ export function ClinicDirectory({ clinics, cityName }: { clinics: ClinicCardData
   if (clinics.length === 0) return null;
   return (
     <section className="mb-10">
-      <h2 className="text-xl font-bold text-navy-900">Clínicas parceiras em {cityName}</h2>
-      <p className="mt-1 text-sm text-navy-500">Clínicas verificadas que atendem nesta região.</p>
+      <h2 className="text-xl font-bold text-navy-900">Clínicas em destaque em {cityName}</h2>
+      <p className="mt-1 text-sm text-navy-500">Clínicas cadastradas no diretório pago do Meus Peptídeos.</p>
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
         {clinics.map((c) => (
           <div key={c.id} className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
@@ -1034,13 +1108,13 @@ export function ClinicDirectory({ clinics, cityName }: { clinics: ClinicCardData
           </div>
         ))}
       </div>
-      <p className="mt-3 text-[11px] text-navy-400">Listagem paga. A presença aqui não constitui recomendação médica.</p>
+      <p className="mt-3 text-[11px] text-navy-400">Listagem paga. A presença aqui não constitui recomendação médica, garantia de resultado ou validação de conduta clínica.</p>
     </section>
   );
 }
 ```
 
-- [ ] **Step 2: Query + render na página de cidade**
+- [x] **Step 2: Query + render na página de cidade**
 
 Em `src/app/[lang]/[peptide]/[city]/page.tsx`, dentro do componente da página (depois de obter `city`), adicionar:
 
@@ -1052,7 +1126,7 @@ Em `src/app/[lang]/[peptide]/[city]/page.tsx`, dentro do componente da página (
       premiumUntil: { gte: new Date() },
       city: city.name,
     },
-    orderBy: { googleRating: "desc" },
+    orderBy: [{ premiumUntil: "desc" }, { googleRating: "desc" }],
     take: 4,
     select: { id: true, name: true, neighborhood: true, googleRating: true, googleReviews: true, phone: true, whatsapp: true, website: true, bookingUrl: true },
   });
@@ -1060,7 +1134,7 @@ Em `src/app/[lang]/[peptide]/[city]/page.tsx`, dentro do componente da página (
 
 E renderizar `<ClinicDirectory clinics={partnerClinics} cityName={city.name} />` acima do `LocalLeadForm` existente (import no topo: `import { ClinicDirectory } from "@/components/clinic-directory";`).
 
-- [ ] **Step 3: Página de venda `/para-clinicas`**
+- [x] **Step 3: Página de venda `/para-clinicas`**
 
 `src/app/[lang]/para-clinicas/page.tsx` — server component seguindo o padrão de `sobre/page.tsx` (mesmo guard `hasLocale` + `generateMetadata` com `langAlternates(lang, "/para-clinicas")` — importar de `@/lib/seo`). Conteúdo:
 - H1: "Apareça para pacientes que já procuram sua especialidade"
@@ -1069,7 +1143,7 @@ E renderizar `<ClinicDirectory clinics={partnerClinics} cityName={city.name} />`
 - Form de interesse (client component inline `ClinicInterestForm` no mesmo padrão do `QuoteRequestForm`, campos: nome da clínica, cidade, WhatsApp, e-mail) → `POST /api/lead` com `contactMethod: "clinic-directory"`, `sourcePage: "/para-clinicas"`, `peptideInterest: []`, e o nome da clínica no campo `name`.
 - `robots: { index: true }` (é página de venda B2B, pode indexar).
 
-- [ ] **Step 4: Verificação manual**
+- [x] **Step 4: Verificação manual**
 
 ```bash
 # marcar uma clínica de teste como premium
@@ -1078,10 +1152,10 @@ npm run build
 ```
 Expected: build ok. Em dev, `localhost:3000/pt/semaglutida/sao-paulo` mostra o bloco "Clínicas parceiras em São Paulo" com 2 cards; `/pt/para-clinicas` renderiza e o form grava `Lead` com `contactMethod='clinic-directory'`.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
-git add src/components/clinic-directory.tsx "src/app/[lang]/[peptide]/[city]/page.tsx" "src/app/[lang]/para-clinicas/"
+git add prisma/schema.prisma src/components/clinic-directory.tsx "src/app/[lang]/[peptide]/[city]/page.tsx" "src/app/[lang]/para-clinicas/"
 git commit -m "feat: premium clinic directory on local pages + clinic sales page"
 git push
 ```
@@ -1092,25 +1166,25 @@ git push
 
 **Files:** nenhum (operacional).
 
-- [ ] **Step 1: Confirmar projeto Vercel correto**
+- [x] **Step 1: Confirmar projeto Vercel correto**
 
 Run: `cat .vercel/project.json`
 Expected: `"projectName":"meuspeptideos.com.br"` e `projectId prj_jTKxIXWhqBXLYl7X7m2eB6VB9Avp`. **Se não for, PARAR e relinkar antes de qualquer coisa.**
 
-- [ ] **Step 2: Setar `ADMIN_EMAIL`**
+- [x] **Step 2: Setar `ADMIN_EMAIL`**
 
 ```bash
 printf '%s' 'lages.raphael@gmail.com' | npx vercel env add ADMIN_EMAIL production
 ```
 (Confirmar com Raphael se prefere outro e-mail para alertas operacionais.)
 
-- [ ] **Step 3: Migration em produção**
+- [x] **Step 3: Migration em produção**
 
 O `DATABASE_URL` local aponta para o MESMO Neon de produção (ep-sparkling-shape) — a migration da Task 2 já foi aplicada. Confirmar:
 Run: `npx prisma migrate status`
 Expected: `Database schema is up to date!`
 
-- [ ] **Step 4: Deploy + smoke test**
+- [x] **Step 4: Deploy + smoke test**
 
 ```bash
 npx vercel --yes --prod
@@ -1121,7 +1195,7 @@ curl -s -o /dev/null -w '%{http_code}\n' https://meuspeptideos.com.br/pt/peptide
 ```
 Expected: `{"message":"ok"}`, `200`, `200`. Depois teste real: 1 orçamento via form em produção → conferir e-mail de alerta no ADMIN_EMAIL e registro no `/admin/quotes`.
 
-- [ ] **Step 5: Commit final de docs**
+- [x] **Step 5: Commit final de docs**
 
 Marcar checkboxes deste plano e:
 ```bash
@@ -1137,11 +1211,11 @@ git push
 1. **Recrutar 2-3 farmácias de manipulação parceiras** (pré-requisito da Receita A). Alvo: farmácias magistrais com e-commerce e atendimento nacional. Pitch: "leads qualificados de {composto} com WhatsApp, sem custo fixo — comissão só sobre pedido convertido (10%) ou R$ X/lead". Formalizar por escrito o % e o reporte de conversão (relatório mensal simples).
 2. **Preço de referência:** lead médico R$ 40 (faixa 25-50 já validada no plano original); comissão farmácia 10% do pedido (manipulados de peptídeo: tíquete típico R$ 400-1.500); diretório R$ 297/mês por clínica/cidade.
 3. **Cobrança manual (YAGNI):** Pix + planilha/admin no primeiro trimestre. Gateway de assinatura só quando o diretório tiver >10 clínicas pagantes.
-4. **LGPD:** os dados só vão à farmácia/médico após o consentimento explícito nos forms (Tasks 5-7 já implementam). Não vender o mesmo lead médico para >1 médico sem deixar isso explícito no consentimento.
+4. **LGPD:** os dados só vão à farmácia/médico após o consentimento explícito nos forms. Task 5 cobre farmácia; Task 7 precisa adicionar consentimento específico para médico antes de qualquer entrega. Não vender o mesmo lead médico para >1 médico sem deixar isso explícito no consentimento.
 5. **Meta 90 dias:** 30 orçamentos/mês roteados, 2 farmácias ativas, 10 leads médicos entregues, 3 clínicas no diretório ≈ R$ 2-4k/mês recorrente inicial.
 
 ## Self-Review (feita)
 
-- **Cobertura:** Receita A = Tasks 3-6+8; Receita B = Task 7; Receita C = Task 9; fundação 1-2; deploy 10. ✓
+- **Cobertura:** Receita A = Tasks 3-6+8; Receita B = Task 7 com pré-requisito de consentimento; Receita C = Task 9; fundação 1-2 já feita; deploy 10. ✓
 - **Placeholders:** Steps de UI admin (Task 7.2, 8.2) e `/para-clinicas` (9.3) descrevem componentes a seguir por padrão existente com campos e payloads exatos — aceitável porque o padrão visual está no repo; toda lógica, APIs, schema e forms têm código completo. ✓
 - **Consistência de tipos:** `matchPharmacies` (T3) consumida em T5 com mesma assinatura; `QuoteEmailData`/`LeadEmailData` (T4) batem com os campos de `QuoteRequest`/`Lead` (T2); `ClinicCardData` (T9) bate com o `select` da query. ✓
