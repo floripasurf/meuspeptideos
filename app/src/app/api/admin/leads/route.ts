@@ -11,7 +11,13 @@ export async function GET() {
 
   const leads = await prisma.lead.findMany({
     orderBy: { createdAt: "desc" },
-    include: { clinic: { select: { name: true } } },
+    include: {
+      clinic: { select: { name: true } },
+      deliveries: {
+        include: { doctor: { select: { name: true } } },
+        orderBy: { deliveredAt: "desc" },
+      },
+    },
   });
 
   return NextResponse.json(leads);

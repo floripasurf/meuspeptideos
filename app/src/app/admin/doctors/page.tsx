@@ -19,7 +19,15 @@ interface Doctor {
   consentLgpd: boolean;
   verified: boolean;
   active: boolean;
+  acceptsPartnership: boolean;
   createdAt: string;
+}
+
+interface LeadDelivery {
+  id: string;
+  price: number;
+  deliveredAt: string;
+  doctor: { name: string };
 }
 
 interface Lead {
@@ -33,8 +41,10 @@ interface Lead {
   sourcePage: string;
   contactMethod: string;
   status: string;
+  consentDoctorShare: boolean;
   createdAt: string;
   clinic?: { name: string } | null;
+  deliveries: LeadDelivery[];
 }
 
 // ── Helpers ────────────────────────────────────────────
@@ -81,6 +91,9 @@ export default function AdminDoctorsPage() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [selectedDoctorByLead, setSelectedDoctorByLead] = useState<Record<string, string>>({});
+  const [priceByLead, setPriceByLead] = useState<Record<string, string>>({});
+  const [deliveryStatus, setDeliveryStatus] = useState<Record<string, string>>({});
 
   // Filters
   const [filterCity, setFilterCity] = useState("");
@@ -140,6 +153,12 @@ export default function AdminDoctorsPage() {
     return Array.from(cities).sort();
   }, [doctors, leads]);
 
+  const eligibleDoctors = useMemo(() => {
+    return doctors.filter(
+      (d) => d.emailVerified && d.verified && d.active && d.acceptsPartnership
+    );
+  }, [doctors]);
+
   // ── Logout ──
 
   async function handleLogout() {
@@ -152,6 +171,59 @@ export default function AdminDoctorsPage() {
   function handleExport() {
     const type = tab === "doctors" ? "doctors" : "leads";
     window.open(`/api/admin/export?type=${type}`, "_blank");
+  }
+
+  async function handleDeliverLead(leadId: string) {
+    const doctorId = selectedDoctorByLead[leadId] || eligibleDoctors[0]?.id;
+    const price = Number(priceByLead[leadId] || 40);
+
+    if (!doctorId || Number.isNaN(price)) {
+      setDeliveryStatus((prev) => ({ ...prev, [leadId]: "Selecione medico e preco" }));
+      return;
+    }
+
+    setDeliveryStatus((prev) => ({ ...prev, [leadId]: "Enviando..." }));
+
+    try {
+      const res = await fetch("/api/admin/leads/deliver", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ leadId, doctorId, price }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setDeliveryStatus((prev) => ({
+          ...prev,
+          [leadId]: data.error || "Erro ao entregar",
+        }));
+        return;
+      }
+
+      const doctor = doctors.find((d) => d.id === doctorId);
+      setLeads((prev) =>
+        prev.map((lead) =>
+          lead.id === leadId
+            ? {
+                ...lead,
+                status: "matched",
+                deliveries: [
+                  {
+                    id: data.delivery.id,
+                    price: data.delivery.price,
+                    deliveredAt: data.delivery.deliveredAt,
+                    doctor: { name: doctor?.name || "Medico" },
+                  },
+                  ...(lead.deliveries || []),
+                ],
+              }
+            : lead
+        )
+      );
+      setDeliveryStatus((prev) => ({ ...prev, [leadId]: "Entregue" }));
+    } catch {
+      setDeliveryStatus((prev) => ({ ...prev, [leadId]: "Erro ao entregar" }));
+    }
   }
 
   if (loading) {
@@ -335,12 +407,13 @@ export default function AdminDoctorsPage() {
                 <th className="px-4 py-3 text-navy-400 font-medium">Origem</th>
                 <th className="px-4 py-3 text-navy-400 font-medium">Status</th>
                 <th className="px-4 py-3 text-navy-400 font-medium">Criado em</th>
+                <th className="px-4 py-3 text-navy-400 font-medium">Entrega</th>
               </tr>
             </thead>
             <tbody>
               {filteredLeads.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="px-4 py-8 text-center text-navy-500">
+                  <td colSpan={9} className="px-4 py-8 text-center text-navy-500">
                     Nenhum lead encontrado
                   </td>
                 </tr>
@@ -369,6 +442,70 @@ export default function AdminDoctorsPage() {
                     </td>
                     <td className="px-4 py-3 text-navy-400 text-xs whitespace-nowrap">
                       {formatDate(l.createdAt)}
+                    </td>
+                    <td className="px-4 py-3 min-w-[280px]">
+                      {!l.consentDoctorShare ? (
+                        <Badge color="gray">Sem consentimento</Badge>
+                      ) : (
+                        <div className="space-y-2">
+                          {l.deliveries?.length > 0 && (
+                            <p className="text-xs text-emerald-300">
+                              Entregue: {l.deliveries.map((d) => d.doctor.name).join(", ")}
+                            </p>
+                          )}
+                          <form
+                            className="flex flex-wrap items-center gap-2"
+                            onSubmit={(e) => {
+                              e.preventDefault();
+                              handleDeliverLead(l.id);
+                            }}
+                          >
+                            <select
+                              value={selectedDoctorByLead[l.id] || eligibleDoctors[0]?.id || ""}
+                              onChange={(e) =>
+                                setSelectedDoctorByLead((prev) => ({
+                                  ...prev,
+                                  [l.id]: e.target.value,
+                                }))
+                              }
+                              className="h-8 min-w-36 rounded-lg border border-navy-600 bg-navy-800 px-2 text-xs text-white focus:outline-none focus:ring-2 focus:ring-brand-500"
+                            >
+                              {eligibleDoctors.length === 0 ? (
+                                <option value="">Sem medicos</option>
+                              ) : (
+                                eligibleDoctors.map((doctor) => (
+                                  <option key={doctor.id} value={doctor.id}>
+                                    {doctor.name}
+                                  </option>
+                                ))
+                              )}
+                            </select>
+                            <input
+                              type="number"
+                              min="0"
+                              step="1"
+                              value={priceByLead[l.id] ?? "40"}
+                              onChange={(e) =>
+                                setPriceByLead((prev) => ({
+                                  ...prev,
+                                  [l.id]: e.target.value,
+                                }))
+                              }
+                              className="h-8 w-20 rounded-lg border border-navy-600 bg-navy-800 px-2 text-xs text-white focus:outline-none focus:ring-2 focus:ring-brand-500"
+                            />
+                            <button
+                              type="submit"
+                              disabled={eligibleDoctors.length === 0}
+                              className="h-8 rounded-lg bg-brand-600 px-3 text-xs font-medium text-white transition-colors hover:bg-brand-500 disabled:cursor-not-allowed disabled:opacity-50"
+                            >
+                              Enviar
+                            </button>
+                          </form>
+                          {deliveryStatus[l.id] && (
+                            <p className="text-xs text-navy-300">{deliveryStatus[l.id]}</p>
+                          )}
+                        </div>
+                      )}
                     </td>
                   </tr>
                 ))

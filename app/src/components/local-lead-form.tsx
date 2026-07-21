@@ -20,6 +20,7 @@ export function LocalLeadForm({
   const [name, setName] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [email, setEmail] = useState("");
+  const [consentDoctorShare, setConsentDoctorShare] = useState(false);
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
 
   async function handleSubmit(e: React.FormEvent) {
@@ -38,6 +39,7 @@ export function LocalLeadForm({
           peptideInterest: [peptideSlug],
           sourcePage: `/${peptideSlug}/${citySlug}`,
           contactMethod: "form",
+          consentDoctorShare,
         }),
       });
       if (res.ok) {
@@ -45,6 +47,7 @@ export function LocalLeadForm({
         setName("");
         setWhatsapp("");
         setEmail("");
+        setConsentDoctorShare(false);
       } else {
         setStatus("error");
       }
@@ -123,6 +126,17 @@ export function LocalLeadForm({
             className="w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
           />
         </div>
+        <label className="flex items-start gap-2 text-xs leading-relaxed text-zinc-500">
+          <input
+            type="checkbox"
+            required
+            checked={consentDoctorShare}
+            onChange={(e) => setConsentDoctorShare(e.target.checked)}
+            className="mt-0.5"
+          />
+          Autorizo o compartilhamento dos meus dados com um medico parceiro para
+          contato sobre esta solicitacao.
+        </label>
         <button
           type="submit"
           disabled={status === "loading"}
@@ -136,9 +150,8 @@ export function LocalLeadForm({
           </p>
         )}
         <p className="text-xs text-zinc-400">
-          Seus dados são confidenciais. Não compartilhamos com terceiros sem
-          sua autorização. Indicação é informativa e não substitui consulta
-          médica.
+          Seus dados sao confidenciais e serao usados somente para esta
+          indicacao. A indicacao e informativa e nao substitui consulta medica.
         </p>
       </form>
     </div>

@@ -111,9 +111,14 @@ model Lead {
   clinicId        String? // clínica atribuída (match geográfico)
   clinic          Clinic?    @relation(fields: [clinicId], references: [id])
   notes           String?
+  consentDoctorShare   Boolean   @default(false) // autorizou compartilhar dados com medico parceiro
+  consentDoctorShareAt DateTime?
+  submittedFromIp      String?
   createdAt       DateTime   @default(now())
   updatedAt       DateTime   @updatedAt
   deliveries      LeadDelivery[]
+
+  @@index([submittedFromIp, createdAt])
 }
 
 // ============================================
