@@ -122,8 +122,9 @@ model Lead {
 }
 
 // ============================================
-// INTERNAL ONLY: Secret Clinic Catalog
-// Never exposed publicly. These are our future clients.
+// Clinic catalog.
+// Default is private/internal; only rows with isPublic=true and active premiumUntil
+// may be rendered in the public paid directory.
 // ============================================
 
 model Clinic {

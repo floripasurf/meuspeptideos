@@ -4,6 +4,7 @@ import { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { ResearchPhaseBadge } from "@/components/research-phase-badge";
 import { CategoryBadge } from "@/components/category-badge";
+import { ClinicDirectory } from "@/components/clinic-directory";
 import { LocalLeadForm } from "@/components/local-lead-form";
 import { getCityBySlug } from "@/lib/cities";
 import { getDictionary, hasLocale } from "@/lib/i18n";
@@ -55,6 +56,28 @@ export default async function PeptideCityPage({ params }: Props) {
   });
 
   if (!peptide) notFound();
+
+  const partnerClinics = await prisma.clinic.findMany({
+    where: {
+      isPublic: true,
+      isActive: true,
+      premiumUntil: { gte: new Date() },
+      city: city.name,
+    },
+    orderBy: [{ premiumUntil: "desc" }, { googleRating: "desc" }],
+    take: 4,
+    select: {
+      id: true,
+      name: true,
+      neighborhood: true,
+      googleRating: true,
+      googleReviews: true,
+      phone: true,
+      whatsapp: true,
+      website: true,
+      bookingUrl: true,
+    },
+  });
 
   // JSON-LD for local SEO
   const jsonLd = {
@@ -223,6 +246,8 @@ export default async function PeptideCityPage({ params }: Props) {
                 para receber uma recomendação personalizada.
               </p>
             </section>
+
+            <ClinicDirectory clinics={partnerClinics} cityName={city.name} />
 
             {/* Disclaimer */}
             <div className="rounded-xl border border-amber-200 bg-amber-50 p-5">
