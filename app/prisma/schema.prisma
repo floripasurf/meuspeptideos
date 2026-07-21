@@ -113,6 +113,7 @@ model Lead {
   notes           String?
   createdAt       DateTime   @default(now())
   updatedAt       DateTime   @updatedAt
+  deliveries      LeadDelivery[]
 }
 
 // ============================================
@@ -142,6 +143,77 @@ model Clinic {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   leads         Lead[]
+  isPublic     Boolean   @default(false) // aparece no diretório público
+  premiumUntil DateTime? // assinatura de destaque ativa até
+  bookingUrl   String? // link de agendamento exibido no diretório
+}
+
+// Farmácias de manipulação parceiras — recebem pedidos de orçamento, pagam comissão
+model Pharmacy {
+  id              String   @id @default(cuid())
+  name            String
+  slug            String   @unique
+  email           String // recebe os pedidos de orçamento
+  whatsapp        String?
+  city            String?
+  state           String?
+  shipsNationwide Boolean  @default(true)
+  compounds       String[] // slugs que manipula; vazio = todos
+  commissionPct   Float    @default(10) // % sobre pedido convertido
+  leadPrice       Float? // alternativa: preço fixo por lead (R$)
+  isActive        Boolean  @default(true)
+  notes           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  quotes          QuoteRequest[]
+}
+
+model QuoteRequest {
+  id              String      @id @default(cuid())
+  name            String
+  email           String?
+  whatsapp        String
+  city            String?
+  state           String?
+  compoundSlug    String
+  hasPrescription Boolean     @default(false)
+  message         String?
+  sourcePage      String
+  consentLgpd     Boolean     @default(false)
+  submittedFromIp String?
+  status          QuoteStatus @default(new)
+  pharmacyId      String?
+  pharmacy        Pharmacy?   @relation(fields: [pharmacyId], references: [id])
+  sentAt          DateTime?
+  orderValue      Float? // valor do pedido reportado pela farmácia
+  commissionValue Float? // comissão devida/registrada
+  paidAt          DateTime? // comissão recebida
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+}
+
+enum QuoteStatus {
+  new
+  sent
+  quoted
+  converted
+  paid
+  lost
+}
+
+// Entrega de lead a um médico (Receita B) — registro de cobrança
+model LeadDelivery {
+  id          String    @id @default(cuid())
+  leadId      String
+  lead        Lead      @relation(fields: [leadId], references: [id])
+  doctorId    String
+  doctor      Doctor    @relation(fields: [doctorId], references: [id])
+  price       Float // R$ combinado por lead
+  deliveredAt DateTime  @default(now())
+  paidAt      DateTime?
+  notes       String?
+
+  @@unique([leadId, doctorId])
 }
 
 // Doctors who self-register to receive leads
@@ -172,6 +244,7 @@ model Doctor {
   active       Boolean  @default(true)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  deliveries   LeadDelivery[]
 
   @@index([submittedFromIp, createdAt])
 }
