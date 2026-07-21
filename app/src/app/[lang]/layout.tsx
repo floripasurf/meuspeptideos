@@ -1,11 +1,9 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import { notFound } from "next/navigation";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { AnalyticsConsent } from "@/components/analytics-consent";
 import { getDictionary, hasLocale, locales, type Locale } from "@/lib/i18n";
-
-const GA_ID = "G-ZQ5MZYG58G";
 
 const localeMap: Record<string, string> = {
   pt: "pt-BR",
@@ -43,21 +41,10 @@ export default async function LangLayout({ children, params }: Props) {
 
   return (
     <>
-      <Script
-        src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
-        strategy="afterInteractive"
-      />
-      <Script id="gtag-init" strategy="afterInteractive">
-        {`
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', '${GA_ID}');
-        `}
-      </Script>
       <Header lang={lang as Locale} dict={dict} />
       <main className="flex-1">{children}</main>
       <Footer lang={lang as Locale} dict={dict} />
+      <AnalyticsConsent />
     </>
   );
 }

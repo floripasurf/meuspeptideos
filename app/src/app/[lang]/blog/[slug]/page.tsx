@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { NewsletterForm } from "@/components/newsletter-form";
-import { getDictionary, hasLocale } from "@/lib/i18n";
+import { hasLocale } from "@/lib/i18n";
 import { langAlternates } from "@/lib/seo";
 
 type Props = { params: Promise<{ lang: string; slug: string }> };
@@ -12,20 +12,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang, slug } = await params;
   const post = await prisma.blogPost.findUnique({
     where: { slug },
-    select: { title: true, excerpt: true },
+    select: { title: true, excerpt: true, reviewerName: true, reviewerCrm: true },
   });
   if (!post) return { title: "Artigo não encontrado" };
   return {
     title: post.title,
     description: post.excerpt.slice(0, 160),
     alternates: langAlternates(lang, `/blog/${slug}`),
+    robots: {
+      index: lang === "pt" && Boolean(post.reviewerName && post.reviewerCrm),
+      follow: true,
+    },
   };
 }
 
 export default async function BlogPostPage({ params }: Props) {
   const { lang, slug } = await params;
   if (!hasLocale(lang)) notFound();
-  const dict = await getDictionary(lang);
   const post = await prisma.blogPost.findUnique({
     where: { slug, published: true },
   });
@@ -48,8 +51,8 @@ export default async function BlogPostPage({ params }: Props) {
     },
     datePublished: post.publishedAt?.toISOString(),
     dateModified: post.updatedAt.toISOString(),
-    inLanguage: "pt-BR",
-    url: `https://meuspeptideos.com.br/blog/${post.slug}`,
+    inLanguage: lang === "pt" ? "pt-BR" : lang === "es" ? "es-419" : "en-US",
+    url: `https://meuspeptideos.com.br/${lang}/blog/${post.slug}`,
     keywords: post.tags.join(", "),
   };
 

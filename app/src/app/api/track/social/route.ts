@@ -39,6 +39,7 @@ export async function POST(request: NextRequest) {
         submittedFromIp: ip,
         metadata: {
           referrer: typeof body.referrer === "string" ? body.referrer.slice(0, 500) : null,
+          segment: typeof body.segment === "string" ? body.segment.slice(0, 80) : null,
         },
       },
     });

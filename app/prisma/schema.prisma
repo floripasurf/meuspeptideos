@@ -1,6 +1,6 @@
 generator client {
-  provider        = "prisma-client"
-  output          = "../src/generated/prisma"
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -12,26 +12,26 @@ datasource db {
 // ============================================
 
 model Peptide {
-  id            String          @id @default(cuid())
-  name          String
-  slug          String          @unique
-  aliases       String[] // ex: ["Ozempic", "Wegovy"] para semaglutida
-  category      PeptideCategory
-  description   String // o que é, resumo
-  mechanism     String // mecanismo de ação detalhado
-  researchPhase ResearchPhase
-  anvisaStatus  RegulatoryStatus @default(not_regulated)
-  fdaStatus     RegulatoryStatus @default(not_regulated)
-  emaStatus     RegulatoryStatus @default(not_regulated)
-  benefits      Json // [{name, evidence: "proven"|"research"|"unproven", description, studyUrl}]
-  risks         Json // [{name, severity: "low"|"medium"|"high", frequency, description, studyUrl}]
+  id                String           @id @default(cuid())
+  name              String
+  slug              String           @unique
+  aliases           String[] // ex: ["Ozempic", "Wegovy"] para semaglutida
+  category          PeptideCategory
+  description       String // o que é, resumo
+  mechanism         String // mecanismo de ação detalhado
+  researchPhase     ResearchPhase
+  anvisaStatus      RegulatoryStatus @default(not_regulated)
+  fdaStatus         RegulatoryStatus @default(not_regulated)
+  emaStatus         RegulatoryStatus @default(not_regulated)
+  benefits          Json // [{name, evidence: "proven"|"research"|"unproven", description, studyUrl}]
+  risks             Json // [{name, severity: "low"|"medium"|"high", frequency, description, studyUrl}]
   internetVsScience Json // [{claim, whatTheySay, actualEvidence, verdict: "true"|"partial"|"false"|"unknown"}]
-  published     Boolean  @default(false)
-  publishedAt   DateTime?
-  updatedAt     DateTime @updatedAt
-  createdAt     DateTime @default(now())
-  studies       Study[]
-  faqs          PeptideFaq[]
+  published         Boolean          @default(false)
+  publishedAt       DateTime?
+  updatedAt         DateTime         @updatedAt
+  createdAt         DateTime         @default(now())
+  studies           Study[]
+  faqs              PeptideFaq[]
 }
 
 model Study {
@@ -82,56 +82,83 @@ model BlogPost {
 // ============================================
 
 model Subscriber {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  whatsapp  String?
-  city      String?
-  state     String?
-  lat       Float?
-  lng       Float?
-  interests String[] // slugs dos peptídeos de interesse
-  source    String // blog, peptide_page, newsletter, quiz
-  confirmed Boolean  @default(false)
-  createdAt DateTime @default(now())
+  id                String    @id @default(cuid())
+  email             String    @unique
+  whatsapp          String?
+  city              String?
+  state             String?
+  lat               Float?
+  lng               Float?
+  interests         String[] // slugs dos peptídeos de interesse
+  source            String // blog, peptide_page, newsletter, quiz
+  confirmed         Boolean   @default(false)
+  confirmedAt       DateTime?
+  confirmationToken String?   @unique
+  unsubscribeToken  String?   @unique
+  consentAt         DateTime?
+  submittedFromIp   String?
+  createdAt         DateTime  @default(now())
+
+  @@index([submittedFromIp, createdAt])
+}
+
+// Commercial interest in information products. Never stores patient requests
+// or data intended for medical/pharmacy referral.
+model RadarInterest {
+  id                String        @id @default(cuid())
+  audience          RadarAudience
+  name              String?
+  organization      String?
+  email             String
+  whatsapp          String?
+  plan              String
+  sourcePage        String
+  status            String        @default("new")
+  consentCommercial Boolean       @default(false)
+  submittedFromIp   String?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  @@unique([email, audience])
+  @@index([audience, status, createdAt])
+  @@index([submittedFromIp, createdAt])
 }
 
 model Lead {
-  id              String     @id @default(cuid())
-  name            String?
-  email           String?
-  whatsapp        String?
-  city            String?
-  state           String?
-  lat             Float?
-  lng             Float?
-  peptideInterest String[] // slugs dos peptídeos
-  sourcePage      String // URL da página que gerou o lead
-  contactMethod   String // whatsapp, form, quiz
-  status          LeadStatus @default(new)
-  clinicId        String? // clínica atribuída (match geográfico)
-  clinic          Clinic?    @relation(fields: [clinicId], references: [id])
-  notes           String?
-  consentDoctorShare   Boolean   @default(false) // autorizou compartilhar dados com medico parceiro
+  id                   String         @id @default(cuid())
+  name                 String?
+  email                String?
+  whatsapp             String?
+  city                 String?
+  state                String?
+  lat                  Float?
+  lng                  Float?
+  peptideInterest      String[] // slugs dos peptídeos
+  sourcePage           String // URL da página que gerou o lead
+  contactMethod        String // whatsapp, form, quiz
+  status               LeadStatus     @default(new)
+  clinicId             String? // clínica atribuída (match geográfico)
+  clinic               Clinic?        @relation(fields: [clinicId], references: [id])
+  notes                String?
+  consentDoctorShare   Boolean        @default(false) // autorizou compartilhar dados com medico parceiro
   consentDoctorShareAt DateTime?
   submittedFromIp      String?
-  createdAt       DateTime   @default(now())
-  updatedAt       DateTime   @updatedAt
-  deliveries      LeadDelivery[]
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @updatedAt
+  deliveries           LeadDelivery[]
 
   @@index([submittedFromIp, createdAt])
 }
 
 // ============================================
-// Clinic catalog.
-// Default is private/internal; only rows with isPublic=true and active premiumUntil
-// may be rendered in the public paid directory.
+// Clinic catalog. Public visibility is editorial and must not depend on payment.
 // ============================================
 
 model Clinic {
-  id            String   @id @default(cuid())
+  id            String    @id @default(cuid())
   name          String
-  slug          String   @unique
-  googlePlaceId String?  @unique
+  slug          String    @unique
+  googlePlaceId String?   @unique
   address       String
   city          String
   state         String
@@ -145,44 +172,44 @@ model Clinic {
   googleRating  Float?
   googleReviews Int?
   specialties   String[] // ex: ["semaglutida", "medicina funcional"]
-  isActive      Boolean  @default(true)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
   leads         Lead[]
-  isPublic     Boolean   @default(false) // aparece no diretório público
-  premiumUntil DateTime? // assinatura de destaque ativa até
-  bookingUrl   String? // link de agendamento exibido no diretório
+  isPublic      Boolean   @default(false) // aparece no diretório público
+  premiumUntil  DateTime? // campo legado; não determina visibilidade ou ordenação pública
+  bookingUrl    String? // link de agendamento exibido no diretório
 }
 
-// Farmácias de manipulação parceiras — recebem pedidos de orçamento, pagam comissão
+// Cadastro legado de farmácias. O roteamento de orçamento fica desativado por padrão.
 model Pharmacy {
-  id              String   @id @default(cuid())
+  id              String             @id @default(cuid())
   name            String
-  slug            String   @unique
+  slug            String             @unique
   email           String // recebe os pedidos de orçamento
   whatsapp        String?
   city            String?
   state           String?
-  shipsNationwide Boolean  @default(true)
+  shipsNationwide Boolean            @default(true)
   compounds       String[] // slugs que manipula; vazio = todos
-  commissionPct   Float    @default(10) // % sobre pedido convertido
+  commissionPct   Float              @default(10) // % sobre pedido convertido
   leadPrice       Float? // alternativa: preço fixo por lead (R$)
-  isActive        Boolean  @default(true)
+  isActive        Boolean            @default(true)
   notes           String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
   quotes          QuoteRequest[]
   prospects       PharmacyProspect[]
 }
 
 model PharmacyProspect {
-  id                  String         @id @default(cuid())
+  id                  String               @id @default(cuid())
   name                String
   slug                String?
   email               String?
   whatsapp            String?
   website             String?
-  googlePlaceId       String?        @unique
+  googlePlaceId       String?              @unique
   googleMapsUrl       String?
   address             String?
   city                String?
@@ -190,22 +217,22 @@ model PharmacyProspect {
   googleRating        Float?
   googleReviews       Int?
   compounds           String[]
-  source              ProspectSource @default(manual)
-  status              ProspectStatus @default(discovered)
-  fitScore            Int            @default(0)
-  riskScore           Int            @default(0)
+  source              ProspectSource       @default(manual)
+  status              ProspectStatus       @default(discovered)
+  fitScore            Int                  @default(0)
+  riskScore           Int                  @default(0)
   riskFlags           String[]
   evidence            Json?
   outreachNotes       String?
   lastContactedAt     DateTime?
   nextFollowUpAt      DateTime?
-  optedOut            Boolean        @default(false)
+  optedOut            Boolean              @default(false)
   convertedPharmacyId String?
-  convertedPharmacy   Pharmacy?      @relation(fields: [convertedPharmacyId], references: [id])
+  convertedPharmacy   Pharmacy?            @relation(fields: [convertedPharmacyId], references: [id])
   applications        PartnerApplication[]
   outreachEvents      OutreachEvent[]
-  createdAt           DateTime       @default(now())
-  updatedAt           DateTime       @updatedAt
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
 
   @@index([status, fitScore])
   @@index([city, state])
@@ -245,25 +272,25 @@ model OutreachEvent {
 }
 
 model PartnerApplication {
-  id             String            @id @default(cuid())
-  prospectId     String?
-  prospect       PharmacyProspect? @relation(fields: [prospectId], references: [id])
-  pharmacyName   String
-  contactName    String
-  email          String
-  whatsapp       String?
-  city           String?
-  state          String?
-  website        String?
-  compounds      String[]
-  monthlyDemand  String?
-  status         String            @default("new")
-  consentCommercial Boolean        @default(false)
-  sourcePage     String
-  submittedFromIp String?
-  notes          String?
-  createdAt      DateTime          @default(now())
-  updatedAt      DateTime          @updatedAt
+  id                String            @id @default(cuid())
+  prospectId        String?
+  prospect          PharmacyProspect? @relation(fields: [prospectId], references: [id])
+  pharmacyName      String
+  contactName       String
+  email             String
+  whatsapp          String?
+  city              String?
+  state             String?
+  website           String?
+  compounds         String[]
+  monthlyDemand     String?
+  status            String            @default("new")
+  consentCommercial Boolean           @default(false)
+  sourcePage        String
+  submittedFromIp   String?
+  notes             String?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
 
   @@index([status, createdAt])
   @@index([submittedFromIp, createdAt])
@@ -286,38 +313,38 @@ model SocialFunnelCampaign {
 }
 
 model SocialContentIdea {
-  id          String                @id @default(cuid())
-  campaignId  String?
-  campaign    SocialFunnelCampaign? @relation(fields: [campaignId], references: [id])
-  externalId  String?               @unique
-  pillar      String
-  format      String
-  hook        String
-  angle       String
-  target      SocialAttributionTarget
-  cta         String
-  status      String                @default("backlog")
+  id           String                  @id @default(cuid())
+  campaignId   String?
+  campaign     SocialFunnelCampaign?   @relation(fields: [campaignId], references: [id])
+  externalId   String?                 @unique
+  pillar       String
+  format       String
+  hook         String
+  angle        String
+  target       SocialAttributionTarget
+  cta          String
+  status       String                  @default("backlog")
   publishAfter DateTime?
-  createdAt   DateTime              @default(now())
-  updatedAt   DateTime              @updatedAt
+  createdAt    DateTime                @default(now())
+  updatedAt    DateTime                @updatedAt
 
   @@index([status, target])
 }
 
 model SocialAttributionEvent {
-  id          String                  @id @default(cuid())
-  campaignId  String?
-  campaign    SocialFunnelCampaign?   @relation(fields: [campaignId], references: [id])
-  source      String
-  medium      String?
-  content     String?
-  term        String?
-  landingPath String
-  target      SocialAttributionTarget
-  visitorId   String?
+  id              String                  @id @default(cuid())
+  campaignId      String?
+  campaign        SocialFunnelCampaign?   @relation(fields: [campaignId], references: [id])
+  source          String
+  medium          String?
+  content         String?
+  term            String?
+  landingPath     String
+  target          SocialAttributionTarget
+  visitorId       String?
   submittedFromIp String?
-  metadata    Json?
-  createdAt   DateTime                @default(now())
+  metadata        Json?
+  createdAt       DateTime                @default(now())
 
   @@index([campaignId, createdAt])
   @@index([source, target, createdAt])
@@ -358,7 +385,7 @@ enum QuoteStatus {
   lost
 }
 
-// Entrega de lead a um médico (Receita B) — registro de cobrança
+// Registro legado de entrega. O fluxo fica desativado por padrão.
 model LeadDelivery {
   id          String    @id @default(cuid())
   leadId      String
@@ -376,32 +403,32 @@ model LeadDelivery {
 // Doctors who self-register to receive leads
 // Private — discreet, never exposed publicly
 model Doctor {
-  id           String   @id @default(cuid())
-  name         String
-  email        String   @unique
-  phone        String? // telefone fixo / consultório
-  whatsapp     String?
-  crm          String? // CRM number
-  crmState     String? // CRM state
-  specialty    String? // endocrinologia, medicina funcional, etc.
-  address      String? // endereço completo do consultório
-  city         String?
-  state        String?
+  id                 String         @id @default(cuid())
+  name               String
+  email              String         @unique
+  phone              String? // telefone fixo / consultório
+  whatsapp           String?
+  crm                String? // CRM number
+  crmState           String? // CRM state
+  specialty          String? // endocrinologia, medicina funcional, etc.
+  address            String? // endereço completo do consultório
+  city               String?
+  state              String?
   peptidesPrescribed String[] // slugs dos peptídeos que prescreve
-  yearsExperience Int?
-  acceptsPartnership Boolean @default(true) // aceita parceria de leads
-  notes        String? // notas internas
-  emailVerified    Boolean   @default(false) // verificou email?
-  verificationToken String?  @unique // token único para verificação
-  verifiedAt       DateTime? // quando confirmou
-  consentLgpd      Boolean   @default(false) // consentiu com política LGPD
-  consentLgpdAt    DateTime? // quando consentiu
-  submittedFromIp  String?   // IP de cadastro (rate limiting + audit)
-  verified     Boolean  @default(false) // verificação manual pela admin
-  active       Boolean  @default(true)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  deliveries   LeadDelivery[]
+  yearsExperience    Int?
+  acceptsPartnership Boolean        @default(true) // aceita parceria de leads
+  notes              String? // notas internas
+  emailVerified      Boolean        @default(false) // verificou email?
+  verificationToken  String?        @unique // token único para verificação
+  verifiedAt         DateTime? // quando confirmou
+  consentLgpd        Boolean        @default(false) // consentiu com política LGPD
+  consentLgpdAt      DateTime? // quando consentiu
+  submittedFromIp    String? // IP de cadastro (rate limiting + audit)
+  verified           Boolean        @default(false) // verificação manual pela admin
+  active             Boolean        @default(true)
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+  deliveries         LeadDelivery[]
 
   @@index([submittedFromIp, createdAt])
 }
@@ -433,10 +460,10 @@ enum PeptideCategory {
 
 enum ResearchPhase {
   preclinical // só estudos in vitro / animal
-  phase1      // segurança em humanos
-  phase2      // eficácia inicial
-  phase3      // eficácia confirmada
-  approved    // aprovado por agência reguladora
+  phase1 // segurança em humanos
+  phase2 // eficácia inicial
+  phase3 // eficácia confirmada
+  approved // aprovado por agência reguladora
 }
 
 enum RegulatoryStatus {
@@ -461,8 +488,8 @@ enum StudyType {
 enum LeadStatus {
   new
   contacted
-  matched    // conectado a uma clínica
-  converted  // virou paciente
+  matched // conectado a uma clínica
+  converted // virou paciente
   lost
 }
 
@@ -498,4 +525,13 @@ enum SocialAttributionTarget {
   pharmacy_partner
   clinic_directory
   education
+  radar
+}
+
+enum RadarAudience {
+  consumer
+  pharmacy
+  clinic
+  professional
+  supplier
 }

@@ -1,5 +1,7 @@
 # Monetizacao B2B — Implementation Plan
 
+> **SUPERADO EM 2026-07-21:** preservar apenas inteligência agregada, CRM de pesquisa e funil social educativo. Comissão sobre medicamentos, venda de leads médicos e destaque pago estão suspensos. Não executar as ofertas transacionais abaixo sem parecer jurídico escrito. O plano vigente está em `docs/monetizacao/2026-07-21-plano-validacao-90-dias.md`.
+
 > **For agentic workers:** implement task-by-task. Use checkbox syntax for tracking. Keep regulatory claims conservative and verify live production before deploy.
 
 **Goal:** transformar o Meus Peptideos em um funil B2B de receita recorrente e transacional para farmacias de manipulacao, medicos e clinicas, sem criar fluxo de venda direta de medicamento.

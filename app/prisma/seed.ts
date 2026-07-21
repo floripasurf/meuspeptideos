@@ -697,7 +697,7 @@ const peptides = [
       {
         question: "Por que não é aprovado nos EUA/Brasil?",
         answer:
-          "O Zadaxin (thymosin alpha-1) é aprovado em mais de 30 países, mas a SciClone Pharmaceuticals não concluiu o processo de aprovação no FDA. No Brasil, não há registro na ANVISA. Em fev/2026, a FDA reclassificou para Category 1, permitindo manipulação em farmácias.",
+          "O Zadaxin (thymosin alpha-1) tem aprovações em alguns países, mas não é aprovado pelo FDA e não foi identificado registro na Anvisa. Uma categoria de avaliação de insumos para manipulação nos EUA não equivale a aprovação nem autoriza uso no Brasil.",
         order: 1,
       },
     ],

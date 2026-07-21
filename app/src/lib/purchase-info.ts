@@ -3,7 +3,7 @@
  * type determines which CTA to show on the compound page.
  */
 
-export type PurchaseType = "supplement" | "compounding" | "prescription" | "experimental";
+export type PurchaseType = "supplement" | "experimental";
 
 export type PurchaseInfo = {
   type: PurchaseType;
@@ -73,33 +73,33 @@ export const purchaseInfo: Record<string, PurchaseInfo> = {
   },
 
   // =============================================
-  // COMPOUNDING PHARMACY — lead → pharmacy partner
+  // EXPERIMENTAL OR NOT VALIDATED FOR A PUBLIC PURCHASE FLOW
   // =============================================
-  "ghk-cu": { type: "compounding" },
-  ipamorelin: { type: "compounding" },
-  "cjc-1295": { type: "compounding" },
-  sermorelin: { type: "compounding" },
-  "aod-9604": { type: "compounding" },
-  "pt-141": { type: "compounding" },
-  "bpc-157": { type: "compounding" },
-  "tb-500": { type: "compounding" },
-  "thymosin-alpha-1": { type: "compounding" },
-  epithalon: { type: "compounding" },
-  dsip: { type: "compounding" },
-  kpv: { type: "compounding" },
-  "ll-37": { type: "compounding" },
-  selank: { type: "compounding" },
-  "melanotan-ii": { type: "compounding" },
+  "ghk-cu": { type: "experimental" },
+  ipamorelin: { type: "experimental" },
+  "cjc-1295": { type: "experimental" },
+  sermorelin: { type: "experimental" },
+  "aod-9604": { type: "experimental" },
+  "pt-141": { type: "experimental" },
+  "bpc-157": { type: "experimental" },
+  "tb-500": { type: "experimental" },
+  "thymosin-alpha-1": { type: "experimental" },
+  epithalon: { type: "experimental" },
+  dsip: { type: "experimental" },
+  kpv: { type: "experimental" },
+  "ll-37": { type: "experimental" },
+  selank: { type: "experimental" },
+  "melanotan-ii": { type: "experimental" },
 
   // =============================================
-  // PRESCRIPTION — lead → doctor/telemedicine
+  // PRESCRIPTION PRODUCTS — EDITORIAL UPDATES ONLY
   // =============================================
-  semaglutida: { type: "prescription" },
-  tirzepatida: { type: "prescription" },
-  metformina: { type: "prescription" },
-  rapamicina: { type: "prescription" },
-  tesamorelin: { type: "prescription" },
-  cerebrolysin: { type: "prescription" },
+  semaglutida: { type: "experimental" },
+  tirzepatida: { type: "experimental" },
+  metformina: { type: "experimental" },
+  rapamicina: { type: "experimental" },
+  tesamorelin: { type: "experimental" },
+  cerebrolysin: { type: "experimental" },
 
   // =============================================
   // EXPERIMENTAL — newsletter only

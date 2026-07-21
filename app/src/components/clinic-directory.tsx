@@ -27,10 +27,10 @@ export function ClinicDirectory({
   return (
     <section className="rounded-xl border border-zinc-200 bg-white p-6">
       <h2 className="text-xl font-bold text-zinc-900">
-        Clínicas em destaque em {cityName}
+        Clínicas com cadastro público em {cityName}
       </h2>
       <p className="mt-1 text-sm text-zinc-500">
-        Clínicas cadastradas no diretório pago do Meus Peptídeos.
+        Lista informativa em ordem alfabética. Verifique as credenciais antes de contratar qualquer serviço.
       </p>
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
         {clinics.map((clinic) => (
@@ -70,8 +70,8 @@ export function ClinicDirectory({
         ))}
       </div>
       <p className="mt-3 text-[11px] text-zinc-400">
-        Listagem paga. A presença aqui não constitui recomendação médica,
-        garantia de resultado ou validação de conduta clínica.
+        A presença nesta lista não constitui recomendação médica, garantia de
+        resultado ou validação de conduta clínica.
       </p>
     </section>
   );

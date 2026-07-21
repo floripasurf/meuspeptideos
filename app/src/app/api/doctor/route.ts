@@ -6,8 +6,16 @@ import {
   sendDoctorVerificationEmail,
   sendAdminNotification,
 } from "@/lib/email";
+import {
+  patientRoutingEnabled,
+  regulatedFlowUnavailable,
+} from "@/lib/regulated-flows";
 
 export async function POST(request: NextRequest) {
+  if (!patientRoutingEnabled) {
+    return NextResponse.json(regulatedFlowUnavailable, { status: 410 });
+  }
+
   try {
     const ip = getClientIp(request.headers);
 

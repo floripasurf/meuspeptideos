@@ -159,7 +159,7 @@ export const comparisons: Comparison[] = [
       {
         heading: "Status regulatório",
         content:
-          "<p>Ambos:</p><ul><li>Não aprovados pela ANVISA, FDA ou EMA</li><li>Reclassificados pela FDA em fev/2026 como Category 1 (podem ser manipulados em farmácias sob prescrição)</li><li>Vendidos como 'research chemicals' no mercado underground (sem controle de qualidade)</li></ul>",
+          "<p>Ambos não têm aprovação identificada na ANVISA ou no FDA para uso clínico. A avaliação de substâncias para manipulação nos EUA não equivale a aprovação e não produz autorização automática no Brasil. Ofertas como 'research chemicals' não têm as garantias de um medicamento registrado.</p>",
       },
       {
         heading: "Riscos",
@@ -168,7 +168,7 @@ export const comparisons: Comparison[] = [
       },
     ],
     verdict:
-      "BPC-157 e TB-500 são populares na comunidade atlética mas carecem de evidência clínica em humanos. Ambos mostram resultados promissores em modelos animais, mas extrapolar isso para humanos é cientificamente inadequado. Se considerar usar, faça-o sob supervisão médica e com produtos de farmácia de manipulação licenciada — não compre 'research chemicals' online.",
+      "BPC-157 e TB-500 são populares na comunidade atlética, mas carecem de evidência clínica robusta em humanos. Resultados em modelos animais não demonstram segurança ou eficácia clínica. Evite ofertas online apresentadas como produtos de pesquisa para uso humano.",
     faq: [
       {
         q: "Posso usar BPC-157 e TB-500 juntos?",
@@ -180,7 +180,7 @@ export const comparisons: Comparison[] = [
       },
       {
         q: "São legais no Brasil?",
-        a: "Não são aprovados pela ANVISA. Podem ser manipulados em farmácias sob prescrição médica em alguns casos. Compra online sem prescrição opera em zona cinza regulatória.",
+        a: "Não têm aprovação identificada na ANVISA para uso clínico. A ausência de registro não autoriza manipulação, venda ou uso; confirme a situação do produto e do insumo nos canais oficiais.",
       },
     ],
   },
@@ -279,11 +279,11 @@ export const comparisons: Comparison[] = [
       {
         heading: "Status regulatório",
         content:
-          "<p>Ambos:</p><ul><li>Não aprovados pela ANVISA para uso clínico</li><li>Reclassificados pela FDA em fev/2026 como Category 1 (manipulação possível)</li><li>Vendidos sob prescrição em farmácias de manipulação em alguns países</li></ul>",
+          "<p>Ipamorelin e CJC-1295 não têm aprovação identificada na ANVISA para uso clínico. Processos de avaliação de insumos para manipulação nos EUA não equivalem a aprovação do FDA e não autorizam uso no Brasil.</p>",
       },
     ],
     verdict:
-      "Ipamorelin e CJC-1295 não competem — eles se complementam. A combinação é o padrão na maioria dos protocolos clínicos com secretagogos de GH. Ambos têm perfil de segurança favorável em humanos comparado a alternativas mais antigas. Ainda assim, o uso requer prescrição médica e acompanhamento, e os benefícios devem ser pesados contra a falta de aprovação regulatória.",
+      "A hipótese de efeito complementar entre Ipamorelin e CJC-1295 não substitui evidência clínica de segurança e eficácia para a combinação. A falta de aprovação regulatória e de dados robustos impede tratá-la como protocolo estabelecido.",
     faq: [
       {
         q: "Posso usar só um dos dois?",

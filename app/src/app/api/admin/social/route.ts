@@ -51,12 +51,13 @@ export async function POST(request: NextRequest) {
       name: "Instagram topo de funil",
       channel: "instagram",
       landingPath: "/pt/instagram",
-      objective: "Gerar demanda educacional, pedidos de orçamento e parceiros B2B.",
+      objective: "Gerar audiência educacional e validar interesse no Radar.",
       status: "active",
     },
     update: {
       name: "Instagram topo de funil",
       landingPath: "/pt/instagram",
+      objective: "Gerar audiência educacional e validar interesse no Radar.",
       status: "active",
     },
   });

@@ -5,34 +5,43 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { targetPath, type SocialTarget } from "@/lib/social-funnel";
 
 const choices: Array<{
+  id: string;
   target: SocialTarget;
+  audience?: string;
   title: string;
   body: string;
   cta: string;
 }> = [
   {
+    id: "education",
     target: "education",
     title: "Quero entender regras e riscos",
     body: "Conteúdo regulatório e educacional para separar evidência de promessa.",
     cta: "Ver guia",
   },
   {
-    target: "patient_quote",
-    title: "Tenho prescrição e quero orçamento",
-    body: "Pedido privado para farmácia parceira responder no WhatsApp.",
-    cta: "Solicitar orçamento",
+    id: "consumer-radar",
+    target: "radar",
+    audience: "consumer",
+    title: "Quero acompanhar novidades",
+    body: "Resumo de estudos e mudanças regulatórias para leitores.",
+    cta: "Conhecer o Radar",
   },
   {
-    target: "doctor_signup",
-    title: "Sou médico",
-    body: "Cadastro discreto para receber pacientes qualificados por região.",
-    cta: "Cadastrar perfil",
+    id: "professional-radar",
+    target: "radar",
+    audience: "professional",
+    title: "Sou profissional de saúde",
+    body: "Briefings com fontes verificáveis para acompanhar o setor.",
+    cta: "Participar do piloto",
   },
   {
-    target: "pharmacy_partner",
-    title: "Sou farmácia de manipulação",
-    body: "Entrar na fila B2B para receber pedidos qualificados.",
-    cta: "Avaliar parceria",
+    id: "organization-radar",
+    target: "radar",
+    audience: "organization",
+    title: "Represento uma organização",
+    body: "Inteligência agregada para clínicas, farmácias e empresas do setor.",
+    cta: "Validar o Radar B2B",
   },
 ];
 
@@ -51,7 +60,7 @@ export function InstagramFunnel({ lang }: { lang: string }) {
   const searchParams = useSearchParams();
   const params = useMemo(() => Object.fromEntries(searchParams.entries()), [searchParams]);
 
-  async function trackAndGo(target: SocialTarget) {
+  async function trackAndGo(choice: (typeof choices)[number]) {
     const landingPath = `/${lang}/instagram`;
     await fetch("/api/track/social", {
       method: "POST",
@@ -60,21 +69,23 @@ export function InstagramFunnel({ lang }: { lang: string }) {
       body: JSON.stringify({
         ...params,
         landingPath,
-        target,
+        target: choice.target,
+        segment: choice.audience,
         visitorId: visitorId(),
         referrer: document.referrer,
       }),
     }).catch(() => undefined);
-    router.push(targetPath(lang, target));
+    const path = targetPath(lang, choice.target);
+    router.push(choice.audience ? `${path}?audience=${choice.audience}` : path);
   }
 
   return (
     <div className="grid gap-3 sm:grid-cols-2">
       {choices.map((choice) => (
         <button
-          key={choice.target}
+          key={choice.id}
           type="button"
-          onClick={() => trackAndGo(choice.target)}
+          onClick={() => trackAndGo(choice)}
           className="rounded-lg border border-zinc-200 bg-white p-4 text-left transition hover:border-emerald-300 hover:bg-emerald-50/40"
         >
           <span className="block text-sm font-semibold text-zinc-950">{choice.title}</span>

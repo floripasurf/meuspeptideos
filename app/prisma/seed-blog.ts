@@ -49,7 +49,7 @@ const posts = [
 
 <p>Aqui está o paradoxo dos peptídeos: a demanda é gigantesca, mas a regulamentação não acompanhou. Muitas dessas moléculas existem em uma zona cinza — não são aprovadas como medicamentos, mas são vendidas como "produtos de pesquisa". Isso cria riscos reais para consumidores que compram de fontes não regulamentadas.</p>
 
-<p>A boa notícia: o cenário está mudando. Em fevereiro de 2026, o FDA reclassificou 14 peptídeos para Category 1, permitindo que farmácias de manipulação os preparem sob prescrição médica. No Brasil, a ANVISA está formalizando regras para GLP-1s e outros peptídeos. A tendência é clara — regulamentação, não proibição.</p>
+<p>O cenário regulatório muda com frequência, mas processos de avaliação de insumos para manipulação não equivalem a aprovação de medicamentos. No Brasil, cada produto, indicação e forma de fabricação deve ser verificado nas fontes oficiais da Anvisa.</p>
 
 <h2>O que isso significa para você</h2>
 
@@ -62,37 +62,21 @@ const posts = [
     title: "ANVISA, FDA e peptídeos: o cenário regulatório em 2026",
     slug: "regulamentacao-peptideos-2026",
     excerpt:
-      "A reclassificação de 14 peptídeos pelo FDA, as novas regras da ANVISA para GLP-1s e a expiração da patente da semaglutida. O que muda para pacientes e médicos no Brasil.",
+      "As regras da Anvisa para GLP-1s, a expiração da patente da semaglutida e os limites das categorias de avaliação do FDA.",
     author: "Meus Peptídeos",
     tags: ["regulamentação", "ANVISA", "FDA", "Brasil"],
     content: `
-<p>2026 está se configurando como o ano mais transformador para a regulamentação de peptídeos. Entre reclassificações nos EUA, novas regras no Brasil e patentes expirando, o cenário regulatório está em movimento acelerado. Vamos destrinchar o que realmente está acontecendo.</p>
+<p>O cenário regulatório de peptídeos exige separar aprovação de medicamento, avaliação de insumo e regras de manipulação. Mudanças nos EUA não produzem autorização automática no Brasil.</p>
 
-<h2>O que o FDA fez em fevereiro de 2026</h2>
+<h2>Como interpretar o processo do FDA</h2>
 
-<p>Em 27 de fevereiro de 2026, o secretário de saúde dos EUA anunciou a reclassificação de aproximadamente 14 peptídeos de Category 2 para Category 1. Na prática, isso significa que farmácias de manipulação licenciadas podem novamente preparar esses peptídeos sob prescrição médica.</p>
-
-<p>Entre os peptídeos reclassificados estão:</p>
-
-<ul>
-<li>BPC-157</li>
-<li>GHK-Cu</li>
-<li>TB-500 (Thymosin Beta-4)</li>
-<li>Thymosin Alpha-1</li>
-<li>CJC-1295</li>
-<li>Ipamorelin</li>
-<li>AOD-9604</li>
-<li>Selank e Semax</li>
-<li>KPV e MOTS-c</li>
-</ul>
-
-<p><strong>Importante:</strong> Category 1 não significa aprovação FDA. Não houve estudos clínicos de fase 3 para a maioria dessas moléculas. O que mudou é que farmácias podem manipulá-los legalmente, desde que haja prescrição médica e justificativa clínica.</p>
+<p>O FDA mantém categorias de avaliação para substâncias indicadas ao processo da seção 503A. Category 1 não significa aprovação do FDA nem uma autorização irrestrita de manipulação. Trata-se de uma política de fiscalização sujeita a condições enquanto a substância é avaliada.</p>
 
 <h2>O que está acontecendo no Brasil</h2>
 
 <p>A ANVISA tem tomado medidas em duas frentes:</p>
 
-<p><strong>Prescrição obrigatória para GLP-1s:</strong> Desde abril de 2025, a dispensação de semaglutida, liraglutida, dulaglutida, exenatida, tirzepatida e lixisenatida exige retenção de receita médica. Isso combate o uso indiscriminado e o mercado paralelo.</p>
+<p><strong>Retenção de receita para GLP-1s:</strong> Desde 23 de junho de 2025, a dispensação de semaglutida, liraglutida, dulaglutida, exenatida, tirzepatida e lixisenatida exige retenção da receita médica.</p>
 
 <p><strong>Regras de importação de APIs:</strong> Em agosto de 2025, a ANVISA estabeleceu regras estritas para importação de princípios ativos de GLP-1s. APIs de origem biotecnológica só podem ser importados se o fabricante tiver sido avaliado pela ANVISA. Isso visa garantir qualidade e rastreabilidade.</p>
 
@@ -106,7 +90,7 @@ const posts = [
 
 <p>Para peptídeos como BPC-157, TB-500, Ipamorelin e outros populares na comunidade de biohacking, o cenário no Brasil é menos claro. Eles não são aprovados pela ANVISA, não são proibidos explicitamente, e são vendidos por importação pessoal ou farmácias de manipulação em uma área cinza regulatória.</p>
 
-<p>A tendência, seguindo o movimento do FDA, é que a ANVISA eventualmente formalize regras — provavelmente permitindo manipulação sob prescrição, similar ao modelo americano.</p>
+<p>A ausência de registro não autoriza manipulação ou uso. A situação deve ser verificada por substância, insumo, produto e finalidade nos canais oficiais.</p>
 
 <h2>O que fazer enquanto isso?</h2>
 

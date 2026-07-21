@@ -2,12 +2,20 @@ import { NextRequest, NextResponse } from "next/server";
 import { isAuthenticated } from "@/lib/admin-auth";
 import { sendLeadToDoctor } from "@/lib/email";
 import { prisma } from "@/lib/prisma";
+import {
+  patientRoutingEnabled,
+  regulatedFlowUnavailable,
+} from "@/lib/regulated-flows";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(request: NextRequest) {
   if (!(await isAuthenticated())) {
     return NextResponse.json({ error: "Nao autorizado" }, { status: 401 });
+  }
+
+  if (!patientRoutingEnabled) {
+    return NextResponse.json(regulatedFlowUnavailable, { status: 410 });
   }
 
   try {
@@ -46,9 +54,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const delivery = await prisma.leadDelivery.create({
-      data: { leadId, doctorId, price },
+    const existingDelivery = await prisma.leadDelivery.findUnique({
+      where: { leadId_doctorId: { leadId, doctorId } },
+      select: { id: true },
     });
+    if (existingDelivery) {
+      return NextResponse.json(
+        { error: "Este lead ja foi entregue a este medico" },
+        { status: 409 }
+      );
+    }
 
     const sent = await sendLeadToDoctor(doctor.email, doctor.name, {
       name: lead.name,
@@ -60,12 +75,23 @@ export async function POST(request: NextRequest) {
       sourcePage: lead.sourcePage,
     });
 
+    if (!sent.ok) {
+      return NextResponse.json(
+        { error: "Falha ao enviar o lead. Nenhuma entrega foi registrada." },
+        { status: 502 }
+      );
+    }
+
+    const delivery = await prisma.leadDelivery.create({
+      data: { leadId, doctorId, price },
+    });
+
     await prisma.lead.update({
       where: { id: leadId },
       data: { status: "matched" },
     });
 
-    return NextResponse.json({ delivery, emailSent: sent.ok });
+    return NextResponse.json({ delivery, emailSent: true });
   } catch (e: unknown) {
     if (
       typeof e === "object" &&

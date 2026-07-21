@@ -3,6 +3,10 @@ import { sendQuoteAdminAlert, sendQuoteToPharmacy } from "@/lib/email";
 import { prisma } from "@/lib/prisma";
 import { matchPharmacies } from "@/lib/quote-routing";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
+import {
+  pharmacyQuotePartnersEnabled,
+  regulatedFlowUnavailable,
+} from "@/lib/regulated-flows";
 
 const compoundSlugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
@@ -18,6 +22,10 @@ function cleanEmail(value: unknown): string | null {
 }
 
 export async function POST(request: NextRequest) {
+  if (!pharmacyQuotePartnersEnabled) {
+    return NextResponse.json(regulatedFlowUnavailable, { status: 410 });
+  }
+
   try {
     const ip = getClientIp(request.headers);
     const body = await request.json();

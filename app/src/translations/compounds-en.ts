@@ -2149,7 +2149,7 @@ const translations: CompoundTranslations = {
       {
         question: "Why isn't it approved in the US/Brazil?",
         answer:
-          "Zadaxin (thymosin alpha-1) is approved in over 30 countries, but SciClone Pharmaceuticals did not complete the FDA approval process. In Brazil, there is no ANVISA registration. In Feb/2026, the FDA reclassified it to Category 1, allowing compounding by pharmacies.",
+          "Zadaxin (thymosin alpha-1) has approvals in some countries, but it is not FDA-approved and no ANVISA registration has been identified. A US compounding review category is not an approval and does not authorize use in Brazil.",
       },
     ],
   },

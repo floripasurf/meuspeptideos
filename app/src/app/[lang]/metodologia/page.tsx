@@ -195,10 +195,10 @@ export default async function MetodologiaPage({ params }: Props) {
 
         <h2>Compromisso com a transparência</h2>
         <p>
-          Não vendemos peptídeos, nem somos pagos por fabricantes para promover
-          produtos específicos. Nossa monetização futura virá de parcerias com
-          clínicas médicas legítimas (lead generation para profissionais que
-          prescrevem peptídeos sob supervisão médica adequada).
+          Não vendemos peptídeos, não comercializamos encaminhamentos e não
+          aceitamos pagamento para alterar classificações editoriais. Nossa
+          monetização em validação vem de assinaturas de inteligência e licenças
+          de dados agregados, separadas das decisões clínicas.
         </p>
       </div>
     </article>

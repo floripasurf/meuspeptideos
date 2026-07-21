@@ -1,247 +1,99 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getDictionary, hasLocale } from "@/lib/i18n";
+import { hasLocale } from "@/lib/i18n";
 import { langAlternates } from "@/lib/seo";
 
-export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }) {
+type Props = { params: Promise<{ lang: string }> };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
   return {
-    title: "Regulamentação de Peptídeos no Brasil — ANVISA, FDA e EMA",
-    description:
-      "Status regulatório dos peptídeos no Brasil e no mundo. Como ANVISA, FDA e EMA classificam semaglutida, tirzepatida, BPC-157 e outros compostos. Atualizado em 2026.",
+    title: "Regulamentação de peptídeos no Brasil",
+    description: "Panorama baseado em fontes oficiais sobre registro, prescrição e manipulação de peptídeos no Brasil.",
     alternates: langAlternates(lang, "/regulamentacao"),
+    robots: { index: lang === "pt", follow: true },
   };
 }
 
-type Props = { params: Promise<{ lang: string }> };
+const sources = {
+  mounjaroRegistration: "https://www.gov.br/anvisa/pt-br/assuntos/medicamentos/novos-medicamentos-e-indicacoes/mounjaro-r-tirzepatida-novo-registro",
+  mounjaroWeight: "https://www.gov.br/anvisa/pt-br/assuntos/medicamentos/novos-medicamentos-e-indicacoes/mounjaro-r-tirzepatida-nova-indicacao",
+  glp1Prescription: "https://www.gov.br/anvisa/pt-br/assuntos/noticias-anvisa/2025/entra-em-vigor-norma-que-preve-retencao-de-receita-para-medicamentos-agonistas-glp-1",
+  semaglutidePatent: "https://www.gov.br/anvisa/pt-br/assuntos/noticias-anvisa/2026/anvisa-divulga-atualizacao-sobre-pedidos-de-registro-de-semaglutida",
+  semaglutideApproval: "https://www.gov.br/anvisa/pt-br/assuntos/noticias-anvisa/2026/anvisa-aprova-primeira-caneta-de-semaglutida-sintetica-analoga-ao-ozempic-para-diabetes/",
+  compoundingEnforcement: "https://www.gov.br/anvisa/pt-br/assuntos/noticias-anvisa/2026/anvisa-anuncia-novas-medidas-de-combate-a-irregularidades-na-importacao-e-manipulacao-de-canetas-emagrecedoras",
+  rdc67: "https://bvsms.saude.gov.br/bvs/saudelegis/anvisa/2007/rdc0067_08_10_2007.html",
+  fdaCompounding: "https://www.fda.gov/drugs/human-drug-compounding/bulk-drug-substances-used-compounding-under-section-503a-fdc-act",
+  fdaSafety: "https://www.fda.gov/drugs/human-drug-compounding/certain-bulk-drug-substances-use-compounding-may-present-significant-safety-risks",
+};
 
 export default async function RegulamentacaoPage({ params }: Props) {
   const { lang } = await params;
   if (!hasLocale(lang)) notFound();
-  const dict = await getDictionary(lang);
+
   return (
     <article className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
       <header className="mb-10">
-        <h1 className="text-3xl font-bold tracking-tight text-zinc-900 sm:text-4xl">
-          Regulamentação de Peptídeos
-        </h1>
-        <p className="mt-3 text-lg text-zinc-600">
-          O cenário regulatório dos peptídeos no Brasil e no mundo, atualizado
-          para 2026.
+        <p className="text-sm font-semibold uppercase text-emerald-700">Atualizado em julho de 2026</p>
+        <h1 className="mt-3 text-3xl font-bold text-zinc-950 sm:text-4xl">Regulamentação de peptídeos</h1>
+        <p className="mt-3 text-lg leading-relaxed text-zinc-600">
+          Um resumo conservador do cenário brasileiro, com links para as fontes primárias. Registro, prescrição e possibilidade de manipulação são questões diferentes.
         </p>
       </header>
 
-      <div className="prose prose-zinc prose-lg max-w-none">
-        <h2>Por que regulamentação importa</h2>
+      <div className="prose prose-zinc prose-lg max-w-none prose-a:text-emerald-700">
+        <h2>O ponto de partida</h2>
         <p>
-          O mercado de peptídeos vive um momento único: a demanda explodiu, mas
-          a regulamentação ainda corre atrás. Muitos compostos que você
-          provavelmente já viu mencionados em redes sociais existem em uma zona
-          cinza — não são aprovados como medicamentos, mas também não são
-          formalmente proibidos. Essa indefinição cria riscos reais para
-          consumidores e oportunidades para mercados paralelos.
-        </p>
-        <p>
-          A boa notícia: o cenário está mudando rapidamente. Em fevereiro de
-          2026, o FDA reclassificou 14 peptídeos. A ANVISA está formalizando
-          regras para GLP-1s. A patente da semaglutida expira em 2026 no Brasil,
-          abrindo caminho para genéricos. Esta página resume o que está
-          acontecendo.
+          Um princípio ativo conhecido ou estudado não é automaticamente um medicamento autorizado. No Brasil, a situação deve ser verificada por produto, indicação, fabricante e forma de dispensação na Anvisa. A ausência de proibição expressa também não equivale a autorização para fabricar, anunciar, vender ou usar.
         </p>
 
-        <h2>Status no Brasil — ANVISA</h2>
-
-        <h3>GLP-1s (semaglutida, tirzepatida)</h3>
+        <h2>Agonistas de GLP-1 no Brasil</h2>
         <p>
-          A ANVISA aprovou a <strong>semaglutida</strong> (Ozempic, Wegovy) para
-          diabetes tipo 2 e obesidade. Desde abril de 2025, a dispensação exige{" "}
-          <strong>retenção de receita médica</strong> — assim como liraglutida,
-          dulaglutida, exenatida, tirzepatida e lixisenatida. A medida visa
-          combater o uso indiscriminado e o mercado paralelo.
+          A tirzepatida (Mounjaro) recebeu <a href={sources.mounjaroRegistration}>registro para diabetes tipo 2 em setembro de 2023</a>. A Anvisa aprovou depois uma <a href={sources.mounjaroWeight}>nova indicação para controle crônico do peso</a> em adultos que atendam aos critérios da bula. Portanto, é incorreto descrevê-la como produto ainda sem registro no país.
         </p>
         <p>
-          A <strong>tirzepatida</strong> (Mounjaro, Zepbound) ainda está em
-          processo de registro na ANVISA. Não é vendida oficialmente em
-          farmácias brasileiras, mas pode ser importada com receita médica em
-          casos específicos.
+          Desde 23 de junho de 2025, farmácias e drogarias devem <a href={sources.glp1Prescription}>reter a receita de medicamentos agonistas de GLP-1</a>. A prescrição é emitida em duas vias e tem validade de até 90 dias, conforme as regras informadas pela Agência.
         </p>
 
-        <h3>Patente da semaglutida</h3>
+        <h2>Patente não substitui registro</h2>
         <p>
-          A patente da semaglutida <strong>expira em 2026 no Brasil</strong>. A
-          ANVISA tem 9 pedidos pendentes de versões genéricas ou biossimilares
-          de semaglutida e 7 de liraglutida. No entanto, processa apenas 3
-          solicitações por semestre, então a chegada dos genéricos será gradual.
-          Quando chegarem, o preço deve cair significativamente — atualmente o
-          Ozempic custa entre R$ 800 e R$ 1.200/mês.
+          A patente da semaglutida no Brasil expirou em 20 de março de 2026. A própria Anvisa esclareceu que a expiração <a href={sources.semaglutidePatent}>não dispensa a comprovação de eficácia, segurança e qualidade</a> nem o registro de cada medicamento. Em maio de 2026, a Agência anunciou o <a href={sources.semaglutideApproval}>primeiro registro de uma caneta de semaglutida sintética análoga</a> ao produto biológico.
         </p>
 
-        <h3>Regras de importação</h3>
+        <h2>Manipulação exige análise específica</h2>
         <p>
-          Em agosto de 2025, a ANVISA estabeleceu regras estritas para
-          importação de princípios ativos de GLP-1s. APIs de origem
-          biotecnológica só podem ser importados se o fabricante tiver sido
-          avaliado pela ANVISA durante registro de produto. O objetivo é
-          garantir qualidade e rastreabilidade.
+          A manipulação magistral é regulada pela <a href={sources.rdc67}>RDC 67/2007</a> e por normas complementares. Não existe uma regra geral segundo a qual todo peptídeo sem registro pode ser manipulado mediante receita. Origem do insumo, qualidade, indicação, forma farmacêutica, prescrição e restrições específicas precisam ser avaliadas.
+        </p>
+        <p>
+          Em 2026, a Anvisa anunciou <a href={sources.compoundingEnforcement}>novas medidas contra irregularidades na importação e manipulação de agonistas de GLP-1</a>. Por isso, esta plataforma não encaminha pedidos de orçamento nem apresenta substâncias experimentais como disponíveis em farmácias.
         </p>
 
-        <h3>Outros peptídeos</h3>
+        <h2>Como interpretar as categorias do FDA</h2>
         <p>
-          Para peptídeos como BPC-157, TB-500, Ipamorelin, CJC-1295, GHK-Cu e a
-          maioria dos compostos populares na comunidade de biohacking, o cenário
-          é menos claro:
+          Nos Estados Unidos, a inclusão de uma substância na chamada Category 1 do processo da seção 503A não significa aprovação do FDA. A categoria se relaciona à política temporária de fiscalização enquanto a substância é avaliada para uma lista de insumos de manipulação, sujeita a condições. O <a href={sources.fdaCompounding}>FDA explica o processo e seus limites</a> e mantém uma página separada sobre <a href={sources.fdaSafety}>substâncias que podem apresentar riscos significativos</a>.
         </p>
+        <p>
+          Uma decisão regulatória norte-americana não autoriza automaticamente manipulação, propaganda, importação ou uso no Brasil.
+        </p>
+
+        <h2>Como usar as fichas deste site</h2>
         <ul>
-          <li>Não são aprovados pela ANVISA como medicamentos</li>
-          <li>Não são proibidos explicitamente</li>
-          <li>
-            Podem ser obtidos via farmácias de manipulação licenciadas com
-            prescrição médica
-          </li>
-          <li>
-            Operam em zona cinza regulatória quando vendidos online sem
-            prescrição
-          </li>
+          <li>Trate o status exibido como uma referência editorial, não como autorização de compra ou prescrição.</li>
+          <li>Confirme o produto e a indicação nas consultas oficiais da Anvisa antes de qualquer decisão.</li>
+          <li>Diferencie evidência pré-clínica, ensaio clínico e aprovação regulatória.</li>
+          <li>Não use relatos em redes sociais como prova de segurança, eficácia ou legalidade.</li>
         </ul>
 
-        <h2>Status nos EUA — FDA</h2>
-
-        <h3>A reclassificação de fevereiro de 2026</h3>
+        <h2>Monitoramento</h2>
         <p>
-          Em 27 de fevereiro de 2026, o secretário de saúde dos EUA anunciou a
-          reclassificação de aproximadamente 14 peptídeos de Category 2 para{" "}
-          <strong>Category 1</strong>. Na prática, isso significa que farmácias
-          de manipulação licenciadas podem novamente preparar esses peptídeos
-          sob prescrição médica.
-        </p>
-
-        <p>Os peptídeos reclassificados incluem:</p>
-        <ul>
-          <li>BPC-157</li>
-          <li>GHK-Cu</li>
-          <li>TB-500 (Thymosin Beta-4)</li>
-          <li>Thymosin Alpha-1</li>
-          <li>CJC-1295</li>
-          <li>Ipamorelin</li>
-          <li>AOD-9604</li>
-          <li>Selank</li>
-          <li>Semax</li>
-          <li>KPV</li>
-          <li>MOTS-c</li>
-          <li>e outros</li>
-        </ul>
-
-        <p>
-          <strong>Importante:</strong> Category 1 NÃO significa aprovação FDA.
-          Não houve estudos clínicos de fase 3 para a maioria dessas moléculas.
-          O que mudou é que farmácias podem manipulá-los legalmente, desde que
-          haja prescrição médica e justificativa clínica.
-        </p>
-
-        <h3>Peptídeos aprovados pelo FDA</h3>
-        <ul>
-          <li>
-            <strong>Semaglutida</strong> (Ozempic, Wegovy, Rybelsus) — diabetes
-            tipo 2 e obesidade
-          </li>
-          <li>
-            <strong>Tirzepatida</strong> (Mounjaro, Zepbound) — diabetes tipo 2
-            e obesidade
-          </li>
-          <li>
-            <strong>Liraglutida</strong> (Victoza, Saxenda) — diabetes tipo 2 e
-            obesidade
-          </li>
-          <li>
-            <strong>Tesamorelin</strong> (Egrifta) — lipodistrofia em HIV
-          </li>
-          <li>
-            <strong>PT-141 / Bremelanotide</strong> (Vyleesi) — Transtorno do
-            Desejo Sexual Hipoativo em mulheres
-          </li>
-        </ul>
-
-        <h2>Status na Europa — EMA</h2>
-        <p>
-          A Agência Europeia de Medicamentos (EMA) aprovou os mesmos GLP-1s
-          aprovados pelo FDA. A regulamentação para outros peptídeos é
-          tipicamente mais conservadora que nos EUA e Brasil. Alguns peptídeos
-          populares no biohacking americano são proibidos para venda na Europa
-          (como Melanotan II).
-        </p>
-
-        <h2>Hierarquia de status regulatório</h2>
-        <p>
-          Em nossa base, classificamos cada peptídeo em uma das seguintes
-          categorias para ANVISA, FDA e EMA:
-        </p>
-
-        <ul>
-          <li>
-            <strong>Aprovado:</strong> Possui registro oficial para uso clínico
-            em pelo menos uma indicação.
-          </li>
-          <li>
-            <strong>Pendente:</strong> Em processo de registro ou aguardando
-            aprovação.
-          </li>
-          <li>
-            <strong>Não regulamentado:</strong> Não há regulamentação específica
-            — opera em zona cinza.
-          </li>
-          <li>
-            <strong>Manipulação apenas:</strong> Pode ser preparado por
-            farmácias de manipulação sob prescrição médica, mas não é vendido
-            como medicamento industrializado.
-          </li>
-          <li>
-            <strong>Proibido:</strong> Venda formalmente proibida pela agência
-            reguladora.
-          </li>
-        </ul>
-
-        <h2>O que isso significa para você</h2>
-
-        <h3>Se você é paciente</h3>
-        <p>
-          Antes de considerar qualquer peptídeo, consulte um médico —
-          preferencialmente um especialista familiarizado com o composto.
-          Verifique o status regulatório no Brasil (na nossa base de dados, cada
-          peptídeo tem o status atualizado). Evite comprar online de fontes não
-          regulamentadas: produtos do mercado cinza frequentemente não passam
-          por controle de qualidade, podem estar contaminados ou ter dosagem
-          incorreta.
-        </p>
-
-        <h3>Se você é médico</h3>
-        <p>
-          A reclassificação do FDA abre espaço para uso mais amplo de peptídeos
-          via farmácias de manipulação. No Brasil, o cenário é menos claro,
-          mas farmácias magistrais licenciadas podem preparar muitos desses
-          compostos sob prescrição. Mantenha-se atualizado com a literatura
-          científica e a ANVISA. Nossa{" "}
-          <Link href={`/${lang}/para-medicos`}>página para médicos</Link> tem informações
-          adicionais.
-        </p>
-
-        <h2>Atualização constante</h2>
-        <p>
-          O cenário regulatório muda rapidamente. Esta página é atualizada
-          quando há mudanças significativas. Para acompanhar as atualizações,
-          cadastre-se em nossa newsletter na home.
-        </p>
-
-        <p className="mt-8 text-sm text-zinc-500">
-          Última atualização: abril de 2026.
+          O <Link href={`/${lang}/radar`}>Radar Meus Peptídeos</Link> está em validação para acompanhar mudanças científicas e regulatórias com links para fontes verificáveis.
         </p>
       </div>
 
-      <div className="mt-10 rounded-xl border border-amber-200 bg-amber-50 p-5">
-        <p className="text-sm text-amber-800">
-          <strong>Aviso:</strong> Esta página tem caráter exclusivamente
-          informativo. Não constitui aconselhamento médico ou jurídico.
-          Decisões sobre uso de qualquer composto devem ser tomadas em conjunto
-          com profissionais qualificados.
+      <div className="mt-10 border-l-4 border-amber-500 bg-amber-50 p-5">
+        <p className="text-sm text-amber-900">
+          <strong>Aviso:</strong> conteúdo informativo, sem aconselhamento médico ou jurídico. Consulte a Anvisa, a bula aprovada e profissionais habilitados para o caso concreto.
         </p>
       </div>
     </article>

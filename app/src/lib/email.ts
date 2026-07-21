@@ -31,7 +31,7 @@ export async function sendDoctorVerificationEmail(
     <h1 style="color: white; margin: 0; font-size: 22px;">Meus Peptídeos</h1>
   </div>
 
-  <h2 style="color: #0f172a; font-size: 20px;">Olá, Dr(a). ${name}</h2>
+  <h2 style="color: #0f172a; font-size: 20px;">Olá, Dr(a). ${escapeHtml(name)}</h2>
 
   <p style="color: #475569; line-height: 1.6;">
     Recebemos seu cadastro como médico parceiro do Meus Peptídeos. Para confirmar
@@ -55,9 +55,8 @@ export async function sendDoctorVerificationEmail(
   <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 24px 0;">
 
   <p style="color: #94a3b8; font-size: 12px; line-height: 1.5;">
-    Seus dados são confidenciais e armazenados com segurança em nossos servidores
-    no Brasil (LGPD compliant). Você pode solicitar exclusão a qualquer momento
-    respondendo este email.
+    O cadastro profissional está pausado para revisão. Você pode solicitar
+    acesso, correção ou exclusão respondendo este email.
   </p>
 
   <p style="color: #94a3b8; font-size: 12px;">
@@ -111,6 +110,67 @@ export async function sendAdminNotification(doctor: {
   } catch (e) {
     console.error("[email] Failed to send admin notification:", e);
   }
+}
+
+export async function sendSubscriberConfirmationEmail(
+  to: string,
+  token: string,
+  unsubscribeToken: string
+) {
+  if (!resend) return { ok: false as const, reason: "no-resend" };
+
+  const confirmUrl = `${SITE_URL}/api/subscribe/confirm?token=${encodeURIComponent(token)}`;
+  const unsubscribeUrl = `${SITE_URL}/api/subscribe/unsubscribe?token=${encodeURIComponent(unsubscribeToken)}`;
+  const { error } = await resend.emails.send({
+    from: FROM,
+    to,
+    subject: "Confirme sua inscrição - Meus Peptídeos",
+    html: `
+<div style="font-family:-apple-system,BlinkMacSystemFont,Inter,sans-serif;max-width:600px;margin:0 auto;padding:24px">
+  <h1 style="color:#0f172a;font-size:22px">Confirme sua inscrição</h1>
+  <p style="color:#475569;line-height:1.6">Use o botão abaixo para confirmar que deseja receber atualizações editoriais e regulatórias do Meus Peptídeos.</p>
+  <p style="margin:28px 0"><a href="${escapeHtml(confirmUrl)}" style="display:inline-block;background:#047857;color:white;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:600">Confirmar inscrição</a></p>
+  <p style="color:#64748b;font-size:13px;line-height:1.5">Se você não solicitou esta inscrição, ignore esta mensagem. O endereço não será incluído em envios até a confirmação.</p>
+  <p style="color:#94a3b8;font-size:12px"><a href="${escapeHtml(unsubscribeUrl)}" style="color:#64748b">Cancelar e remover meu email</a></p>
+</div>`,
+  });
+
+  return error ? { ok: false as const, reason: error.message } : { ok: true as const };
+}
+
+export type RadarInterestEmailData = {
+  audience: string;
+  name: string | null;
+  organization: string | null;
+  email: string;
+  whatsapp: string | null;
+  plan: string;
+  sourcePage: string;
+};
+
+export async function sendRadarInterestAdminAlert(interest: RadarInterestEmailData) {
+  if (!resend || !ADMIN_EMAIL) return { ok: false as const, reason: "no-admin-email" };
+
+  const { error } = await resend.emails.send({
+    from: FROM,
+    to: ADMIN_EMAIL,
+    subject: `[MP] Interesse no Radar - ${emailSubjectPart(interest.audience)}`,
+    html: `
+<div style="font-family:-apple-system,BlinkMacSystemFont,Inter,sans-serif;max-width:620px;margin:0 auto;padding:24px">
+  <h2 style="color:#0f172a">Novo interesse comercial no Radar</h2>
+  <ul>
+    <li><b>Público:</b> ${escapeHtml(interest.audience)}</li>
+    <li><b>Plano:</b> ${escapeHtml(interest.plan)}</li>
+    <li><b>Nome:</b> ${escapeHtml(interest.name) || "não informado"}</li>
+    <li><b>Organização:</b> ${escapeHtml(interest.organization) || "não informada"}</li>
+    <li><b>Email:</b> ${escapeHtml(interest.email)}</li>
+    <li><b>WhatsApp:</b> ${escapeHtml(interest.whatsapp) || "não informado"}</li>
+    <li><b>Origem:</b> ${escapeHtml(interest.sourcePage)}</li>
+  </ul>
+</div>`,
+  });
+
+  return error ? { ok: false as const, reason: error.message } : { ok: true as const };
 }
 
 function escapeHtml(value: string | null | undefined): string {

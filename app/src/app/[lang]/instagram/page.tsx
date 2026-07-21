@@ -12,7 +12,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: "Instagram - Meus Peptídeos",
     description:
-      "Ponto de entrada para quem chegou pelo Instagram e quer entender peptídeos, orçamentos, médicos ou parcerias B2B.",
+      "Ponto de entrada para conteúdo educacional e para o Radar Meus Peptídeos.",
     alternates: langAlternates(lang, "/instagram"),
     robots: { index: false, follow: true },
   };
@@ -32,9 +32,8 @@ export default async function InstagramPage({ params }: Props) {
           Escolha o próximo passo certo para você
         </h1>
         <p className="mt-5 max-w-2xl text-lg leading-relaxed text-zinc-600">
-          Organizamos informação sobre peptídeos, riscos, prescrição e caminhos
-          comerciais sem vender promessa. Cada clique abaixo ajuda a direcionar
-          o conteúdo e medir o funil social.
+          Organizamos informação sobre evidências e regulação. Você pode seguir
+          para o guia educacional ou participar da validação do Radar.
         </p>
         <div className="mt-8">
           <Suspense fallback={<div className="h-48 rounded-lg border border-zinc-200 bg-zinc-50" />}>

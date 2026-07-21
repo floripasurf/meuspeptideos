@@ -17,7 +17,12 @@ describe("social funnel attribution", () => {
   });
 
   it("resolve caminho por target", () => {
-    expect(targetPath("pt", "pharmacy_partner")).toBe("/pt/para-farmacias");
-    expect(targetPath("pt", "doctor_signup")).toBe("/pt/para-medicos");
+    expect(targetPath("pt", "pharmacy_partner")).toBe("/pt/radar");
+    expect(targetPath("pt", "doctor_signup")).toBe("/pt/radar");
+    expect(targetPath("pt", "radar")).toBe("/pt/radar");
+  });
+
+  it("aceita o Radar como destino", () => {
+    expect(normalizeSocialAttribution({ target: "radar" }).target).toBe("radar");
   });
 });

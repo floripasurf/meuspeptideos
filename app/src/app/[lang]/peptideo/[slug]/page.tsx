@@ -4,9 +4,8 @@ import { prisma } from "@/lib/prisma";
 import { ResearchPhaseBar } from "@/components/research-phase-badge";
 import { CategoryBadge } from "@/components/category-badge";
 import { NewsletterForm } from "@/components/newsletter-form";
-import { QuoteRequestForm } from "@/components/quote-request-form";
 import { RegulatoryStatus } from "@/generated/prisma/enums";
-import { protocols, type Protocol } from "@/lib/protocols";
+import { protocols } from "@/lib/protocols";
 import { getDictionary, hasLocale, type Dictionary } from "@/lib/i18n";
 import { getCompoundTranslation } from "@/lib/compound-translations";
 import { purchaseInfo } from "@/lib/purchase-info";
@@ -604,7 +603,7 @@ export default async function PeptidePage({ params }: Props) {
         </div>
 
         {/* Purchase / CTA */}
-        <PurchaseSection slug={peptide.slug} name={peptide.name} dict={dict} lang={lang} />
+        <PurchaseSection slug={peptide.slug} dict={dict} />
 
         {/* Newsletter */}
         <section className="newsletter-gradient rounded-2xl p-8 sm:p-10">
@@ -1032,14 +1031,10 @@ function RegulatoryStatusCard({
 
 function PurchaseSection({
   slug,
-  name,
   dict,
-  lang,
 }: {
   slug: string;
-  name: string;
   dict: Dictionary;
-  lang: string;
 }) {
   const info = purchaseInfo[slug];
   if (!info) return null;
@@ -1081,62 +1076,6 @@ function PurchaseSection({
     );
   }
 
-  if (info.type === "compounding") {
-    return (
-      <section className="mb-10 rounded-2xl border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-white p-6 sm:p-8">
-        <div className="flex items-start gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-100">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-blue-600">
-              <path d="M9 3h6M12 3v7l6.1 10.5a1 1 0 01-.87 1.5H6.77a1 1 0 01-.87-1.5L12 10V3" />
-            </svg>
-          </div>
-          <div>
-            <h2 className="text-xl font-bold text-navy-900">{p.compoundingTitle}</h2>
-            <p className="mt-1 text-sm text-navy-600">{p.compoundingSubtitle}</p>
-          </div>
-        </div>
-        <div className="mt-5">
-          <QuoteRequestForm
-            compoundSlug={slug}
-            compoundName={name}
-            sourcePage={`/${lang}/peptideo/${slug}`}
-          />
-        </div>
-      </section>
-    );
-  }
-
-  if (info.type === "prescription") {
-    return (
-      <section className="mb-10 rounded-2xl border-2 border-brand-200 bg-gradient-to-br from-brand-50/50 to-white p-6 sm:p-8">
-        <div className="flex items-start gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-100">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-brand-600">
-              <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-            </svg>
-          </div>
-          <div>
-            <h2 className="text-xl font-bold text-navy-900">{p.prescriptionTitle}</h2>
-            <p className="mt-1 text-sm text-navy-600">{p.prescriptionSubtitle}</p>
-          </div>
-        </div>
-        <div className="mt-5">
-          <a
-            href={`/${lang}/para-medicos`}
-            className="inline-flex items-center gap-2 rounded-xl bg-brand-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-brand-700 hover:shadow-md"
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="11" cy="11" r="8" />
-              <path d="M21 21l-4.35-4.35" />
-            </svg>
-            {p.prescriptionCta}
-          </a>
-        </div>
-      </section>
-    );
-  }
-
-  // experimental
   return (
     <section className="mb-10 rounded-2xl border-2 border-navy-200 bg-gradient-to-br from-navy-50 to-white p-6 sm:p-8">
       <div className="flex items-start gap-3">
@@ -1147,8 +1086,8 @@ function PurchaseSection({
           </svg>
         </div>
         <div>
-          <h2 className="text-xl font-bold text-navy-900">{p.experimentalTitle}</h2>
-          <p className="mt-1 text-sm text-navy-600">{p.experimentalSubtitle}</p>
+          <h2 className="text-xl font-bold text-navy-900">Acompanhe as atualizações</h2>
+          <p className="mt-1 text-sm text-navy-600">Receba novidades editoriais, científicas e regulatórias. O cadastro não indica disponibilidade para compra ou uso.</p>
         </div>
       </div>
       <div className="mt-5">

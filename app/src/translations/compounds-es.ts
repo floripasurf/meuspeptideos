@@ -2160,7 +2160,7 @@ const translations: CompoundTranslations = {
       {
         question: "¿Por qué no está aprobado en EE.UU.?",
         answer:
-          "El Zadaxin (timosina alfa-1) está aprobado en más de 30 países, pero SciClone Pharmaceuticals no completó el proceso de aprobación en la FDA. En febrero de 2026, la FDA lo reclasificó como Categoría 1, permitiendo su preparación en farmacias magistrales.",
+          "Zadaxin (timosina alfa-1) tiene aprobaciones en algunos países, pero no está aprobado por la FDA y no se ha identificado registro en Anvisa. Una categoría de evaluación para preparación magistral en EE. UU. no equivale a aprobación ni autoriza su uso en Brasil.",
       },
     ],
   },

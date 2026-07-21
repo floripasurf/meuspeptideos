@@ -3,7 +3,8 @@ export type SocialTarget =
   | "doctor_signup"
   | "pharmacy_partner"
   | "clinic_directory"
-  | "education";
+  | "education"
+  | "radar";
 
 export type SocialAttributionInput = {
   utm_source?: string | null;
@@ -21,6 +22,7 @@ const allowedTargets = new Set<SocialTarget>([
   "pharmacy_partner",
   "clinic_directory",
   "education",
+  "radar",
 ]);
 
 function clean(value: string | null | undefined, fallback = "") {
@@ -47,11 +49,12 @@ export function normalizeSocialAttribution(input: SocialAttributionInput) {
 export function targetPath(lang: string, target: SocialTarget) {
   const prefix = `/${lang}`;
   const paths: Record<SocialTarget, string> = {
-    patient_quote: `${prefix}/semaglutida/sao-paulo`,
-    doctor_signup: `${prefix}/para-medicos`,
-    pharmacy_partner: `${prefix}/para-farmacias`,
-    clinic_directory: `${prefix}/para-clinicas`,
+    patient_quote: `${prefix}/radar`,
+    doctor_signup: `${prefix}/radar`,
+    pharmacy_partner: `${prefix}/radar`,
+    clinic_directory: `${prefix}/radar`,
     education: `${prefix}/regulamentacao`,
+    radar: `${prefix}/radar`,
   };
   return paths[target];
 }

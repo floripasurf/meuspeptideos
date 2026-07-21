@@ -2,12 +2,11 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
-import { ResearchPhaseBadge } from "@/components/research-phase-badge";
 import { CategoryBadge } from "@/components/category-badge";
 import { ClinicDirectory } from "@/components/clinic-directory";
-import { LocalLeadForm } from "@/components/local-lead-form";
+import { NewsletterForm } from "@/components/newsletter-form";
 import { getCityBySlug } from "@/lib/cities";
-import { getDictionary, hasLocale } from "@/lib/i18n";
+import { hasLocale } from "@/lib/i18n";
 import { langAlternates } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
@@ -29,13 +28,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: `${peptide.name} em ${city.name}, ${city.stateAbbr} — Onde Encontrar`,
     description: `Informações sobre ${peptide.name} em ${city.name}: como encontrar profissionais qualificados, status regulatório no Brasil e indicação de médicos locais.`,
     alternates: langAlternates(lang, `/${peptideSlug}/${citySlug}`),
+    robots: { index: false, follow: true },
   };
 }
 
 export default async function PeptideCityPage({ params }: Props) {
   const { lang, peptide: peptideSlug, city: citySlug } = await params;
   if (!hasLocale(lang)) notFound();
-  const dict = await getDictionary(lang);
   const city = getCityBySlug(citySlug);
   if (!city) notFound();
 
@@ -61,10 +60,9 @@ export default async function PeptideCityPage({ params }: Props) {
     where: {
       isPublic: true,
       isActive: true,
-      premiumUntil: { gte: new Date() },
       city: city.name,
     },
-    orderBy: [{ premiumUntil: "desc" }, { googleRating: "desc" }],
+    orderBy: { name: "asc" },
     take: 4,
     select: {
       id: true,
@@ -85,8 +83,8 @@ export default async function PeptideCityPage({ params }: Props) {
     "@type": "MedicalWebPage",
     name: `${peptide.name} em ${city.name}`,
     description: `Informações sobre ${peptide.name} em ${city.name}, ${city.stateAbbr}`,
-    url: `https://meuspeptideos.com.br/${peptideSlug}/${citySlug}`,
-    inLanguage: "pt-BR",
+    url: `https://meuspeptideos.com.br/${lang}/${peptideSlug}/${citySlug}`,
+    inLanguage: lang === "pt" ? "pt-BR" : lang === "es" ? "es-419" : "en-US",
     about: {
       "@type": "MedicalEntity",
       name: peptide.name,
@@ -162,7 +160,7 @@ export default async function PeptideCityPage({ params }: Props) {
                     <p className="text-sm text-zinc-600">
                       {isApproved
                         ? `${peptide.name} possui registro na ANVISA e pode ser prescrito por médicos no Brasil. Compra requer prescrição médica.`
-                        : `${peptide.name} não possui registro formal na ANVISA. Em alguns casos, pode ser obtido via farmácias de manipulação com prescrição médica.`}
+                        : `${peptide.name} não possui registro identificado na ANVISA. A ausência de registro não autoriza uso, comercialização ou manipulação.`}
                     </p>
                   </div>
                 </div>
@@ -242,8 +240,8 @@ export default async function PeptideCityPage({ params }: Props) {
               <p className="mt-4 text-sm text-zinc-500">
                 <strong>Importante:</strong> Nem todos os profissionais
                 prescrevem peptídeos. Se você está em {city.name} e quer uma
-                indicação de profissional confiável, use o formulário ao lado
-                para receber uma recomendação personalizada.
+                orientação, consulte os canais oficiais do conselho profissional
+                e verifique as credenciais antes de marcar atendimento.
               </p>
             </section>
 
@@ -260,16 +258,15 @@ export default async function PeptideCityPage({ params }: Props) {
             </div>
           </div>
 
-          {/* Sticky lead form */}
           <aside className="lg:col-span-1">
             <div className="lg:sticky lg:top-20">
-              <LocalLeadForm
-                peptideName={peptide.name}
-                cityName={city.name}
-                cityState={city.stateAbbr}
-                peptideSlug={peptide.slug}
-                citySlug={city.slug}
-              />
+              <div className="border-l-4 border-emerald-700 bg-zinc-50 p-5">
+                <h2 className="text-base font-semibold text-zinc-950">Acompanhe as atualizações</h2>
+                <p className="mt-2 text-sm leading-relaxed text-zinc-600">
+                  Receba conteúdo editorial e regulatório. Não fazemos indicação de profissionais.
+                </p>
+                <NewsletterForm source={`city_${peptide.slug}_${city.slug}`} />
+              </div>
             </div>
           </aside>
         </div>

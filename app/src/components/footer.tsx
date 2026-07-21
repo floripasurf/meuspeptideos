@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { LogoIcon } from "./logo";
+import { PrivacyPreferencesButton } from "./analytics-consent";
 import type { Locale, Dictionary } from "@/lib/i18n";
 
 export function Footer({ lang, dict }: { lang: Locale; dict: Dictionary }) {
@@ -16,8 +17,8 @@ export function Footer({ lang, dict }: { lang: Locale; dict: Dictionary }) {
     institucional: [
       { href: `${prefix}/sobre`, label: dict.footer.about },
       { href: `${prefix}/metodologia`, label: dict.footer.methodology },
-      { href: `${prefix}/para-medicos`, label: dict.footer.forDoctors },
-      { href: `${prefix}/privacidade-medicos`, label: dict.footer.privacy },
+      { href: `${prefix}/radar`, label: "Radar" },
+      { href: `${prefix}/privacidade`, label: dict.footer.privacy },
       { href: `${prefix}/termos`, label: dict.footer.terms },
     ],
   };
@@ -98,6 +99,9 @@ export function Footer({ lang, dict }: { lang: Locale; dict: Dictionary }) {
           <p className="mt-4 text-xs text-navy-400">
             &copy; {new Date().getFullYear()} {dict.footer.copyright}
           </p>
+          <div className="mt-2">
+            <PrivacyPreferencesButton />
+          </div>
         </div>
       </div>
     </footer>

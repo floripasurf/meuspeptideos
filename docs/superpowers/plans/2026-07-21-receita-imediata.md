@@ -1,5 +1,7 @@
 # Receita Imediata — Implementation Plan
 
+> **SUPERADO EM 2026-07-21:** os fluxos de comissão farmacêutica, venda de leads médicos e ranking pago foram desativados após revisão regulatória. Não reativar sem parecer jurídico escrito. O plano vigente está em `docs/monetizacao/2026-07-21-plano-validacao-90-dias.md`.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Ativar as 3 fontes de receita imediata do Meus Peptídeos: (A) orçamentos comissionados com farmácias de manipulação, (B) venda de leads para médicos cadastrados, (C) diretório premium de clínicas nas páginas locais.

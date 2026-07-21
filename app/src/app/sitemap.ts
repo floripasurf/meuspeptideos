@@ -2,7 +2,6 @@ import { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
 import { useCases } from "@/lib/use-cases";
 import { comparisons } from "@/lib/comparisons";
-import { cities } from "@/lib/cities";
 import { PeptideCategory } from "@/generated/prisma/enums";
 import { locales } from "@/lib/i18n";
 import { siteUrl } from "@/lib/seo";
@@ -65,6 +64,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/sobre", lastModified: now, changeFrequency: "monthly", priority: 0.6 },
     { path: "/metodologia", lastModified: now, changeFrequency: "monthly", priority: 0.6 },
     { path: "/regulamentacao", lastModified: now, changeFrequency: "weekly", priority: 0.8 },
+    { path: "/radar", lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     { path: "/uso", lastModified: now, changeFrequency: "weekly", priority: 0.9 },
     ...peptides.map((p) => ({
       path: `/peptideo/${p.slug}`,
@@ -96,15 +96,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly" as const,
       priority: 0.8,
     })),
-    // Local SEO: peptide × city combinations
-    ...peptides.flatMap((p) =>
-      cities.map((city) => ({
-        path: `/${p.slug}/${city.slug}`,
-        lastModified: p.updatedAt,
-        changeFrequency: "monthly" as const,
-        priority: 0.6,
-      }))
-    ),
   ];
 
   return defs.flatMap(localized);

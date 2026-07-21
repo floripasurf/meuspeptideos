@@ -66,9 +66,8 @@ export function Header({ lang, dict }: { lang: Locale; dict: Dictionary }) {
             ))}
           </div>
 
-          {/* Sou Médico CTA */}
           <Link
-            href={`${prefix}/para-medicos`}
+            href={`${prefix}/radar`}
             className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-600 bg-white px-4 py-2 text-sm font-semibold text-emerald-700 transition-all hover:bg-emerald-50 hover:shadow-sm"
           >
             <svg
@@ -81,7 +80,7 @@ export function Header({ lang, dict }: { lang: Locale; dict: Dictionary }) {
             >
               <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
             </svg>
-            {dict.nav.forDoctors}
+            Radar
           </Link>
         </div>
 
@@ -118,11 +117,11 @@ export function Header({ lang, dict }: { lang: Locale; dict: Dictionary }) {
               </Link>
             ))}
             <Link
-              href={`${prefix}/para-medicos`}
+              href={`${prefix}/radar`}
               onClick={() => setMobileOpen(false)}
               className="mt-2 inline-flex items-center justify-center gap-1.5 rounded-lg border border-emerald-600 bg-white px-3 py-2.5 text-sm font-semibold text-emerald-700"
             >
-              {dict.nav.doctorSignup}
+              Conhecer o Radar
             </Link>
             {/* Mobile language switcher */}
             <div className="mt-2 flex items-center gap-1 pt-2 border-t border-navy-100">

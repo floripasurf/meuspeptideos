@@ -24,6 +24,9 @@ export default function AdminLayout({
           <Link className="rounded-lg px-3 py-1.5 text-navy-300 hover:bg-navy-800 hover:text-white" href="/admin/social">
             Social
           </Link>
+          <Link className="rounded-lg px-3 py-1.5 text-navy-300 hover:bg-navy-800 hover:text-white" href="/admin/radar">
+            Radar
+          </Link>
         </div>
       </nav>
       {children}
