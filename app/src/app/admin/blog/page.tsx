@@ -100,9 +100,10 @@ export default function AdminBlogPage() {
     <div className="mx-auto max-w-5xl px-4 py-8">
       <h1 className="text-2xl font-bold text-white">Blog</h1>
       <p className="mt-1 text-sm text-navy-400">
-        Rascunhos gerados pelo cron semanal (já passaram por um revisor adversarial de IA
-        anti-alucinação). Revise e publique. O revisor (nome + CRM) é <strong>opcional</strong> —
-        preencha quando um médico cadastrado assinar o artigo.
+        O cron semanal <strong>publica automaticamente</strong> os artigos aprovados pelo revisor
+        adversarial de IA. Use esta tela para a revisão ao vivo: corrigir texto, despublicar ou
+        excluir. O revisor (nome + CRM) é <strong>opcional</strong> — preencha quando um médico
+        cadastrado assinar o artigo.
       </p>
       {message && <p className="mt-3 rounded-lg bg-navy-800 px-3 py-2 text-sm text-navy-100">{message}</p>}
       {loading && <p className="mt-6 text-navy-400">Carregando…</p>}
@@ -126,21 +127,23 @@ export default function AdminBlogPage() {
       </div>
 
       <h2 className="mt-10 text-lg font-semibold text-emerald-300">Publicados ({published.length})</h2>
-      <ul className="mt-3 space-y-2">
+      <div className="mt-3 space-y-6">
         {published.map((p) => (
-          <li key={p.id} className="flex items-center justify-between rounded-lg border border-navy-800 px-4 py-2 text-sm">
-            <span className="text-navy-100">{p.title}</span>
-            <span className="flex items-center gap-3">
-              <a className="text-emerald-400 hover:underline" href={`/pt/blog/${p.slug}`} target="_blank" rel="noreferrer">
-                ver
-              </a>
-              <button className="text-navy-400 hover:text-white" onClick={() => unpublish(p)}>
-                despublicar
-              </button>
-            </span>
-          </li>
+          <PostCard
+            key={p.id}
+            p={p}
+            published
+            field={field}
+            set={set}
+            onSave={() => save(p, false)}
+            onPublish={() => unpublish(p)}
+            onDelete={() => remove(p)}
+          />
         ))}
-      </ul>
+        {!loading && published.length === 0 && (
+          <p className="text-sm text-navy-500">Nenhum artigo publicado ainda.</p>
+        )}
+      </div>
     </div>
   );
 }
@@ -152,6 +155,7 @@ function PostCard({
   onSave,
   onPublish,
   onDelete,
+  published = false,
 }: {
   p: Post;
   field: (p: Post, key: keyof Post) => string;
@@ -159,6 +163,7 @@ function PostCard({
   onSave: () => void;
   onPublish: () => void;
   onDelete: () => void;
+  published?: boolean;
 }) {
   return (
     <div className="rounded-xl border border-navy-700 bg-navy-900/60 p-4">
@@ -190,11 +195,17 @@ function PostCard({
       </div>
       <div className="mt-3 flex flex-wrap items-center gap-2">
         <button className="rounded-lg bg-navy-700 px-4 py-2 text-sm font-medium text-white hover:bg-navy-600" onClick={onSave}>
-          Salvar rascunho
+          Salvar
         </button>
-        <button className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-500" onClick={onPublish}>
-          Publicar
-        </button>
+        {published ? (
+          <button className="rounded-lg bg-amber-700 px-4 py-2 text-sm font-medium text-white hover:bg-amber-600" onClick={onPublish}>
+            Despublicar
+          </button>
+        ) : (
+          <button className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-500" onClick={onPublish}>
+            Publicar
+          </button>
+        )}
         <a className="rounded-lg border border-navy-700 px-4 py-2 text-sm text-navy-200 hover:bg-navy-800" href={`/pt/blog/${p.slug}`} target="_blank" rel="noreferrer">
           Preview
         </a>
