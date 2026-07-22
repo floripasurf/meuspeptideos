@@ -6,16 +6,10 @@ import {
   sendDoctorVerificationEmail,
   sendAdminNotification,
 } from "@/lib/email";
-import {
-  patientRoutingEnabled,
-  regulatedFlowUnavailable,
-} from "@/lib/regulated-flows";
 
+// Cadastro (lista de espera) fica sempre aberto; o que é gateado por
+// ENABLE_PATIENT_ROUTING é a ENTREGA de leads (/api/admin/leads/deliver).
 export async function POST(request: NextRequest) {
-  if (!patientRoutingEnabled) {
-    return NextResponse.json(regulatedFlowUnavailable, { status: 410 });
-  }
-
   try {
     const ip = getClientIp(request.headers);
 

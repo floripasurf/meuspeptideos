@@ -2,10 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { scorePharmacyProspect, prospectStatusFromScore } from "@/lib/b2b-scoring";
 import { prisma } from "@/lib/prisma";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
-import {
-  pharmacyQuotePartnersEnabled,
-  regulatedFlowUnavailable,
-} from "@/lib/regulated-flows";
 
 function normalizeStringArray(value: unknown): string[] {
   if (Array.isArray(value)) return value.map(String).map((item) => item.trim()).filter(Boolean);
@@ -27,11 +23,9 @@ function slugify(value: string) {
     .slice(0, 80);
 }
 
+// Cadastro de prospect (lista de espera) fica sempre aberto; o que é gateado
+// por ENABLE_PHARMACY_QUOTE_PARTNERS é o roteamento de orçamentos (/api/orcamento).
 export async function POST(request: NextRequest) {
-  if (!pharmacyQuotePartnersEnabled) {
-    return NextResponse.json(regulatedFlowUnavailable, { status: 410 });
-  }
-
   try {
     const ip = getClientIp(request.headers);
     const rateLimit = await checkRateLimit(ip, "pharmacy_partner_apply", 5, 60);

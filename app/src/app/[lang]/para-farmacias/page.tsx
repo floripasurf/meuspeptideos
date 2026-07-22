@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { RadarInterestForm } from "@/components/radar-interest-form";
+import { PartnerApplicationForm } from "@/components/partner-application-form";
 import { hasLocale } from "@/lib/i18n";
 import { langAlternates } from "@/lib/seo";
 
@@ -47,6 +48,21 @@ export default async function ParaFarmaciasPage({ params }: Props) {
               <RadarInterestForm sourcePage={`/${lang}/para-farmacias`} initialAudience="pharmacy" />
             </div>
           </aside>
+        </div>
+      </section>
+      <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6" id="parceria">
+        <div className="max-w-3xl">
+          <h2 className="text-2xl font-semibold text-zinc-950">Rede de farmácias parceiras — lista de espera</h2>
+          <p className="mt-3 text-sm leading-relaxed text-zinc-600">
+            Estamos mapeando farmácias de manipulação para uma futura rede de parceria. O
+            recebimento de pedidos de orçamento ainda não está ativo — começará somente após a
+            conclusão da revisão regulatória e com volume suficiente de demanda. Farmácias
+            cadastradas entram na frente da fila e são contatadas primeiro, sem custo e sem
+            compromisso.
+          </p>
+        </div>
+        <div className="mt-6 max-w-2xl">
+          <PartnerApplicationForm sourcePage={`/${lang}/para-farmacias`} />
         </div>
       </section>
     </div>

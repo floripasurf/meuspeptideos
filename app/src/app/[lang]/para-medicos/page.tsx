@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { RadarInterestForm } from "@/components/radar-interest-form";
+import { DoctorSignupForm } from "@/components/doctor-signup-form";
 import { hasLocale } from "@/lib/i18n";
 import { langAlternates } from "@/lib/seo";
 
@@ -57,10 +58,28 @@ export default async function ParaMedicosPage({ params }: Props) {
           </aside>
         </div>
       </section>
+      <section className="mx-auto max-w-6xl border-b border-zinc-200 px-4 py-10 sm:px-6" id="parceria">
+        <div className="max-w-3xl">
+          <h2 className="text-2xl font-semibold text-zinc-950">Rede de parceiros — lista de espera</h2>
+          <p className="mt-3 text-sm leading-relaxed text-zinc-600">
+            Estamos formando uma rede de médicos que prescrevem peptídeos e compostos regulados. O
+            encaminhamento de pacientes ainda não está ativo — começará somente após a conclusão da
+            revisão regulatória e com volume suficiente de interesse na sua região. Quem se cadastra
+            agora entra na frente da fila e é avisado primeiro. Cadastro gratuito, discreto e sem
+            compromisso.
+          </p>
+        </div>
+        <div className="mt-6 max-w-2xl">
+          <DoctorSignupForm />
+        </div>
+      </section>
       <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
         <h2 className="text-2xl font-semibold text-zinc-950">Limites do serviço</h2>
         <p className="mt-3 max-w-3xl text-sm leading-relaxed text-zinc-600">
-          O Meus Peptídeos não participa da relação médico-paciente, não recomenda prescrições e não remunera indicações. Conteúdo editorial não substitui avaliação clínica independente.
+          O Meus Peptídeos não participa da relação médico-paciente nem recomenda prescrições. Hoje
+          não há encaminhamento de pacientes ativo; qualquer programa futuro de parceria será
+          comunicado previamente aos cadastrados e operado conforme a LGPD e as normas do CFM e da
+          Anvisa. Conteúdo editorial não substitui avaliação clínica independente.
         </p>
         <Link href={`/${lang}/radar`} className="mt-5 inline-block text-sm font-semibold text-emerald-700 hover:underline">
           Ver todos os planos em validação
