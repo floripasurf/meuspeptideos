@@ -6,6 +6,10 @@ import { PeptideCategory } from "@/generated/prisma/enums";
 import { locales } from "@/lib/i18n";
 import { siteUrl } from "@/lib/seo";
 
+// Revalida de hora em hora para que posts publicados pelo cron entrem no
+// sitemap sem precisar de novo build.
+export const revalidate = 3600;
+
 const allCategories: PeptideCategory[] = [
   "glp1",
   "growth_hormone",
