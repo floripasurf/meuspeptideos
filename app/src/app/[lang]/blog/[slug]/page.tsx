@@ -12,15 +12,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang, slug } = await params;
   const post = await prisma.blogPost.findUnique({
     where: { slug },
-    select: { title: true, excerpt: true, reviewerName: true, reviewerCrm: true },
+    select: { title: true, excerpt: true },
   });
   if (!post) return { title: "Artigo não encontrado" };
   return {
     title: post.title,
     description: post.excerpt.slice(0, 160),
     alternates: langAlternates(lang, `/blog/${slug}`),
+    // Posts publicados em PT indexam. Revisor médico é opcional (assinatura
+    // futura por médicos cadastrados); a checagem anti-alucinação é feita por
+    // um revisor adversarial de IA antes do rascunho.
     robots: {
-      index: lang === "pt" && Boolean(post.reviewerName && post.reviewerCrm),
+      index: lang === "pt",
       follow: true,
     },
   };

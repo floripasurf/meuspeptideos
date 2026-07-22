@@ -29,16 +29,9 @@ export async function PATCH(request: NextRequest) {
   const existing = await prisma.blogPost.findUnique({ where: { id: String(id) } });
   if (!existing) return NextResponse.json({ error: "post nao encontrado" }, { status: 404 });
 
-  // Publicar exige revisor (senao o post fica noindex): valida antes.
+  // Revisor médico é opcional (assinatura futura). Posts publicados indexam
+  // mesmo sem revisor; a checagem anti-alucinação é feita no pipeline.
   const willPublish = published === true;
-  const finalReviewerName = reviewerName !== undefined ? reviewerName : existing.reviewerName;
-  const finalReviewerCrm = reviewerCrm !== undefined ? reviewerCrm : existing.reviewerCrm;
-  if (willPublish && (!finalReviewerName || !finalReviewerCrm)) {
-    return NextResponse.json(
-      { error: "Para publicar, informe revisor (nome + CRM) — sem isso o artigo fica noindex." },
-      { status: 400 }
-    );
-  }
 
   const post = await prisma.blogPost.update({
     where: { id: String(id) },

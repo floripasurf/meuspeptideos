@@ -100,8 +100,9 @@ export default function AdminBlogPage() {
     <div className="mx-auto max-w-5xl px-4 py-8">
       <h1 className="text-2xl font-bold text-white">Blog</h1>
       <p className="mt-1 text-sm text-navy-400">
-        Rascunhos gerados pelo cron semanal. Revise, adicione o revisor (nome + CRM) e publique.
-        Sem revisor o artigo fica <strong>noindex</strong>.
+        Rascunhos gerados pelo cron semanal (já passaram por um revisor adversarial de IA
+        anti-alucinação). Revise e publique. O revisor (nome + CRM) é <strong>opcional</strong> —
+        preencha quando um médico cadastrado assinar o artigo.
       </p>
       {message && <p className="mt-3 rounded-lg bg-navy-800 px-3 py-2 text-sm text-navy-100">{message}</p>}
       {loading && <p className="mt-6 text-navy-400">Carregando…</p>}
